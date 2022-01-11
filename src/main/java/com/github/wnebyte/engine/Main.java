@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #16 - Z-Index & Alpha Blend (6:23:19)
+Coding a 2D Game Engine #17 - Integrating ImGui (6:38:58)
  */
 public class Main {
 

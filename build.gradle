@@ -10,6 +10,7 @@ sourceCompatibility = 1.8
 project.ext.lwjglVersion = "3.2.3"
 project.ext.jomlVersion = "1.10.2"
 project.ext.lwjglNatives = "natives-windows"
+project.ext.imguiVersion = '1.86.0'
 
 sourceSets {
     main {
@@ -37,8 +38,8 @@ repositories {
 }
 
 dependencies {
+    // lwjgl
     implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
-
     implementation "org.lwjgl:lwjgl"
     implementation "org.lwjgl:lwjgl-assimp"
     implementation "org.lwjgl:lwjgl-glfw"
@@ -54,4 +55,9 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
     implementation "org.joml:joml:${jomlVersion}"
+
+    // imgui
+    implementation "io.github.spair:imgui-java-binding:$imguiVersion"
+    implementation "io.github.spair:imgui-java-lwjgl3:$imguiVersion"
+    runtimeOnly "io.github.spair:imgui-java-natives-windows:$imguiVersion"
 }

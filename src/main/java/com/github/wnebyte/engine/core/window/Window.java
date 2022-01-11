@@ -5,6 +5,7 @@ import com.github.wnebyte.engine.core.event.MouseListener;
 import com.github.wnebyte.engine.core.scene.LevelEditorScene;
 import com.github.wnebyte.engine.core.scene.LevelScene;
 import com.github.wnebyte.engine.core.scene.Scene;
+import com.github.wnebyte.engine.core.ui.ImGuiLayer;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
@@ -17,13 +18,15 @@ public class Window {
 
     private static Window window = null;
 
-    private Scene scene = null;
+    private int width, height;
 
-    private final int width, height;
-
-    private final String title;
+    private String title;
 
     private long glfwWindow;
+
+    private Scene scene = null;
+
+    private ImGuiLayer imGuiLayer;
 
     public float r, g, b, a;
 
@@ -110,6 +113,10 @@ public class Window {
         glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
         glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
         glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
+        glfwSetWindowSizeCallback(glfwWindow, (w, newWidth, newHeight) -> {
+            Window.setWidth(newWidth);
+            Window.setHeight(newHeight);
+        });
 
         // Make OpenGL context current
         glfwMakeContextCurrent(glfwWindow);
@@ -128,6 +135,9 @@ public class Window {
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+        imGuiLayer = new ImGuiLayer(glfwWindow);
+        imGuiLayer.init();
 
         setScene(0);
     }
@@ -149,11 +159,28 @@ public class Window {
                 scene.update(dt);
             }
 
+            imGuiLayer.update(dt);
             glfwSwapBuffers(glfwWindow);
 
             endTime = (float)glfwGetTime();
             dt = endTime - beginTime;
             beginTime = endTime;
         }
+    }
+
+    public static int getWidth() {
+        return window.width;
+    }
+
+    public static int getHeight() {
+        return window.height;
+    }
+
+    public static void setWidth(int width) {
+        window.width = width;
+    }
+
+    public static void setHeight(int height) {
+        window.height = height;
     }
 }
