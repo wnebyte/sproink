@@ -1,10 +1,9 @@
 package com.github.wnebyte.engine.components;
 
 import java.util.Objects;
-
-import com.github.wnebyte.engine.core.ecs.Transform;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
+import com.github.wnebyte.engine.core.ecs.Transform;
 import com.github.wnebyte.engine.core.ecs.Component;
 import com.github.wnebyte.engine.renderer.Texture;
 
