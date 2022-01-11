@@ -1,6 +1,8 @@
 package com.github.wnebyte.engine.components;
 
 import java.util.Objects;
+
+import com.github.wnebyte.engine.core.ecs.Transform;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import com.github.wnebyte.engine.core.ecs.Component;
@@ -11,6 +13,10 @@ public class SpriteRenderer extends Component {
     private Vector4f color;
 
     private Sprite sprite;
+
+    private Transform lastTransform;
+
+    private boolean isDirty = false;
 
     public SpriteRenderer(Vector4f color) {
         this.color = color;
@@ -23,10 +29,17 @@ public class SpriteRenderer extends Component {
     }
 
     @Override
-    public void start() { }
+    public void start() {
+        this.lastTransform = gameObject.transform.copy();
+    }
 
     @Override
-    public void update(float dt) { }
+    public void update(float dt) {
+        if (!lastTransform.equals(gameObject.transform)) {
+            gameObject.transform.copy(lastTransform);
+            isDirty = true;
+        }
+    }
 
     public Vector4f getColor() {
         return color;
@@ -38,6 +51,27 @@ public class SpriteRenderer extends Component {
 
     public Vector2f[] getTexCoords() {
         return sprite.getTexCoords();
+    }
+
+    public boolean isDirty() {
+        return isDirty;
+    }
+
+    public void setClean() {
+        isDirty = false;
+    }
+
+    public void setSprite(Sprite sprite) {
+        this.sprite = sprite;
+        this.isDirty = true;
+    }
+
+    public void setColor(Vector4f color) {
+        if (!this.color.equals(color)) {
+            this.color.set(color);
+            this.isDirty = true;
+        }
+
     }
 
     @Override

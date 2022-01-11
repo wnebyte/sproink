@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #14 - Spritesheets (5:38:49)
+Coding a 2D Game Engine #15 - Dirty Flags (6:01:13)
  */
 public class Main {
 
