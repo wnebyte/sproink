@@ -1,6 +1,5 @@
 package com.github.wnebyte.engine.components;
 
-import java.util.Arrays;
 import java.util.Objects;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -11,17 +10,15 @@ public class SpriteRenderer extends Component {
 
     private Vector4f color;
 
-    private Texture texture;
-
-    private Vector2f[] texCoords;
+    private Sprite sprite;
 
     public SpriteRenderer(Vector4f color) {
         this.color = color;
-        this.texture = null;
+        this.sprite = new Sprite(null);
     }
 
-    public SpriteRenderer(Texture texture) {
-        this.texture = texture;
+    public SpriteRenderer(Sprite sprite) {
+        this.sprite = sprite;
         this.color = new Vector4f(1, 1, 1, 1);
     }
 
@@ -36,17 +33,11 @@ public class SpriteRenderer extends Component {
     }
 
     public Texture getTexture() {
-        return texture;
+        return sprite.getTexture();
     }
 
     public Vector2f[] getTexCoords() {
-        Vector2f[] texCoords = {
-                new Vector2f(1, 1),
-                new Vector2f(1, 0),
-                new Vector2f(0, 0),
-                new Vector2f(0, 1)
-        };
-        return texCoords;
+        return sprite.getTexCoords();
     }
 
     @Override
@@ -54,11 +45,10 @@ public class SpriteRenderer extends Component {
         if (o == null) return false;
         if (o == this) return true;
         if (!(o instanceof SpriteRenderer)) return false;
-        SpriteRenderer sprite = (SpriteRenderer) o;
-        return Objects.equals(sprite.color, this.color) &&
-                Objects.equals(sprite.texture, this.texture) &&
-                Arrays.equals(sprite.texCoords, this.texCoords) &&
-                super.equals(sprite);
+        SpriteRenderer spr = (SpriteRenderer) o;
+        return Objects.equals(spr.color, this.color) &&
+                Objects.equals(spr.sprite, this.sprite) &&
+                super.equals(spr);
     }
 
     @Override
@@ -67,16 +57,14 @@ public class SpriteRenderer extends Component {
         return result +
                 5 +
                 Objects.hashCode(this.color) +
-                Objects.hashCode(this.texture) +
-                Objects.hashCode(this.texCoords) +
+                Objects.hashCode(this.sprite) +
                 super.hashCode();
     }
 
     @Override
     public String toString() {
         return String.format(
-                "SpriteRenderer[color: %s, texture: %s, texCoords: %s]",
-                color, texture, Arrays.toString(texCoords)
+                "SpriteRenderer[color: %s, sprite: %s]", color, sprite
         );
     }
 }

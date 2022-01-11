@@ -13,6 +13,10 @@ public class Texture {
 
     private final String path;
 
+    private int width;
+
+    private int height;
+
     public Texture(String path) {
         this.path = path;
 
@@ -36,11 +40,14 @@ public class Texture {
         ByteBuffer image = stbi_load(path, width, height, channels, 0); // new File(path).getPath()
 
         if (image != null) {
+            this.width = width.get(0);
+            this.height = height.get(0);
+
             if (channels.get(0) == 3) {
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width.get(0), height.get(0),
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this.width, this.height,
                         0, GL_RGB, GL_UNSIGNED_BYTE, image);
             } else if (channels.get(0) == 4) {
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width.get(0), height.get(0),
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this.width, this.height,
                         0, GL_RGBA, GL_UNSIGNED_BYTE, image);
             } else {
                 assert false : "Error: (Texture) Unknown number of channels '" + channels.get(0) + "'.";
@@ -60,6 +67,14 @@ public class Texture {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
@@ -67,7 +82,9 @@ public class Texture {
         if (!(o instanceof Texture)) return false;
         Texture texture = (Texture) o;
         return Objects.equals(texture.id, this.id) &&
-                Objects.equals(texture.path, this.path);
+                Objects.equals(texture.path, this.path) &&
+                Objects.equals(texture.width, this.width) &&
+                Objects.equals(texture.height, this.height);
     }
 
     @Override
@@ -76,13 +93,15 @@ public class Texture {
         return result +
                 17 +
                 Objects.hashCode(id) +
-                Objects.hashCode(path);
+                Objects.hashCode(path) +
+                Objects.hashCode(width) +
+                Objects.hashCode(height);
     }
 
     @Override
     public String toString() {
         return String.format(
-                "Texture[id: %s, path: %s]", id, path
+                "Texture[id: %s, path: %s, width: %d, height: %d]", id, path, width, height
         );
     }
 }
