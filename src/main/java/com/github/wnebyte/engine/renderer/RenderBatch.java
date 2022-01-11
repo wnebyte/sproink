@@ -32,11 +32,11 @@ public class RenderBatch {
 
     private final int POS_OFFSET = 0;
 
-    private final int COLOR_OFFSET = (POS_OFFSET + POS_SIZE) * Float.BYTES;
+    private final int COLOR_OFFSET = POS_OFFSET + (POS_SIZE * Float.BYTES);
 
-    private final int TEX_COORDS_OFFSET = (COLOR_OFFSET + COLOR_SIZE) * Float.BYTES;
+    private final int TEX_COORDS_OFFSET = COLOR_OFFSET + (COLOR_SIZE * Float.BYTES);
 
-    private final int TEX_ID_OFFSET = (TEX_COORDS_OFFSET * TEX_COORDS_SIZE) * Float.BYTES;
+    private final int TEX_ID_OFFSET = TEX_COORDS_OFFSET + (TEX_COORDS_SIZE * Float.BYTES);
 
     private final int VERTEX_SIZE = POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE; // 9
 

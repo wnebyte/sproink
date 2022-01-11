@@ -13,7 +13,7 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void init() {
-        this.camera = new Camera(new Vector2f(-250, 0));
+        this.camera = new Camera(new Vector2f(-250, -100));
         GameObject obj1 = new GameObject("Object 1", new Transform(
                 new Vector2f(100, 100), new Vector2f(256, 256)
         ));

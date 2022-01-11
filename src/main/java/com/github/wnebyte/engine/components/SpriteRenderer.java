@@ -1,12 +1,11 @@
 package com.github.wnebyte.engine.components;
 
-import com.github.wnebyte.engine.core.ecs.Component;
-import com.github.wnebyte.engine.renderer.Texture;
-import org.joml.Vector2f;
-import org.joml.Vector4f;
-
 import java.util.Arrays;
 import java.util.Objects;
+import org.joml.Vector2f;
+import org.joml.Vector4f;
+import com.github.wnebyte.engine.core.ecs.Component;
+import com.github.wnebyte.engine.renderer.Texture;
 
 public class SpriteRenderer extends Component {
 
