@@ -15,16 +15,18 @@ public class SpriteRenderer extends Component {
 
     private Transform lastTransform;
 
-    private boolean isDirty = false;
+    private boolean isDirty;
 
     public SpriteRenderer(Vector4f color) {
         this.color = color;
         this.sprite = new Sprite(null);
+        this.isDirty = true;
     }
 
     public SpriteRenderer(Sprite sprite) {
         this.sprite = sprite;
         this.color = new Vector4f(1, 1, 1, 1);
+        this.isDirty = true;
     }
 
     @Override

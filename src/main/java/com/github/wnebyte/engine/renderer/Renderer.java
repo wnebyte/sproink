@@ -1,15 +1,16 @@
 package com.github.wnebyte.engine.renderer;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
-import com.github.wnebyte.engine.components.SpriteRenderer;
 import com.github.wnebyte.engine.core.ecs.GameObject;
+import com.github.wnebyte.engine.components.SpriteRenderer;
 
 public class Renderer {
 
     private final int MAX_BATCH_SIZE = 1000;
 
-    private List<RenderBatch> batches;
+    private final List<RenderBatch> batches;
 
     public Renderer() {
         this.batches = new ArrayList<>();
@@ -22,13 +23,13 @@ public class Renderer {
         }
     }
 
-    private void add(SpriteRenderer sprite) {
+    private void add(SpriteRenderer spr) {
         boolean added = false;
         for (RenderBatch batch : batches) {
-            if (batch.hasRoom()) {
-                Texture texture = sprite.getTexture();
+            if (batch.hasRoom() && batch.zIndex() == spr.gameObject.zIndex()) {
+                Texture texture = spr.getTexture();
                 if (texture == null || (batch.hasTexture(texture) || (batch.hasTextureRoom()))) {
-                    batch.addSprite(sprite);
+                    batch.addSprite(spr);
                     added = true;
                     break;
                 }
@@ -36,10 +37,11 @@ public class Renderer {
         }
 
         if (!added) {
-            RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE);
+            RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE, spr.gameObject.zIndex());
             newBatch.start();
             batches.add(newBatch);
-            newBatch.addSprite(sprite);
+            newBatch.addSprite(spr);
+            Collections.sort(batches);
         }
     }
 

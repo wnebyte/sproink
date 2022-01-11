@@ -1,16 +1,17 @@
 package com.github.wnebyte.engine.core.camera;
 
+import java.util.Objects;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Matrix4f;
 
 public class Camera {
 
+    public Vector2f position;
+
     private Matrix4f projectionMatrix;
 
     private Matrix4f viewMatrix;
-
-    public Vector2f position;
 
     public Camera(Vector2f position) {
         this.position = position;
@@ -35,5 +36,36 @@ public class Camera {
 
     public Matrix4f getProjectionMatrix() {
         return projectionMatrix;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        if (o == this) return true;
+        if (!(o instanceof Camera)) return false;
+        Camera camera = (Camera) o;
+        return Objects.equals(camera.position, this.position) &&
+                Objects.equals(camera.viewMatrix, this.viewMatrix) &&
+                Objects.equals(camera.projectionMatrix, this.projectionMatrix) &&
+                super.equals(camera);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 98;
+        return result +
+                2 *
+                15 +
+                Objects.hashCode(this.position) +
+                Objects.hashCode(this.viewMatrix) +
+                Objects.hashCode(this.projectionMatrix) +
+                super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Camera[position: %s, viewMatrix: %s, projectionMatrix: %s]", position, viewMatrix, projectionMatrix
+        );
     }
 }

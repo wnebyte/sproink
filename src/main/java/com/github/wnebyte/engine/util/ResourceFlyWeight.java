@@ -3,9 +3,9 @@ package com.github.wnebyte.engine.util;
 import java.io.File;
 import java.util.Map;
 import java.util.HashMap;
-import com.github.wnebyte.engine.components.Spritesheet;
 import com.github.wnebyte.engine.renderer.Shader;
 import com.github.wnebyte.engine.renderer.Texture;
+import com.github.wnebyte.engine.components.Spritesheet;
 
 public class ResourceFlyWeight {
 
@@ -47,7 +47,7 @@ public class ResourceFlyWeight {
             return spritesheets.get(file.getAbsolutePath());
         } else {
             assert false : "Error: (ResourceFlyWeight) Tried to access spritesheet '" + resourceName + "' " +
-                    "and it has not been added to pool.";
+                    "but it has not been added to pool.";
             return null;
         }
     }

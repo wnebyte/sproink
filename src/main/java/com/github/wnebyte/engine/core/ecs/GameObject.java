@@ -7,22 +7,27 @@ import java.util.Objects;
 
 public class GameObject {
 
+    public final Transform transform;
+
     private final String name;
 
-    private List<Component> components;
+    private final List<Component> components;
 
-    public Transform transform;
+    private final int zIndex;
 
     public GameObject(String name) {
-        this.name = name;
-        this.components = new ArrayList<>();
-        this.transform = new Transform();
+        this(name, new Transform(), 0);
     }
 
     public GameObject(String name, Transform transform) {
+        this(name, transform, 0);
+    }
+
+    public GameObject(String name, Transform transform, int zIndex) {
         this.name = name;
-        this.components = new ArrayList<>();
         this.transform = transform;
+        this.components = new ArrayList<>();
+        this.zIndex = zIndex;
     }
 
     public <T extends Component> T getComponent(Class<T> componentClass) {
@@ -67,6 +72,10 @@ public class GameObject {
         }
     }
 
+    public int zIndex() {
+        return zIndex;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
@@ -74,8 +83,9 @@ public class GameObject {
         if (!(o instanceof GameObject)) return false;
         GameObject go = (GameObject) o;
         return Objects.equals(go.name, this.name) &&
-                Objects.equals(go.components, this.components) &&
-                Objects.equals(go.transform, this.transform);
+                Arrays.equals(go.components.toArray(), this.components.toArray()) &&
+                Objects.equals(go.transform, this.transform) &&
+                super.equals(go);
     }
 
     @Override
@@ -85,7 +95,8 @@ public class GameObject {
                 13 +
                 Objects.hashCode(this.name) +
                 Objects.hashCode(this.components) +
-                Objects.hashCode(this.transform);
+                Objects.hashCode(this.transform) +
+                super.hashCode();
     }
 
     @Override

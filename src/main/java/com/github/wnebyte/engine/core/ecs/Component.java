@@ -1,7 +1,5 @@
 package com.github.wnebyte.engine.core.ecs;
 
-import java.util.Objects;
-
 public abstract class Component {
 
     public GameObject gameObject = null;
@@ -16,7 +14,7 @@ public abstract class Component {
         if (o == this) return true;
         if (!(o instanceof Component)) return false;
         Component component = (Component) o;
-        return Objects.equals(component.gameObject, this.gameObject);
+        return super.equals(component);
     }
 
     @Override
@@ -24,7 +22,7 @@ public abstract class Component {
         int result = 33;
         return result +
                 17 +
-                Objects.hashCode(gameObject);
+                super.hashCode();
     }
 
     @Override

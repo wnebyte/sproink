@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #15 - Dirty Flags (6:01:13)
+Coding a 2D Game Engine #16 - Z-Index & Alpha Blend (6:23:19)
  */
 public class Main {
 
