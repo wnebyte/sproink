@@ -35,7 +35,8 @@ public class ResourceFlyWeight {
         if (textures.containsKey(file.getAbsolutePath())) {
             return textures.get(file.getAbsolutePath());
         } else {
-            Texture texture = new Texture(file.getPath());
+            Texture texture = new Texture();
+            texture.init(file.getPath());
             textures.put(file.getAbsolutePath(), texture);
             return texture;
         }

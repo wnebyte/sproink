@@ -9,15 +9,15 @@ import static org.lwjgl.stb.STBImage.*;
 
 public class Texture {
 
-    private final int id;
+    private int id;
 
-    private final String path;
+    private String path;
 
     private int width;
 
     private int height;
 
-    public Texture(String path) {
+    public void init(String path) {
         this.path = path;
 
         // Generate texture on GPU
