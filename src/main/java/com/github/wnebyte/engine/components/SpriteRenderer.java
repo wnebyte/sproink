@@ -1,6 +1,7 @@
 package com.github.wnebyte.engine.components;
 
 import java.util.Objects;
+import imgui.ImGui;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import com.github.wnebyte.engine.core.ecs.Transform;
@@ -42,6 +43,15 @@ public class SpriteRenderer extends Component {
         }
     }
 
+    @Override
+    public void imGui() {
+        float[] refColors = { color.x, color.y, color.z, color.w };
+        if (ImGui.colorPicker4("Color Picker: ", refColors)) {
+            color.set(refColors[0], refColors[1], refColors[2], refColors[3]);
+            isDirty = true;
+        }
+    }
+
     public Vector4f getColor() {
         return color;
     }
@@ -72,7 +82,6 @@ public class SpriteRenderer extends Component {
             this.color.set(color);
             this.isDirty = true;
         }
-
     }
 
     @Override

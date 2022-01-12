@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #17 - Integrating ImGui (6:38:58)
+Coding a 2D Game Engine #18 - ImGui Fonts And Entities (7:01:58)
  */
 public class Main {
 

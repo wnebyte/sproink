@@ -1,10 +1,12 @@
 package com.github.wnebyte.engine.core.scene;
 
-import com.github.wnebyte.engine.components.Sprite;
+import imgui.ImGui;
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 import com.github.wnebyte.engine.core.camera.Camera;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.core.ecs.Transform;
+import com.github.wnebyte.engine.components.Sprite;
 import com.github.wnebyte.engine.components.Spritesheet;
 import com.github.wnebyte.engine.components.SpriteRenderer;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
@@ -25,10 +27,8 @@ public class LevelEditorScene extends Scene {
         obj1 = new GameObject("Object 1", new Transform(
                 new Vector2f(200, 100), new Vector2f(256, 256)), -1
         );
-        obj1.addComponent(new SpriteRenderer(new Sprite(
-                ResourceFlyWeight.getTexture("/images/blendImage1.png")
-        )));
-
+        obj1.addComponent(new SpriteRenderer(new Vector4f(1, 0, 0, 1)));
+        this.activeGameObject = obj1;
         GameObject obj2 = new GameObject("Object 2", new Transform(
                 new Vector2f(400, 100), new Vector2f(256, 256)), -2
         );
@@ -53,6 +53,13 @@ public class LevelEditorScene extends Scene {
         }
 
         this.renderer.render();
+    }
+
+    @Override
+    public void imGui() {
+        ImGui.begin("Test Window");
+        ImGui.text("some random text");
+        ImGui.end();
     }
 }
 

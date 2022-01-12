@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.github.wnebyte.engine.core.camera.Camera;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.renderer.Renderer;
+import imgui.ImGui;
 
 public abstract class Scene {
 
@@ -13,6 +14,8 @@ public abstract class Scene {
     protected Renderer renderer = new Renderer();
 
     protected List<GameObject> gameObjects = new ArrayList<>();
+
+    protected GameObject activeGameObject = null;
 
     private boolean isRunning = false;
 
@@ -43,4 +46,16 @@ public abstract class Scene {
     public Camera getCamera() {
         return camera;
     }
+
+    public void sceneImGui() {
+        if (activeGameObject != null) {
+            ImGui.begin("Inspector");
+            activeGameObject.imGui();
+            ImGui.end();
+        }
+
+        imGui();
+    }
+
+    public void imGui() {}
 }

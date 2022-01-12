@@ -1,6 +1,7 @@
 package com.github.wnebyte.engine.util;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
 import com.github.wnebyte.engine.renderer.Shader;
@@ -16,7 +17,7 @@ public class ResourceFlyWeight {
     private static final Map<String, Spritesheet> spritesheets = new HashMap<>();
 
     public static Shader getShader(String resourceName) {
-        File file = new File(getPath(resourceName));
+        File file = ResourceUtil.getFile(resourceName);
 
         if (shaders.containsKey(file.getAbsolutePath())) {
             return shaders.get(file.getAbsolutePath());
@@ -29,7 +30,7 @@ public class ResourceFlyWeight {
     }
 
     public static Texture getTexture(String resourceName) {
-        File file = new File(getPath(resourceName));
+        File file = ResourceUtil.getFile(resourceName);
 
         if (textures.containsKey(file.getAbsolutePath())) {
             return textures.get(file.getAbsolutePath());
@@ -41,27 +42,24 @@ public class ResourceFlyWeight {
     }
 
     public static Spritesheet getSpritesheet(String resourceName) {
-        File file = new File(resourceName);
+        File file = ResourceUtil.getFile(resourceName);
 
         if (spritesheets.containsKey(file.getAbsolutePath())) {
             return spritesheets.get(file.getAbsolutePath());
         } else {
             assert false : "Error: (ResourceFlyWeight) Tried to access spritesheet '" + resourceName + "' " +
-                    "but it has not been added to pool.";
+                    "but it has not been added to the pool." + "\n" + file.getAbsolutePath() + "\n" +
+                    Arrays.toString(spritesheets.keySet().toArray());
             return null;
         }
     }
 
     public static void addSpritesheet(String resourceName, Spritesheet spritesheet) {
-        File file = new File(resourceName);
+        File file = ResourceUtil.getFile(resourceName);
 
         if (!spritesheets.containsKey(file.getAbsolutePath())) {
             spritesheets.put(file.getAbsolutePath(), spritesheet);
         }
 
-    }
-
-    private static String getPath(String resourceName) {
-        return ResourceFlyWeight.class.getResource(resourceName).getPath();
     }
 }
