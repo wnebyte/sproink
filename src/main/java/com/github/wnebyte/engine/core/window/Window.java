@@ -55,11 +55,13 @@ public class Window {
         switch (newScene) {
             case 0:
                 window.scene = new LevelEditorScene();
+                window.scene.load();
                 window.scene.init();
                 window.scene.start();
                 break;
             case 1:
                 window.scene = new LevelScene();
+                window.scene.load();
                 window.scene.init();
                 window.scene.start();
                 break;
@@ -166,6 +168,8 @@ public class Window {
             dt = endTime - beginTime;
             beginTime = endTime;
         }
+
+        scene.saveExit();
     }
 
     public static int getWidth() {

@@ -16,7 +16,7 @@ public class SpriteRenderer extends Component {
 
     private transient Transform lastTransform;
 
-    private transient boolean isDirty;
+    private transient boolean isDirty = true;
 
     /*
     public SpriteRenderer(Vector4f color) {

@@ -1,0 +1,114 @@
+[
+  {
+    "transform": {
+      "position": {
+        "x": 200.0,
+        "y": 100.0
+      },
+      "scale": {
+        "x": 256.0,
+        "y": 256.0
+      }
+    },
+    "name": "Object 1",
+    "components": [
+      {
+        "type": "com.github.wnebyte.engine.components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 0.06184579,
+            "y": 0.07153538,
+            "z": 0.5511551,
+            "w": 1.0
+          },
+          "sprite": {
+            "texCoords": [
+              {
+                "x": 1.0,
+                "y": 1.0
+              },
+              {
+                "x": 1.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          }
+        }
+      },
+      {
+        "type": "com.github.wnebyte.engine.components.RigidBody",
+        "properties": {
+          "colliderType": 50,
+          "friction": 0.8,
+          "velocity": {
+            "x": 0.1,
+            "y": 0.5,
+            "z": 1.0
+          }
+        }
+      }
+    ],
+    "zIndex": -1
+  },
+  {
+    "transform": {
+      "position": {
+        "x": 400.0,
+        "y": 100.0
+      },
+      "scale": {
+        "x": 256.0,
+        "y": 256.0
+      }
+    },
+    "name": "Object 2",
+    "components": [
+      {
+        "type": "com.github.wnebyte.engine.components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "texture": {
+              "id": 3,
+              "path": "C:\\Users\\Ralle\\dev\\java\\Engine\\build\\resources\\main\\images\\blendImage2.png",
+              "width": 256,
+              "height": 256
+            },
+            "texCoords": [
+              {
+                "x": 1.0,
+                "y": 1.0
+              },
+              {
+                "x": 1.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 0.0
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "zIndex": -2
+  }
+]
