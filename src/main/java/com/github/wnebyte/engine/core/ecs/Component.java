@@ -9,6 +9,10 @@ import java.lang.reflect.Modifier;
 
 public abstract class Component {
 
+    private static int ID_COUNTER = 0;
+
+    private int id = -1;
+
     public transient GameObject gameObject = null;
 
     public void start() { }
@@ -70,6 +74,20 @@ public abstract class Component {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    public void generateId() {
+        if (this.id == -1) {
+            this.id = ID_COUNTER++;
+        }
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public static void init(int maxId) {
+        ID_COUNTER = maxId;
     }
 
     @Override

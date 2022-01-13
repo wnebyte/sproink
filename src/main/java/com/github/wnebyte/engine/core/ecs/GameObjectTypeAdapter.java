@@ -1,6 +1,8 @@
 package com.github.wnebyte.engine.core.ecs;
 
 import java.lang.reflect.Type;
+
+import com.github.wnebyte.engine.core.Transform;
 import com.google.gson.*;
 
 public class GameObjectTypeAdapter implements JsonDeserializer<GameObject> {

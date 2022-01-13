@@ -8,6 +8,8 @@ import com.github.wnebyte.engine.core.scene.Scene;
 import com.github.wnebyte.engine.core.ui.ImGuiLayer;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWKeyCallbackI;
+import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
 import org.lwjgl.opengl.GL;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -101,7 +103,11 @@ public class Window {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 
         // Create the window
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
@@ -118,6 +124,7 @@ public class Window {
         glfwSetWindowSizeCallback(glfwWindow, (w, newWidth, newHeight) -> {
             Window.setWidth(newWidth);
             Window.setHeight(newHeight);
+            glViewport(0, 0, newWidth, newHeight);
         });
 
         // Make OpenGL context current
@@ -149,12 +156,11 @@ public class Window {
         float endTime;
         float dt = -1.0f;
 
-        glClearColor(r, g, b, a);
-
         while (!glfwWindowShouldClose(glfwWindow)) {
             // Poll events
             glfwPollEvents();
 
+            glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
 
             if (dt >= 0) {

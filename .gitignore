@@ -7,6 +7,9 @@ build
 # Ignore idea folder
 .idea
 
+# Ignore image folder
+documentation
+
 # Ignore iml file
 CLI.iml
 
@@ -28,4 +31,3 @@ out
 
 # Ignore .txt extensions
 .txt
-

@@ -37,7 +37,7 @@ public class Texture {
         IntBuffer height = BufferUtils.createIntBuffer(1);
         IntBuffer channels = BufferUtils.createIntBuffer(1);
         stbi_set_flip_vertically_on_load(true);
-        ByteBuffer image = stbi_load(path, width, height, channels, 0); // new File(path).getPath()
+        ByteBuffer image = stbi_load(path, width, height, channels, 0);
 
         if (image != null) {
             this.width = width.get(0);
@@ -73,6 +73,10 @@ public class Texture {
 
     public int getHeight() {
         return height;
+    }
+
+    public int getId() {
+        return id;
     }
 
     @Override

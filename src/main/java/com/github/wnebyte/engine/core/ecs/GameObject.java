@@ -1,11 +1,17 @@
 package com.github.wnebyte.engine.core.ecs;
 
+import com.github.wnebyte.engine.core.Transform;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class GameObject {
+
+    private static int ID_COUNTER = 0;
+
+    private int id = -1;
 
     public final Transform transform;
 
@@ -28,6 +34,7 @@ public class GameObject {
         this.transform = transform;
         this.components = new ArrayList<>();
         this.zIndex = zIndex;
+        this.id = ID_COUNTER++;
     }
 
     public <T extends Component> T getComponent(Class<T> componentClass) {
@@ -45,6 +52,10 @@ public class GameObject {
         return null;
     }
 
+    public List<Component> getAllComponents() {
+        return components;
+    }
+
     public <T extends Component> void removeComponent(Class<T> componentClass) {
         for (int i = 0; i < components.size(); i++) {
             Component c = components.get(i);
@@ -56,6 +67,7 @@ public class GameObject {
     }
 
     public void addComponent(Component c) {
+        c.generateId();
         components.add(c);
         c.gameObject = this;
     }
@@ -80,6 +92,14 @@ public class GameObject {
 
     public int zIndex() {
         return zIndex;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public static void init(int maxId) {
+        ID_COUNTER = maxId;
     }
 
     @Override

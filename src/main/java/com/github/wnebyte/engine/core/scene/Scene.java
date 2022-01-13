@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.ArrayList;
-
 import com.github.wnebyte.engine.core.ecs.Component;
 import com.github.wnebyte.engine.core.ecs.ComponentTypeAdapter;
 import com.github.wnebyte.engine.core.ecs.GameObjectTypeAdapter;
@@ -77,13 +76,16 @@ public abstract class Scene {
                 .registerTypeAdapter(GameObject.class, new GameObjectTypeAdapter())
                 .setPrettyPrinting()
                 .create();
+
         try {
             FileWriter writer = new FileWriter("level.txt");
-            writer.write(gson.toJson(gameObjects));
+            writer.write(gson.toJson(this.gameObjects));
             writer.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public void load() {
@@ -94,6 +96,7 @@ public abstract class Scene {
                 .create();
 
         String inFile = "";
+
         try {
             inFile = new String(Files.readAllBytes(Paths.get("level.txt")));
         } catch (IOException e) {
@@ -101,11 +104,28 @@ public abstract class Scene {
         }
 
         if (!inFile.equals("")) {
+            int maxGoId = -1;
+            int maxCompId = -1;
+
             GameObject[] objs = gson.fromJson(inFile, GameObject[].class);
             for (GameObject go : objs) {
                 addGameObjectToScene(go);
+
+                if (go.getId() > maxGoId) {
+                    maxGoId = go.getId();
+                }
+                for (Component c : go.getAllComponents()) {
+                    if (c.getId() > maxCompId) {
+                        maxCompId = c.getId();
+                    }
+                }
             }
-            levelLoaded = true;
+            maxGoId++;
+            maxCompId++;
+            GameObject.init(maxGoId);
+            Component.init(maxCompId);
+            this.levelLoaded = true;
         }
+
     }
 }

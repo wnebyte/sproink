@@ -1,9 +1,8 @@
 package com.github.wnebyte.engine.core.ui;
 
-import imgui.ImFontAtlas;
-import imgui.ImFontConfig;
-import imgui.ImGui;
-import imgui.ImGuiIO;
+import com.github.wnebyte.engine.core.event.KeyListener;
+import com.github.wnebyte.engine.core.event.MouseListener;
+import imgui.*;
 import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
 import imgui.flag.ImGuiBackendFlags;
@@ -97,6 +96,10 @@ public class ImGuiLayer {
             io.setKeyShift(io.getKeysDown(GLFW_KEY_LEFT_SHIFT) || io.getKeysDown(GLFW_KEY_RIGHT_SHIFT));
             io.setKeyAlt(io.getKeysDown(GLFW_KEY_LEFT_ALT) || io.getKeysDown(GLFW_KEY_RIGHT_ALT));
             io.setKeySuper(io.getKeysDown(GLFW_KEY_LEFT_SUPER) || io.getKeysDown(GLFW_KEY_RIGHT_SUPER));
+
+            if (!io.getWantCaptureKeyboard()) {
+                KeyListener.keyCallback(w, key, scancode, action, mods);
+            }
         });
 
         glfwSetCharCallback(glfwWindow, (w, c) -> {
@@ -118,6 +121,10 @@ public class ImGuiLayer {
 
             if (!io.getWantCaptureMouse() && mouseDown[1]) {
                 ImGui.setWindowFocus(null);
+            }
+
+            if (!io.getWantCaptureMouse()) {
+                MouseListener.mouseButtonCallback(w, button, action, mods);
             }
         });
 
@@ -168,10 +175,10 @@ public class ImGuiLayer {
         imGuiGl3.init("#version 330 core");
     }
 
-    public void update(float dt, Scene currentScene) {
+    public void update(float dt, Scene scene) {
         startFrame(dt);
         ImGui.newFrame();
-        currentScene.sceneImGui();
+        scene.sceneImGui();
         ImGui.showDemoWindow();
         ImGui.render();
         endFrame();

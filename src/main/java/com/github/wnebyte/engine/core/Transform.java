@@ -1,4 +1,4 @@
-package com.github.wnebyte.engine.core.ecs;
+package com.github.wnebyte.engine.core;
 
 import java.util.Objects;
 import org.joml.Vector2f;

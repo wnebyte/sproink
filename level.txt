@@ -1,5 +1,6 @@
 [
   {
+    "id": 0,
     "transform": {
       "position": {
         "x": 200.0,
@@ -16,12 +17,14 @@
         "type": "com.github.wnebyte.engine.components.SpriteRenderer",
         "properties": {
           "color": {
-            "x": 0.06184579,
-            "y": 0.07153538,
-            "z": 0.5511551,
+            "x": 1.0,
+            "y": 0.0,
+            "z": 0.0,
             "w": 1.0
           },
           "sprite": {
+            "width": 0.0,
+            "height": 0.0,
             "texCoords": [
               {
                 "x": 1.0,
@@ -40,25 +43,28 @@
                 "y": 1.0
               }
             ]
-          }
+          },
+          "id": 0
         }
       },
       {
         "type": "com.github.wnebyte.engine.components.RigidBody",
         "properties": {
-          "colliderType": 50,
+          "colliderType": 0,
           "friction": 0.8,
           "velocity": {
-            "x": 0.1,
+            "x": 0.0,
             "y": 0.5,
-            "z": 1.0
-          }
+            "z": 0.0
+          },
+          "id": 1
         }
       }
     ],
     "zIndex": -1
   },
   {
+    "id": 1,
     "transform": {
       "position": {
         "x": 400.0,
@@ -87,6 +93,8 @@
               "width": 256,
               "height": 256
             },
+            "width": 0.0,
+            "height": 0.0,
             "texCoords": [
               {
                 "x": 1.0,
@@ -105,7 +113,8 @@
                 "y": 1.0
               }
             ]
-          }
+          },
+          "id": 2
         }
       }
     ],

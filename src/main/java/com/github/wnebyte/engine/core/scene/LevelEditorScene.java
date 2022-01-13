@@ -1,14 +1,15 @@
 package com.github.wnebyte.engine.core.scene;
 
-import com.github.wnebyte.engine.components.RigidBody;
+import com.github.wnebyte.engine.components.*;
+import com.github.wnebyte.engine.core.Prefabs;
+import com.github.wnebyte.engine.core.Transform;
+import com.github.wnebyte.engine.core.event.MouseListener;
 import imgui.ImGui;
+import imgui.ImVec2;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import com.github.wnebyte.engine.core.ecs.*;
 import com.github.wnebyte.engine.core.camera.Camera;
-import com.github.wnebyte.engine.components.Sprite;
-import com.github.wnebyte.engine.components.Spritesheet;
-import com.github.wnebyte.engine.components.SpriteRenderer;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
 
 public class LevelEditorScene extends Scene {
@@ -19,16 +20,17 @@ public class LevelEditorScene extends Scene {
 
     private Spritesheet sprites;
 
+    private MouseControls mouseControls = new MouseControls();
+
     @Override
     public void init() {
         loadResources();
         this.camera = new Camera(new Vector2f(-250, -100));
+        sprites = ResourceFlyWeight.getSpritesheet("/images/spritesheets/decorationsAndBlocks.png");
         if (levelLoaded) {
             this.activeGameObject = gameObjects.get(0);
             return;
         }
-
-        sprites = ResourceFlyWeight.getSpritesheet("/images/spritesheet.png");
 
         obj1 = new GameObject("Object 1", new Transform(new Vector2f(200, 100),
                 new Vector2f(256, 256)), -1
@@ -48,18 +50,21 @@ public class LevelEditorScene extends Scene {
         obj2SpriteRenderer.setSprite(obj2Sprite);
         obj2.addComponent(obj2SpriteRenderer);
         this.addGameObjectToScene(obj2);
+
     }
 
     private void loadResources() {
         ResourceFlyWeight.getShader("/shaders/default.glsl");
-        ResourceFlyWeight.addSpritesheet("/images/spritesheet.png",
-                new Spritesheet(ResourceFlyWeight.getTexture("/images/spritesheet.png"),
-                        16, 16, 26, 0));
+        ResourceFlyWeight.addSpritesheet("/images/spritesheets/decorationsAndBlocks.png",
+                new Spritesheet(ResourceFlyWeight.getTexture("/images/spritesheets/decorationsAndBlocks.png"),
+                        16, 16, 81, 0));
         ResourceFlyWeight.getTexture("/images/blendImage2.png");
     }
 
     @Override
     public void update(float dt) {
+        mouseControls.update(dt);
+
         for (GameObject go : this.gameObjects) {
             go.update(dt);
         }
@@ -69,8 +74,41 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void imGui() {
-        ImGui.begin("Test Window");
-        ImGui.text("some random text");
+        ImGui.begin("Spritesheets");
+
+        ImVec2 windowPos = new ImVec2();
+        ImGui.getWindowPos(windowPos);
+        ImVec2 windowSize = new ImVec2();
+        ImGui.getWindowSize(windowSize);
+        ImVec2 itemSpacing = new ImVec2();
+        ImGui.getStyle().getItemSpacing(itemSpacing);
+
+        float windowX2 = windowPos.x + windowSize.x;
+        for (int i = 0; i < sprites.size(); i++) {
+            Sprite sprite = sprites.getSprite(i);
+            float spriteWidth = sprite.getWidth() * 2;
+            float spriteHeight = sprite.getHeight() * 2;
+            int id = sprite.getTexId();
+            Vector2f[] texCoords = sprite.getTexCoords();
+
+            ImGui.pushID(i);
+            if (ImGui.imageButton(id, spriteWidth, spriteHeight,
+                    texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) { // [0].x, [0].y, [2].x, [2].y
+                GameObject object = Prefabs.generateSpriteObject(sprite, spriteWidth, spriteHeight);
+                // Attach this to the mouse cursor
+                mouseControls.pickupObject(object);
+            }
+            ImGui.popID();
+
+            ImVec2 lastButtonPos = new ImVec2();
+            ImGui.getItemRectMax(lastButtonPos);
+            float lastButtonX2 = lastButtonPos.x;
+            float nextButtonX2 = lastButtonX2 + itemSpacing.x + spriteWidth;
+            if (i + 1 < sprites.size() && nextButtonX2 < windowX2) {
+                ImGui.sameLine();
+            }
+        }
+
         ImGui.end();
     }
 }
