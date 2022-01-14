@@ -5,33 +5,34 @@ import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.core.event.MouseListener;
 import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.util.Constants;
+
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 public class MouseControls extends Component {
 
-    private GameObject holdingObject = null;
+    private GameObject draggableObject = null;
 
-    public void pickupObject(GameObject go) {
-        this.holdingObject = go;
+    public void startDrag(GameObject go) {
+        this.draggableObject = go;
         Window.getScene().addGameObjectToScene(go);
     }
 
-    public void place() {
-        this.holdingObject = null;
+    public void drop() {
+        this.draggableObject = null;
     }
 
     @Override
     public void update(float dt) {
-        if (holdingObject != null) {
-            holdingObject.transform.position.x = MouseListener.getOrthoX() - 16;
-            holdingObject.transform.position.y = MouseListener.getOrthoY() - 16;
-            holdingObject.transform.position.x =
-                    (int)(holdingObject.transform.position.x / Constants.GRID_WIDTH) * Constants.GRID_WIDTH;
-            holdingObject.transform.position.y =
-                    (int)(holdingObject.transform.position.y / Constants.GRID_HEIGHT) * Constants.GRID_HEIGHT;
+        if (draggableObject != null) {
+            draggableObject.transform.position.x = MouseListener.getOrthoX() - 16;
+            draggableObject.transform.position.y = MouseListener.getOrthoY() - 16;
+            draggableObject.transform.position.x =
+                    (int)(draggableObject.transform.position.x / Constants.GRID_WIDTH) * Constants.GRID_WIDTH;
+            draggableObject.transform.position.y =
+                    (int)(draggableObject.transform.position.y / Constants.GRID_HEIGHT) * Constants.GRID_HEIGHT;
 
             if (MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
-                place();
+                drop();
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.github.wnebyte.engine.core.scene;
 
+import com.github.wnebyte.engine.renderer.DebugDraw;
 import imgui.ImGui;
 import imgui.ImVec2;
 import org.joml.Vector2f;
@@ -9,21 +10,18 @@ import com.github.wnebyte.engine.core.Transform;
 import com.github.wnebyte.engine.core.ecs.*;
 import com.github.wnebyte.engine.core.camera.Camera;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
+import org.joml.Vector3f;
 
 public class LevelEditorScene extends Scene {
 
-    private GameObject obj1;
-
-    private SpriteRenderer obj1Spr;
-
     private Spritesheet sprites;
 
-    private GameObject levelEditorObject = new GameObject("LevelEditor", new Transform(), 0);
+    private GameObject levelEditorStuff = new GameObject("LevelEditor", new Transform(), 0);
 
     @Override
     public void init() {
-        levelEditorObject.addComponent(new MouseControls());
-        levelEditorObject.addComponent(new GridLines());
+        levelEditorStuff.addComponent(new MouseControls());
+        levelEditorStuff.addComponent(new GridLines());
         loadResources();
         this.camera = new Camera(new Vector2f(-250, -100));
         sprites = ResourceFlyWeight.getSpritesheet("/images/spritesheets/decorationsAndBlocks.png");
@@ -61,11 +59,16 @@ public class LevelEditorScene extends Scene {
         ResourceFlyWeight.getTexture("/images/blendImage2.png");
     }
 
-    float t = 0.0f;
+    float x = 0f;
+    float y = 0f;
 
     @Override
     public void update(float dt) {
-        levelEditorObject.update(dt);
+        levelEditorStuff.update(dt);
+
+        DebugDraw.addCircle(new Vector2f(x, y), 64, new Vector3f(0, 1f, 0), 1);
+        x += 50f * dt;
+        y += 50f * dt;
 
         for (GameObject go : this.gameObjects) {
             go.update(dt);
@@ -98,7 +101,7 @@ public class LevelEditorScene extends Scene {
                     texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) { // [0].x, [0].y, [2].x, [2].y
                 GameObject object = Prefabs.generateSpriteObject(sprite, 32, 32);
                 // Attach this to the mouse cursor
-                levelEditorObject.getComponent(MouseControls.class).pickupObject(object);
+                levelEditorStuff.getComponent(MouseControls.class).startDrag(object);
             }
             ImGui.popID();
 

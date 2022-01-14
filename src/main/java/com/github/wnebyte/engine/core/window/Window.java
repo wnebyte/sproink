@@ -1,5 +1,9 @@
 package com.github.wnebyte.engine.core.window;
 
+import org.joml.Vector4f;
+import org.lwjgl.Version;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.opengl.GL;
 import com.github.wnebyte.engine.core.event.KeyListener;
 import com.github.wnebyte.engine.core.event.MouseListener;
 import com.github.wnebyte.engine.core.scene.LevelEditorScene;
@@ -7,17 +11,16 @@ import com.github.wnebyte.engine.core.scene.LevelScene;
 import com.github.wnebyte.engine.core.scene.Scene;
 import com.github.wnebyte.engine.core.ui.ImGuiLayer;
 import com.github.wnebyte.engine.renderer.DebugDraw;
-import org.lwjgl.Version;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWKeyCallbackI;
-import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
-import org.lwjgl.opengl.GL;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class Window {
+
+    public static final int DEFAULT_WIDTH = 1920;
+
+    public static final int DEFAULT_HEIGHT = 1080;
 
     private static Window window = null;
 
@@ -31,16 +34,12 @@ public class Window {
 
     private ImGuiLayer imGuiLayer;
 
-    public float r, g, b, a;
+    private Vector4f color = new Vector4f(1f, 1f, 1f, 1f);
 
     private Window() {
-        this.width = 960;
-        this.height = 540;
+        this.width = DEFAULT_WIDTH;
+        this.height = DEFAULT_HEIGHT;
         this.title = "Engine";
-        r = 1;
-        g = 1;
-        b = 1;
-        a = 1;
     }
 
     public static Window get() {
@@ -163,7 +162,7 @@ public class Window {
 
             DebugDraw.beginFrame();
 
-            glClearColor(r, g, b, a);
+            glClearColor(color.x, color.y, color.z, color.w);
             glClear(GL_COLOR_BUFFER_BIT);
 
             if (dt >= 0) {

@@ -1,0 +1,59 @@
+[
+  {
+    "id": 1,
+    "transform": {
+      "position": {
+        "x": 384.0,
+        "y": 352.0
+      },
+      "scale": {
+        "x": 32.0,
+        "y": 32.0
+      }
+    },
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "com.github.wnebyte.engine.components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "texture": {
+              "id": 2,
+              "path": "C:\\Users\\Ralle\\dev\\java\\Engine\\build\\resources\\main\\images\\spritesheets\\decorationsAndBlocks.png",
+              "width": 112,
+              "height": 192
+            },
+            "width": 16.0,
+            "height": 16.0,
+            "texCoords": [
+              {
+                "x": 0.85714287,
+                "y": 0.75
+              },
+              {
+                "x": 0.85714287,
+                "y": 0.6666667
+              },
+              {
+                "x": 0.71428573,
+                "y": 0.6666667
+              },
+              {
+                "x": 0.71428573,
+                "y": 0.75
+              }
+            ]
+          },
+          "id": 2
+        }
+      }
+    ],
+    "zIndex": 0
+  }
+]

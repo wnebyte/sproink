@@ -18,6 +18,12 @@ import com.github.wnebyte.engine.renderer.Renderer;
 
 public abstract class Scene {
 
+    private static final Gson GSON = new GsonBuilder()
+            .registerTypeAdapter(Component.class, new ComponentTypeAdapter())
+            .registerTypeAdapter(GameObject.class, new GameObjectTypeAdapter())
+            .setPrettyPrinting()
+            .create();
+
     protected Camera camera;
 
     protected Renderer renderer = new Renderer();
@@ -45,10 +51,18 @@ public abstract class Scene {
     public abstract void update(float dt);
 
     public void addGameObjectToScene(GameObject go) {
+        /*
         if (!isRunning) {
             gameObjects.add(go);
         } else {
             gameObjects.add(go);
+            go.start();
+            renderer.add(go);
+        }
+         */
+        gameObjects.add(go);
+
+        if (isRunning) {
             go.start();
             renderer.add(go);
         }
