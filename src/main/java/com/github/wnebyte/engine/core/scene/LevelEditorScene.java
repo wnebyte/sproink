@@ -1,15 +1,11 @@
 package com.github.wnebyte.engine.core.scene;
 
-import com.github.wnebyte.engine.components.*;
-import com.github.wnebyte.engine.core.Prefabs;
-import com.github.wnebyte.engine.core.Transform;
-import com.github.wnebyte.engine.core.event.MouseListener;
-import com.github.wnebyte.engine.renderer.DebugDraw;
 import imgui.ImGui;
 import imgui.ImVec2;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import com.github.wnebyte.engine.components.*;
+import com.github.wnebyte.engine.core.Prefabs;
+import com.github.wnebyte.engine.core.Transform;
 import com.github.wnebyte.engine.core.ecs.*;
 import com.github.wnebyte.engine.core.camera.Camera;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
@@ -22,10 +18,12 @@ public class LevelEditorScene extends Scene {
 
     private Spritesheet sprites;
 
-    private MouseControls mouseControls = new MouseControls();
+    private GameObject levelEditorObject = new GameObject("LevelEditor", new Transform(), 0);
 
     @Override
     public void init() {
+        levelEditorObject.addComponent(new MouseControls());
+        levelEditorObject.addComponent(new GridLines());
         loadResources();
         this.camera = new Camera(new Vector2f(-250, -100));
         sprites = ResourceFlyWeight.getSpritesheet("/images/spritesheets/decorationsAndBlocks.png");
@@ -33,7 +31,7 @@ public class LevelEditorScene extends Scene {
             this.activeGameObject = gameObjects.get(0);
             return;
         }
-
+        /*
         obj1 = new GameObject("Object 1", new Transform(new Vector2f(200, 100),
                 new Vector2f(256, 256)), -1
         );
@@ -52,7 +50,7 @@ public class LevelEditorScene extends Scene {
         obj2SpriteRenderer.setSprite(obj2Sprite);
         obj2.addComponent(obj2SpriteRenderer);
         this.addGameObjectToScene(obj2);
-
+        */
     }
 
     private void loadResources() {
@@ -67,12 +65,7 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void update(float dt) {
-        mouseControls.update(dt);
-
-        float x = ((float)Math.sin(t) * 200.0f) + 600;
-        float y = ((float)Math.cos(t) * 200.0f) + 400;
-        t += 0.05f;
-        DebugDraw.addLine2D(new Vector2f(600, 400), new Vector2f(x, y), new Vector3f(0, 0, 1), 1);
+        levelEditorObject.update(dt);
 
         for (GameObject go : this.gameObjects) {
             go.update(dt);
@@ -95,17 +88,17 @@ public class LevelEditorScene extends Scene {
         float windowX2 = windowPos.x + windowSize.x;
         for (int i = 0; i < sprites.size(); i++) {
             Sprite sprite = sprites.getSprite(i);
-            float spriteWidth = sprite.getWidth() * 2;
-            float spriteHeight = sprite.getHeight() * 2;
+            float spriteWidth = sprite.getWidth() * 2.5f;
+            float spriteHeight = sprite.getHeight() * 2.5f;
             int id = sprite.getTexId();
             Vector2f[] texCoords = sprite.getTexCoords();
 
             ImGui.pushID(i);
             if (ImGui.imageButton(id, spriteWidth, spriteHeight,
                     texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) { // [0].x, [0].y, [2].x, [2].y
-                GameObject object = Prefabs.generateSpriteObject(sprite, spriteWidth, spriteHeight);
+                GameObject object = Prefabs.generateSpriteObject(sprite, 32, 32);
                 // Attach this to the mouse cursor
-                mouseControls.pickupObject(object);
+                levelEditorObject.getComponent(MouseControls.class).pickupObject(object);
             }
             ImGui.popID();
 
