@@ -8,7 +8,7 @@ import com.github.wnebyte.engine.components.SpriteRenderer;
 
 public class Renderer {
 
-    private final int MAX_BATCH_SIZE = 1000;
+    private static final int MAX_BATCH_SIZE = 1000;
 
     private final List<RenderBatch> batches;
 

@@ -6,6 +6,7 @@ import com.github.wnebyte.engine.core.scene.LevelEditorScene;
 import com.github.wnebyte.engine.core.scene.LevelScene;
 import com.github.wnebyte.engine.core.scene.Scene;
 import com.github.wnebyte.engine.core.ui.ImGuiLayer;
+import com.github.wnebyte.engine.renderer.DebugDraw;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallbackI;
@@ -160,10 +161,13 @@ public class Window {
             // Poll events
             glfwPollEvents();
 
+            DebugDraw.beginFrame();
+
             glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
 
             if (dt >= 0) {
+                DebugDraw.draw();
                 scene.update(dt);
             }
 

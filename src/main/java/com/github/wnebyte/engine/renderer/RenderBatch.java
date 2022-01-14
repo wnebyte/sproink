@@ -22,25 +22,27 @@ public class RenderBatch implements Comparable<RenderBatch> {
     // float, float,            float, float, float, float,     float, float,       float  //
     // ======================================================================================
 
-    private final int POS_SIZE = 2;
+    private static final int POS_SIZE = 2;
 
-    private final int COLOR_SIZE = 4;
+    private static final int COLOR_SIZE = 4;
 
-    private final int TEX_COORDS_SIZE = 2;
+    private static final int TEX_COORDS_SIZE = 2;
 
-    private final int TEX_ID_SIZE = 1;
+    private static final int TEX_ID_SIZE = 1;
 
-    private final int POS_OFFSET = 0;
+    private static final int POS_OFFSET = 0;
 
-    private final int COLOR_OFFSET = POS_OFFSET + (POS_SIZE * Float.BYTES);
+    private static final int COLOR_OFFSET = POS_OFFSET + (POS_SIZE * Float.BYTES);
 
-    private final int TEX_COORDS_OFFSET = COLOR_OFFSET + (COLOR_SIZE * Float.BYTES);
+    private static final int TEX_COORDS_OFFSET = COLOR_OFFSET + (COLOR_SIZE * Float.BYTES);
 
-    private final int TEX_ID_OFFSET = TEX_COORDS_OFFSET + (TEX_COORDS_SIZE * Float.BYTES);
+    private static final int TEX_ID_OFFSET = TEX_COORDS_OFFSET + (TEX_COORDS_SIZE * Float.BYTES);
 
-    private final int VERTEX_SIZE = POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE; // 9
+    private static final int VERTEX_SIZE = POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE;
 
-    private final int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
+    private static final int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
+
+    private static final int[] TEX_SLOTS = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
     private SpriteRenderer[] sprites;
 
@@ -49,8 +51,6 @@ public class RenderBatch implements Comparable<RenderBatch> {
     private boolean hasRoom;
 
     private float[] vertices;
-
-    private int[] texSlots = { 0, 1, 2, 3, 4, 5, 6, 7 };
 
     private int vaoID;
 
@@ -151,7 +151,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
             glActiveTexture(GL_TEXTURE0 + i + 1);
             textures.get(i).bind();
         }
-        shader.uploadIntArray(Shader.U_TEXTURES, texSlots);
+        shader.uploadIntArray(Shader.U_TEXTURES, TEX_SLOTS);
 
         glBindVertexArray(vaoID);
         glEnableVertexAttribArray(0);
