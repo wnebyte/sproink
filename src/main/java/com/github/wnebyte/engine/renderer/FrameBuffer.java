@@ -4,14 +4,14 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class FrameBuffer {
 
-    private int fboID = 0;
+    private int id;
 
     private Texture texture;
 
     public FrameBuffer(int width, int height) {
         // Generate framebuffer
-        this.fboID = glGenFramebuffers();
-        glBindFramebuffer(GL_FRAMEBUFFER, fboID);
+        this.id = glGenFramebuffers();
+        glBindFramebuffer(GL_FRAMEBUFFER, id);
 
         // Create the texture to render the data to, and attach it to our framebuffer
         this.texture = new Texture(width, height);
@@ -31,15 +31,15 @@ public class FrameBuffer {
     }
 
     public void bind() {
-        glBindFramebuffer(GL_FRAMEBUFFER, fboID);
+        glBindFramebuffer(GL_FRAMEBUFFER, id);
     }
 
     public void unbind() {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    public int getFboID() {
-        return fboID;
+    public int getId() {
+        return id;
     }
 
     public int getTextureId() {

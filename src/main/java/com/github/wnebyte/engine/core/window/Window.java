@@ -106,7 +106,7 @@ public class Window {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -127,7 +127,7 @@ public class Window {
         glfwSetWindowSizeCallback(glfwWindow, (w, newWidth, newHeight) -> {
             Window.setWidth(newWidth);
             Window.setHeight(newHeight);
-            glViewport(0, 0, newWidth, newHeight);
+           // glViewport(0, 0, newWidth, newHeight);
         });
 
         // Make OpenGL context current
@@ -151,6 +151,7 @@ public class Window {
         imGuiLayer = new ImGuiLayer(glfwWindow);
         imGuiLayer.init();
         frameBuffer = new FrameBuffer(width, height);
+        glViewport(0, 0, width, height);
 
         setScene(0);
     }
@@ -165,15 +166,16 @@ public class Window {
             glfwPollEvents();
 
             DebugDraw.beginFrame();
+            frameBuffer.bind();
 
             glClearColor(color.x, color.y, color.z, color.w);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            frameBuffer.bind();
             if (dt >= 0) {
                 DebugDraw.draw();
                 scene.update(dt);
             }
+
             frameBuffer.unbind();
 
             imGuiLayer.update(dt, scene);
@@ -201,5 +203,13 @@ public class Window {
 
     public static void setHeight(int height) {
         window.height = height;
+    }
+
+    public static FrameBuffer getFrameBuffer() {
+        return window.frameBuffer;
+    }
+
+    public static float getTargetAspectRatio() {
+         return 16.0f / 9.0f;
     }
 }

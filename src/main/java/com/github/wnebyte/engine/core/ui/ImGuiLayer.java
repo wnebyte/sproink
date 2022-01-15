@@ -2,6 +2,7 @@ package com.github.wnebyte.engine.core.ui;
 
 import com.github.wnebyte.engine.core.event.KeyListener;
 import com.github.wnebyte.engine.core.event.MouseListener;
+import com.github.wnebyte.engine.editor.GameViewWindow;
 import imgui.*;
 import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
@@ -181,6 +182,7 @@ public class ImGuiLayer {
         setupDockSpace();
         scene.sceneImGui();
         ImGui.showDemoWindow();
+        GameViewWindow.imGui();
         ImGui.end();
         ImGui.render();
         endFrame();
