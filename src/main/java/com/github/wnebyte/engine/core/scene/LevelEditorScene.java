@@ -1,6 +1,6 @@
 package com.github.wnebyte.engine.core.scene;
 
-import com.github.wnebyte.engine.renderer.DebugDraw;
+import com.github.wnebyte.engine.renderer.Texture;
 import imgui.ImGui;
 import imgui.ImVec2;
 import org.joml.Vector2f;
@@ -10,7 +10,6 @@ import com.github.wnebyte.engine.core.Transform;
 import com.github.wnebyte.engine.core.ecs.*;
 import com.github.wnebyte.engine.core.camera.Camera;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
-import org.joml.Vector3f;
 
 public class LevelEditorScene extends Scene {
 
@@ -26,7 +25,9 @@ public class LevelEditorScene extends Scene {
         this.camera = new Camera(new Vector2f(-250, -100));
         sprites = ResourceFlyWeight.getSpritesheet("/images/spritesheets/decorationsAndBlocks.png");
         if (levelLoaded) {
-            this.activeGameObject = gameObjects.get(0);
+            if (gameObjects.size() > 0 ) {
+                this.activeGameObject = gameObjects.get(0);
+            }
             return;
         }
         /*
@@ -57,6 +58,16 @@ public class LevelEditorScene extends Scene {
                 new Spritesheet(ResourceFlyWeight.getTexture("/images/spritesheets/decorationsAndBlocks.png"),
                         16, 16, 81, 0));
         ResourceFlyWeight.getTexture("/images/blendImage2.png");
+
+        for (GameObject go : gameObjects) {
+            SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
+            if (spr != null) {
+                Texture texture = spr.getTexture();
+                if (texture != null) {
+                    spr.setTexture(ResourceFlyWeight.getTextureFromPath(texture.getPath()));
+                }
+            }
+        }
     }
 
     float x = 0f;

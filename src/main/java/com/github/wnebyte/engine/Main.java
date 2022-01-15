@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #27 - Framebuffers (10:29:01)
+Coding a 2D Game Engine #28 - Docking in ImGui (10:52:58)
  */
 public class Main {
 

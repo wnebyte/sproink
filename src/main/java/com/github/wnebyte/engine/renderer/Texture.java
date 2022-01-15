@@ -9,7 +9,7 @@ import static org.lwjgl.stb.STBImage.*;
 
 public class Texture {
 
-    private int id;
+    private transient int id;
 
     private String path;
 

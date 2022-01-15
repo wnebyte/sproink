@@ -42,6 +42,17 @@ public class ResourceFlyWeight {
         }
     }
 
+    public static Texture getTextureFromPath(String path) {
+        if (textures.containsKey(path)) {
+            return textures.get(path);
+        } else {
+            Texture texture = new Texture();
+            texture.init(path);
+            textures.put(path, texture);
+            return texture;
+        }
+    }
+
     public static Spritesheet getSpritesheet(String resourceName) {
         File file = ResourceUtil.getFile(resourceName);
 

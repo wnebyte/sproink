@@ -86,6 +86,10 @@ public class SpriteRenderer extends Component {
         }
     }
 
+    public void setTexture(Texture texture) {
+        sprite.setTexture(texture);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null) return false;
