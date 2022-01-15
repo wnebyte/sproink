@@ -1,6 +1,5 @@
 [
   {
-    "id": 1,
     "transform": {
       "position": {
         "x": 384.0,
@@ -11,6 +10,7 @@
         "y": 32.0
       }
     },
+    "id": 1,
     "name": "Sprite_Object_Gen",
     "components": [
       {
@@ -51,6 +51,291 @@
             ]
           },
           "id": 2
+        }
+      }
+    ],
+    "zIndex": 0
+  },
+  {
+    "transform": {
+      "position": {
+        "x": 192.0,
+        "y": 480.0
+      },
+      "scale": {
+        "x": 32.0,
+        "y": 32.0
+      }
+    },
+    "id": 2,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "com.github.wnebyte.engine.components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "texture": {
+              "id": 3,
+              "path": "C:\\Users\\Ralle\\dev\\java\\Engine\\build\\resources\\main\\images\\spritesheets\\decorationsAndBlocks.png",
+              "width": 112,
+              "height": 192
+            },
+            "width": 16.0,
+            "height": 16.0,
+            "texCoords": [
+              {
+                "x": 1.0,
+                "y": 0.75
+              },
+              {
+                "x": 1.0,
+                "y": 0.6666667
+              },
+              {
+                "x": 0.85714287,
+                "y": 0.6666667
+              },
+              {
+                "x": 0.85714287,
+                "y": 0.75
+              }
+            ]
+          },
+          "id": 5
+        }
+      }
+    ],
+    "zIndex": 0
+  },
+  {
+    "transform": {
+      "position": {
+        "x": 96.0,
+        "y": 480.0
+      },
+      "scale": {
+        "x": 32.0,
+        "y": 32.0
+      }
+    },
+    "id": 3,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "com.github.wnebyte.engine.components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "texture": {
+              "id": 3,
+              "path": "C:\\Users\\Ralle\\dev\\java\\Engine\\build\\resources\\main\\images\\spritesheets\\decorationsAndBlocks.png",
+              "width": 112,
+              "height": 192
+            },
+            "width": 16.0,
+            "height": 16.0,
+            "texCoords": [
+              {
+                "x": 0.5714286,
+                "y": 0.75
+              },
+              {
+                "x": 0.5714286,
+                "y": 0.6666667
+              },
+              {
+                "x": 0.42857143,
+                "y": 0.6666667
+              },
+              {
+                "x": 0.42857143,
+                "y": 0.75
+              }
+            ]
+          },
+          "id": 6
+        }
+      }
+    ],
+    "zIndex": 0
+  },
+  {
+    "transform": {
+      "position": {
+        "x": 64.0,
+        "y": 512.0
+      },
+      "scale": {
+        "x": 32.0,
+        "y": 32.0
+      }
+    },
+    "id": 4,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "com.github.wnebyte.engine.components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "texture": {
+              "id": 3,
+              "path": "C:\\Users\\Ralle\\dev\\java\\Engine\\build\\resources\\main\\images\\spritesheets\\decorationsAndBlocks.png",
+              "width": 112,
+              "height": 192
+            },
+            "width": 16.0,
+            "height": 16.0,
+            "texCoords": [
+              {
+                "x": 0.14285715,
+                "y": 0.75
+              },
+              {
+                "x": 0.14285715,
+                "y": 0.6666667
+              },
+              {
+                "x": 0.0,
+                "y": 0.6666667
+              },
+              {
+                "x": 0.0,
+                "y": 0.75
+              }
+            ]
+          },
+          "id": 7
+        }
+      }
+    ],
+    "zIndex": 0
+  },
+  {
+    "transform": {
+      "position": {
+        "x": 128.0,
+        "y": 480.0
+      },
+      "scale": {
+        "x": 32.0,
+        "y": 32.0
+      }
+    },
+    "id": 5,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "com.github.wnebyte.engine.components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "texture": {
+              "id": 3,
+              "path": "C:\\Users\\Ralle\\dev\\java\\Engine\\build\\resources\\main\\images\\spritesheets\\decorationsAndBlocks.png",
+              "width": 112,
+              "height": 192
+            },
+            "width": 16.0,
+            "height": 16.0,
+            "texCoords": [
+              {
+                "x": 0.14285715,
+                "y": 1.0
+              },
+              {
+                "x": 0.14285715,
+                "y": 0.9166667
+              },
+              {
+                "x": 0.0,
+                "y": 0.9166667
+              },
+              {
+                "x": 0.0,
+                "y": 1.0
+              }
+            ]
+          },
+          "id": 8
+        }
+      }
+    ],
+    "zIndex": 0
+  },
+  {
+    "transform": {
+      "position": {
+        "x": 832.0,
+        "y": 544.0
+      },
+      "scale": {
+        "x": 32.0,
+        "y": 32.0
+      }
+    },
+    "id": 6,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "com.github.wnebyte.engine.components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "texture": {
+              "id": 3,
+              "path": "C:\\Users\\Ralle\\dev\\java\\Engine\\build\\resources\\main\\images\\spritesheets\\decorationsAndBlocks.png",
+              "width": 112,
+              "height": 192
+            },
+            "width": 16.0,
+            "height": 16.0,
+            "texCoords": [
+              {
+                "x": 0.42857143,
+                "y": 1.0
+              },
+              {
+                "x": 0.42857143,
+                "y": 0.9166667
+              },
+              {
+                "x": 0.2857143,
+                "y": 0.9166667
+              },
+              {
+                "x": 0.2857143,
+                "y": 1.0
+              }
+            ]
+          },
+          "id": 9
         }
       }
     ],

@@ -110,14 +110,12 @@ public abstract class Scene {
                 .create();
 
         String inFile = "";
-        /*
+
         try {
             inFile = new String(Files.readAllBytes(Paths.get("level.txt")));
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-         */
 
         if (!inFile.equals("")) {
             int maxGoId = -1;

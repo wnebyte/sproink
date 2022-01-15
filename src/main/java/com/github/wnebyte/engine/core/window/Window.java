@@ -1,5 +1,6 @@
 package com.github.wnebyte.engine.core.window;
 
+import com.github.wnebyte.engine.renderer.FrameBuffer;
 import org.joml.Vector4f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -33,6 +34,8 @@ public class Window {
     private Scene scene = null;
 
     private ImGuiLayer imGuiLayer;
+
+    private FrameBuffer frameBuffer;
 
     private Vector4f color = new Vector4f(1f, 1f, 1f, 1f);
 
@@ -147,6 +150,7 @@ public class Window {
 
         imGuiLayer = new ImGuiLayer(glfwWindow);
         imGuiLayer.init();
+        frameBuffer = new FrameBuffer(width, height);
 
         setScene(0);
     }
@@ -165,10 +169,12 @@ public class Window {
             glClearColor(color.x, color.y, color.z, color.w);
             glClear(GL_COLOR_BUFFER_BIT);
 
+            frameBuffer.bind();
             if (dt >= 0) {
                 DebugDraw.draw();
                 scene.update(dt);
             }
+            frameBuffer.unbind();
 
             imGuiLayer.update(dt, scene);
             glfwSwapBuffers(glfwWindow);

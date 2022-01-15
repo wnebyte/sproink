@@ -11,9 +11,9 @@ public class GameObject {
 
     private static int ID_COUNTER = 0;
 
-    private int id = -1;
-
     public final Transform transform;
+
+    private int id = -1;
 
     private final String name;
 

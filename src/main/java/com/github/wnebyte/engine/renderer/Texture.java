@@ -17,6 +17,23 @@ public class Texture {
 
     private int height;
 
+    public Texture() {
+        this.id = -1;
+        this.width = -1;
+        this.height = -1;
+    }
+
+    public Texture(int width, int height) {
+        this.width = width;
+        this.height = height;
+        this.path = "Generated";
+        this.id = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, id);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this.width, this.height,
+                0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    }
+
     public void init(String path) {
         this.path = path;
 
@@ -77,6 +94,10 @@ public class Texture {
 
     public int getId() {
         return id;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     @Override
