@@ -1,5 +1,6 @@
 package com.github.wnebyte.engine.renderer;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -7,7 +8,7 @@ import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.stb.STBImage.*;
 
-public class Texture {
+public class Texture implements Serializable {
 
     private transient int id;
 

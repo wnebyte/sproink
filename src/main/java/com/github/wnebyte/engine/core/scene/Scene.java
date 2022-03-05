@@ -50,6 +50,8 @@ public abstract class Scene {
 
     public abstract void update(float dt);
 
+    public abstract void render();
+
     public void addGameObjectToScene(GameObject go) {
         /*
         if (!isRunning) {
@@ -85,30 +87,16 @@ public abstract class Scene {
     public void imGui() {}
 
     public void saveExit() {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Component.class, new ComponentTypeAdapter())
-                .registerTypeAdapter(GameObject.class, new GameObjectTypeAdapter())
-                .setPrettyPrinting()
-                .create();
-
         try {
             FileWriter writer = new FileWriter("level.txt");
-            writer.write(gson.toJson(this.gameObjects));
+            writer.write(GSON.toJson(this.gameObjects));
             writer.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public void load() {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Component.class, new ComponentTypeAdapter())
-                .registerTypeAdapter(GameObject.class, new GameObjectTypeAdapter())
-                .setPrettyPrinting()
-                .create();
-
         String inFile = "";
 
         try {
@@ -121,7 +109,7 @@ public abstract class Scene {
             int maxGoId = -1;
             int maxCompId = -1;
 
-            GameObject[] objs = gson.fromJson(inFile, GameObject[].class);
+            GameObject[] objs = GSON.fromJson(inFile, GameObject[].class);
             for (GameObject go : objs) {
                 addGameObjectToScene(go);
 

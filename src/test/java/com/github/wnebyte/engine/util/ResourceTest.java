@@ -1,13 +1,20 @@
 package com.github.wnebyte.engine.util;
 
+import org.junit.Test;
+
 import java.io.File;
 
-public class ResourceUtil {
+public class ResourceTest {
+
+    @Test
+    public void test00() {
+        File file = getFile("/images/testImage.png");
+        String path = file.getAbsolutePath();
+        File dup = getFile(path);
+        System.out.println(dup);
+    }
 
     public static String getPath(String resourceName) {
-        /*
-        return ResourceUtil.class.getResource(resourceName).getPath();
-         */
         File file = new File(resourceName);
         return file.exists() ? file.getAbsolutePath() :
                 ResourceUtil.class.getResource(resourceName).getPath();

@@ -64,7 +64,7 @@ public class LevelEditorScene extends Scene {
             if (spr != null) {
                 Texture texture = spr.getTexture();
                 if (texture != null) {
-                    spr.setTexture(ResourceFlyWeight.getTextureFromPath(texture.getPath()));
+                    spr.setTexture(ResourceFlyWeight.getTexture(texture.getPath()));
                 }
             }
         }
@@ -84,7 +84,10 @@ public class LevelEditorScene extends Scene {
         for (GameObject go : this.gameObjects) {
             go.update(dt);
         }
+    }
 
+    @Override
+    public void render() {
         this.renderer.render();
     }
 
@@ -102,8 +105,8 @@ public class LevelEditorScene extends Scene {
         float windowX2 = windowPos.x + windowSize.x;
         for (int i = 0; i < sprites.size(); i++) {
             Sprite sprite = sprites.getSprite(i);
-            float spriteWidth = sprite.getWidth() * 2.5f;
-            float spriteHeight = sprite.getHeight() * 2.5f;
+            float spriteWidth = sprite.getWidth() * 2;
+            float spriteHeight = sprite.getHeight() * 2;
             int id = sprite.getTexId();
             Vector2f[] texCoords = sprite.getTexCoords();
 
@@ -112,7 +115,7 @@ public class LevelEditorScene extends Scene {
                     texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) { // [0].x, [0].y, [2].x, [2].y
                 GameObject object = Prefabs.generateSpriteObject(sprite, 32, 32);
                 // Attach this to the mouse cursor
-                levelEditorStuff.getComponent(MouseControls.class).startDrag(object);
+                levelEditorStuff.getComponent(MouseControls.class).drag(object);
             }
             ImGui.popID();
 
