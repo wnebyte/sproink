@@ -1,13 +1,13 @@
 package com.github.wnebyte.engine.renderer;
 
-import com.github.wnebyte.engine.components.SpriteRenderer;
-import com.github.wnebyte.engine.core.window.Window;
-import com.github.wnebyte.engine.util.ResourceFlyWeight;
+import java.util.List;
+import java.util.ArrayList;
+
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.github.wnebyte.engine.components.SpriteRenderer;
+import com.github.wnebyte.engine.core.window.Window;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;

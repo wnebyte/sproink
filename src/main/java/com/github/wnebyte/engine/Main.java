@@ -2,9 +2,6 @@ package com.github.wnebyte.engine;
 
 import com.github.wnebyte.engine.core.window.Window;
 
-/*
-Coding a 2D Game Engine #31 - Pixel Perfect Mouse Picking (12:22:14)
- */
 public class Main {
 
     public static void main(String[] args) {
