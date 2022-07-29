@@ -17,9 +17,9 @@
         "type": "com.github.wnebyte.engine.components.SpriteRenderer",
         "properties": {
           "color": {
-            "x": 1.0,
-            "y": 1.0,
-            "z": 1.0,
+            "x": 0.20996651,
+            "y": 0.18710774,
+            "z": 0.42608696,
             "w": 1.0
           },
           "sprite": {
@@ -386,6 +386,174 @@
             ]
           },
           "id": 8
+        }
+      }
+    ],
+    "zIndex": 0
+  },
+  {
+    "transform": {
+      "position": {
+        "x": 352.0,
+        "y": 480.0
+      },
+      "scale": {
+        "x": 32.0,
+        "y": 32.0
+      }
+    },
+    "id": 8,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "com.github.wnebyte.engine.components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "texture": {
+              "path": "C:\\Users\\Ralle\\dev\\java\\Engine\\build\\resources\\main\\images\\spritesheets\\decorationsAndBlocks.png",
+              "width": 112,
+              "height": 192
+            },
+            "width": 16.0,
+            "height": 16.0,
+            "texCoords": [
+              {
+                "x": 0.14285715,
+                "y": 0.9166667
+              },
+              {
+                "x": 0.14285715,
+                "y": 0.8333333
+              },
+              {
+                "x": 0.0,
+                "y": 0.8333333
+              },
+              {
+                "x": 0.0,
+                "y": 0.9166667
+              }
+            ]
+          },
+          "id": 11
+        }
+      }
+    ],
+    "zIndex": 0
+  },
+  {
+    "transform": {
+      "position": {
+        "x": -96.0,
+        "y": 224.0
+      },
+      "scale": {
+        "x": 32.0,
+        "y": 32.0
+      }
+    },
+    "id": 9,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "com.github.wnebyte.engine.components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "texture": {
+              "path": "C:\\Users\\Ralle\\dev\\java\\Engine\\build\\resources\\main\\images\\spritesheets\\decorationsAndBlocks.png",
+              "width": 112,
+              "height": 192
+            },
+            "width": 16.0,
+            "height": 16.0,
+            "texCoords": [
+              {
+                "x": 0.85714287,
+                "y": 1.0
+              },
+              {
+                "x": 0.85714287,
+                "y": 0.9166667
+              },
+              {
+                "x": 0.71428573,
+                "y": 0.9166667
+              },
+              {
+                "x": 0.71428573,
+                "y": 1.0
+              }
+            ]
+          },
+          "id": 12
+        }
+      }
+    ],
+    "zIndex": 0
+  },
+  {
+    "transform": {
+      "position": {
+        "x": 992.0,
+        "y": 608.0
+      },
+      "scale": {
+        "x": 32.0,
+        "y": 32.0
+      }
+    },
+    "id": 10,
+    "name": "Sprite_Object_Gen",
+    "components": [
+      {
+        "type": "com.github.wnebyte.engine.components.SpriteRenderer",
+        "properties": {
+          "color": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0,
+            "w": 1.0
+          },
+          "sprite": {
+            "texture": {
+              "path": "C:\\Users\\Ralle\\dev\\java\\Engine\\build\\resources\\main\\images\\spritesheets\\decorationsAndBlocks.png",
+              "width": 112,
+              "height": 192
+            },
+            "width": 16.0,
+            "height": 16.0,
+            "texCoords": [
+              {
+                "x": 0.85714287,
+                "y": 0.9166667
+              },
+              {
+                "x": 0.85714287,
+                "y": 0.8333333
+              },
+              {
+                "x": 0.71428573,
+                "y": 0.8333333
+              },
+              {
+                "x": 0.71428573,
+                "y": 0.9166667
+              }
+            ]
+          },
+          "id": 15
         }
       }
     ],

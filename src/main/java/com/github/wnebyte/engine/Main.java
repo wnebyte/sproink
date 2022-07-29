@@ -2,6 +2,9 @@ package com.github.wnebyte.engine;
 
 import com.github.wnebyte.engine.core.window.Window;
 
+/*
+Coding a 2D Game Engine #32 - Enabling Mouse Picking and Code Maintenance
+ */
 public class Main {
 
     public static void main(String[] args) {

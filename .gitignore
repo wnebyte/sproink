@@ -31,3 +31,7 @@ out
 
 # Ignore .txt extensions
 .txt
+
+imgui.ini
+
+level.txt

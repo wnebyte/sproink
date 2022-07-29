@@ -1,11 +1,10 @@
 package com.github.wnebyte.engine.core.event;
 
-import com.github.wnebyte.engine.core.camera.Camera;
-import com.github.wnebyte.engine.core.window.Window;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
-
+import com.github.wnebyte.engine.core.camera.Camera;
+import com.github.wnebyte.engine.core.window.Window;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
@@ -127,7 +126,6 @@ public class MouseListener {
         currentY = tmp.y;
         return currentY;
     }
-
 
     public static float getScreenX() {
         float currentX = getX() - get().gameViewportPos.x;

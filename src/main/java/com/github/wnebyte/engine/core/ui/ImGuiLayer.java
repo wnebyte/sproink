@@ -1,18 +1,19 @@
 package com.github.wnebyte.engine.core.ui;
 
-import com.github.wnebyte.engine.core.event.KeyListener;
-import com.github.wnebyte.engine.core.event.MouseListener;
-import com.github.wnebyte.engine.editor.GameViewWindow;
 import imgui.*;
 import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
 import imgui.flag.*;
 import imgui.gl3.ImGuiImplGl3;
-import com.github.wnebyte.engine.core.scene.Scene;
-import com.github.wnebyte.engine.core.window.Window;
-import com.github.wnebyte.engine.util.ResourceUtil;
 import imgui.type.ImBoolean;
-
+import com.github.wnebyte.engine.core.event.KeyListener;
+import com.github.wnebyte.engine.core.event.MouseListener;
+import com.github.wnebyte.engine.core.window.Window;
+import com.github.wnebyte.engine.core.scene.Scene;
+import com.github.wnebyte.engine.renderer.PickingTexture;
+import com.github.wnebyte.engine.editor.GameViewWindow;
+import com.github.wnebyte.engine.editor.PropertiesWindow;
+import com.github.wnebyte.engine.util.ResourceUtil;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class ImGuiLayer {
@@ -25,8 +26,14 @@ public class ImGuiLayer {
     // LWJGL3 renderer (SHOULD be initialized)
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
 
-    public ImGuiLayer(long glfwWindow) {
+    private final GameViewWindow gameViewWindow;
+
+    private final PropertiesWindow propertiesWindow;
+
+    public ImGuiLayer(long glfwWindow, PickingTexture pickingTexture) {
         this.glfwWindow = glfwWindow;
+        this.gameViewWindow = new GameViewWindow();
+        this.propertiesWindow = new PropertiesWindow(pickingTexture);
     }
 
     public void init() {
@@ -124,7 +131,7 @@ public class ImGuiLayer {
                 ImGui.setWindowFocus(null);
             }
 
-            if (!io.getWantCaptureMouse() || !GameViewWindow.getWantCaptureMouse()) {
+            if (!io.getWantCaptureMouse() || gameViewWindow.getWantCaptureMouse()) {
                 MouseListener.mouseButtonCallback(w, button, action, mods);
             }
         });
@@ -180,9 +187,11 @@ public class ImGuiLayer {
         startFrame(dt);
         ImGui.newFrame();
         setupDockSpace();
-        scene.sceneImGui();
+        scene.imGui();
         ImGui.showDemoWindow();
-        GameViewWindow.imGui();
+        gameViewWindow.imGui();
+        propertiesWindow.update(dt, scene);
+        propertiesWindow.imGui();
         ImGui.end();
         ImGui.render();
         endFrame();

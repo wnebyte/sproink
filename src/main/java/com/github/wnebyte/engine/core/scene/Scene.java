@@ -30,8 +30,6 @@ public abstract class Scene {
 
     protected List<GameObject> gameObjects = new ArrayList<>();
 
-    protected GameObject activeGameObject = null;
-
     protected boolean levelLoaded = false;
 
     private boolean isRunning = false;
@@ -53,7 +51,6 @@ public abstract class Scene {
     public abstract void render();
 
     public void addGameObjectToScene(GameObject go) {
-        /*
         if (!isRunning) {
             gameObjects.add(go);
         } else {
@@ -61,27 +58,17 @@ public abstract class Scene {
             go.start();
             renderer.add(go);
         }
-         */
-        gameObjects.add(go);
+    }
 
-        if (isRunning) {
-            go.start();
-            renderer.add(go);
-        }
+    public GameObject getGameObject(int id) {
+        return gameObjects.stream()
+                .filter(go -> go.getId() == id)
+                .findFirst()
+                .orElse(null);
     }
 
     public Camera getCamera() {
         return camera;
-    }
-
-    public void sceneImGui() {
-        if (activeGameObject != null) {
-            ImGui.begin("Inspector");
-            activeGameObject.imGui();
-            ImGui.end();
-        }
-
-        imGui();
     }
 
     public void imGui() {}
