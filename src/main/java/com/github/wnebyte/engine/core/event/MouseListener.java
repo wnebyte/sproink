@@ -103,6 +103,10 @@ public class MouseListener {
     }
      */
 
+    /**
+     * Returns the x position of the mouse in world coordinates.
+     * @return the x position.
+     */
     public static float getOrthoX() {
         float currentX = getX() - get().gameViewportPos.x;
         currentX = (currentX / get().gameViewportSize.x) * 2.0f - 1.0f;
@@ -115,6 +119,10 @@ public class MouseListener {
         return currentX;
     }
 
+    /**
+     * Returns the y position of the mouse in world coordinates.
+     * @return the y position.
+     */
     public static float getOrthoY() {
         float currentY = getY() - get().gameViewportPos.y;
         currentY = -((currentY / get().gameViewportSize.y) * 2.0f - 1.0f);

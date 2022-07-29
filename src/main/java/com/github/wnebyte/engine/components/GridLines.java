@@ -2,6 +2,7 @@ package com.github.wnebyte.engine.components;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import com.github.wnebyte.engine.core.camera.Camera;
 import com.github.wnebyte.engine.core.ecs.Component;
 import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.renderer.DebugDraw;
@@ -11,17 +12,18 @@ public class GridLines extends Component {
 
     @Override
     public void update(float dt) {
-        Vector2f cameraPos = Window.getScene().getCamera().getPosition();
-        Vector2f projectionSize = Window.getScene().getCamera().getProjectionSize();
+        Camera camera = Window.getScene().getCamera();
+        Vector2f cameraPos = camera.getPosition();
+        Vector2f projectionSize = camera.getProjectionSize();
 
         int firstX = ((int)(cameraPos.x / Constants.GRID_WIDTH) - 1) * Constants.GRID_HEIGHT;
         int firstY = ((int)(cameraPos.y / Constants.GRID_HEIGHT) - 1) * Constants.GRID_HEIGHT;
 
-        int numVtLines = (int)(projectionSize.x / Constants.GRID_WIDTH) + 2;
-        int numHzLines = (int)(projectionSize.y / Constants.GRID_HEIGHT) + 2;
+        int numVtLines = (int)(projectionSize.x * camera.getZoom() / Constants.GRID_WIDTH) + 2;
+        int numHzLines = (int)(projectionSize.y * camera.getZoom() / Constants.GRID_HEIGHT) + 2;
 
-        int height = (int)projectionSize.y + Constants.GRID_HEIGHT * 2;
-        int width = (int)projectionSize.x + Constants.GRID_WIDTH * 2;
+        int height = (int)(projectionSize.y * camera.getZoom()) + Constants.GRID_HEIGHT * 2;
+        int width  = (int)(projectionSize.x * camera.getZoom()) + Constants.GRID_WIDTH * 2;
 
         int maxLines = Math.max(numVtLines, numHzLines);
         Vector3f color = new Vector3f(0.2f, 0.2f, 0.2f);
