@@ -2,6 +2,7 @@ package com.github.wnebyte.engine.core.window;
 
 import com.github.wnebyte.engine.renderer.*;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
+import imgui.ImGui;
 import org.joml.Vector4f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -242,5 +243,9 @@ public class Window {
 
     public static float getTargetAspectRatio() {
          return 16.0f / 9.0f;
+    }
+
+    public static ImGuiLayer getImGuiLayer() {
+        return get().imGuiLayer;
     }
 }

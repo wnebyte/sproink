@@ -76,7 +76,13 @@ public abstract class Scene {
     public void saveExit() {
         try {
             FileWriter writer = new FileWriter("level.txt");
-            writer.write(GSON.toJson(this.gameObjects));
+            List<GameObject> out = new ArrayList<>();
+            for (GameObject go : gameObjects) {
+                if (go.isSerialize()) {
+                    out.add(go);
+                }
+            }
+            writer.write(GSON.toJson(out));
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();

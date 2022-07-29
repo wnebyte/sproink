@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #33 - Editor Camera Controls with Lerp
+Coding a 2D Game Engine #34 - Coding Gizmos
  */
 public class Main {
 

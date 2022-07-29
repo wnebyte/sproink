@@ -9,6 +9,8 @@ public class Transform {
 
     public final Vector2f scale;
 
+    public float rotation = 0.0f;
+
     public Transform() {
         this(new Vector2f(), new Vector2f());
     }

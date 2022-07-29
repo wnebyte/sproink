@@ -21,6 +21,8 @@ public class GameObject {
 
     private final int zIndex;
 
+    private boolean serialize = true;
+
     public GameObject(String name) {
         this(name, new Transform(), 0);
     }
@@ -96,6 +98,14 @@ public class GameObject {
 
     public int getId() {
         return id;
+    }
+
+    public void setNoSerialize() {
+        serialize = false;
+    }
+
+    public boolean isSerialize() {
+        return serialize;
     }
 
     public static void init(int maxId) {

@@ -1,6 +1,7 @@
 package com.github.wnebyte.engine.core.ecs;
 
 import imgui.ImGui;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
@@ -52,6 +53,12 @@ public abstract class Component {
                     boolean val = (boolean)value;
                     if (ImGui.checkbox(name + ": ", val)) {
                         field.set(this, !val);
+                    }
+                } else if (type == Vector2f.class) {
+                    Vector2f val = (Vector2f)value;
+                    float[] imVec = { val.x, val.y };
+                    if (ImGui.dragFloat2(name + ": ", imVec)) {
+                        val.set(imVec[0], imVec[1]);
                     }
                 } else if (type == Vector3f.class) {
                     Vector3f val = (Vector3f)value;

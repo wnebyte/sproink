@@ -13,17 +13,21 @@ public class PropertiesWindow {
 
     private PickingTexture pickingTexture;
 
+    private float debounce = 0.2f;
+
     public PropertiesWindow(PickingTexture pickingTexture) {
         this.pickingTexture = pickingTexture;
     }
 
     public void update(float dt, Scene scene) {
-        if (MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+        debounce -= dt;
+        if (MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {
             int x = (int)MouseListener.getScreenX();
             int y = (int)MouseListener.getScreenY();
             int id = pickingTexture.readPixel(x, y);
             activeGameObject = scene.getGameObject(id);
             System.out.printf("(Debug): ID: '%d'%n", id);
+            debounce = 0.2f;
         }
     }
 
@@ -33,5 +37,9 @@ public class PropertiesWindow {
             activeGameObject.imGui();
             ImGui.end();
         }
+    }
+
+    public GameObject getActiveGameObject() {
+        return activeGameObject;
     }
 }
