@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #34 - Coding Gizmos
+Coding a 2D Game Engine #35 - Translate and Scale Gizmo
  */
 public class Main {
 

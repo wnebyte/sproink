@@ -16,7 +16,7 @@ public class LevelEditorScene extends Scene {
 
     private Spritesheet sprites;
 
-    private GameObject levelEditorStuff = new GameObject("LevelEditor", new Transform(), 0);
+    private final GameObject levelEditorStuff = new GameObject("LevelEditor", new Transform(), 0);
 
     @Override
     public void init() {
@@ -27,8 +27,7 @@ public class LevelEditorScene extends Scene {
         levelEditorStuff.addComponent(new MouseControls());
         levelEditorStuff.addComponent(new GridLines());
         levelEditorStuff.addComponent(new EditorCamera(camera));
-        levelEditorStuff.addComponent(new TranslateGizmo(gizmos.getSprite(1),
-                Window.getImGuiLayer().getPropertiesWindow()));
+        levelEditorStuff.addComponent(new GizmoSystem(gizmos));
         levelEditorStuff.start();
     }
 
@@ -39,7 +38,7 @@ public class LevelEditorScene extends Scene {
                         16, 16, 81, 0));
         ResourceFlyWeight.addSpritesheet("/images/gizmos.png",
                 new Spritesheet(ResourceFlyWeight.getTexture("/images/gizmos.png"),
-                        24, 48, 2, 0));
+                        24, 48, 3, 0));
         ResourceFlyWeight.getTexture("/images/blendImage2.png");
 
         for (GameObject go : gameObjects) {

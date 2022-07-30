@@ -2,10 +2,7 @@ package com.github.wnebyte.engine.core.ecs;
 
 import com.github.wnebyte.engine.core.Transform;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
 public class GameObject {
 
@@ -75,8 +72,8 @@ public class GameObject {
     }
 
     public void start() {
-        for (Component c : components) {
-            c.start();
+        for (int i = 0; i < components.size(); i++) {
+            components.get(i).start();
         }
     }
 

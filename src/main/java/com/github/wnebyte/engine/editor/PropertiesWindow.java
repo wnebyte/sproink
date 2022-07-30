@@ -1,5 +1,6 @@
 package com.github.wnebyte.engine.editor;
 
+import com.github.wnebyte.engine.components.NonPickable;
 import imgui.ImGui;
 import com.github.wnebyte.engine.renderer.PickingTexture;
 import com.github.wnebyte.engine.core.ecs.GameObject;
@@ -25,8 +26,13 @@ public class PropertiesWindow {
             int x = (int)MouseListener.getScreenX();
             int y = (int)MouseListener.getScreenY();
             int id = pickingTexture.readPixel(x, y);
-            activeGameObject = scene.getGameObject(id);
-            System.out.printf("(Debug): ID: '%d'%n", id);
+            GameObject pickedObject = scene.getGameObject(id);
+            if (pickedObject != null && pickedObject.getComponent(NonPickable.class) == null) {
+                activeGameObject = pickedObject;
+                System.out.printf("(Debug): ID: '%d'%n", id);
+            } else if (pickedObject == null && !MouseListener.isDragging()) {
+                activeGameObject = null;
+            }
             debounce = 0.2f;
         }
     }
