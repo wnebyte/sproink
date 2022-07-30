@@ -6,9 +6,28 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import imgui.ImGui;
+import imgui.type.ImInt;
 import com.github.wnebyte.engine.editor.JImGui;
 
 public abstract class Component {
+
+    private static <T extends Enum<T>> String[] getEnumValues(Class<T> enumType) {
+        String[] enumValues = new String[enumType.getEnumConstants().length];
+        int i = 0;
+        for (T ordinal : enumType.getEnumConstants()) {
+            enumValues[i++] = ordinal.name();
+        }
+        return enumValues;
+    }
+
+    private static int indexOf(String s, String[] array) {
+        for (int i = 0; i < array.length; i++) {
+            if (s.equals(array[i])) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     private static int ID_COUNTER = 0;
 
@@ -35,7 +54,8 @@ public abstract class Component {
                     field.setAccessible(true);
                 }
 
-                Class<?> type = field.getType();
+                @SuppressWarnings("rawtypes")
+                Class type = field.getType();
                 Object value = field.get(this);
                 String name = field.getName();
 
@@ -65,6 +85,14 @@ public abstract class Component {
                     if (ImGui.dragFloat4(name + ": ", imVec)) {
                         val.set(imVec[0], imVec[1], imVec[2], imVec[3]);
                     }
+                } else if (type.isEnum()) {
+                    @SuppressWarnings("unchecked")
+                    String[] enumValues = getEnumValues(type);
+                    String enumType = ((Enum<?>)value).name();
+                    ImInt index = new ImInt(indexOf(enumType, enumValues));
+                    if (ImGui.combo(field.getName(), index, enumValues, enumValues.length)) {
+                        field.set(this, type.getEnumConstants()[index.get()]);
+                    }
                 }
 
                 if (isPrivate) {
@@ -75,6 +103,7 @@ public abstract class Component {
             e.printStackTrace();
         }
     }
+
 
     public void destroy() {
 

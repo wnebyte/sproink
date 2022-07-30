@@ -7,6 +7,10 @@ import org.joml.Matrix4f;
 
 public class Camera {
 
+    private static final float PROJECTION_WIDTH = 6;
+
+    private static final float PROJECTION_HEIGHT = 3;
+
     private Vector2f position;
 
     private Matrix4f projectionMatrix;
@@ -17,7 +21,7 @@ public class Camera {
 
     private Matrix4f inverseView;
 
-    private Vector2f projectionSize = new Vector2f(32.0f * 40.0f, 32.0f * 21.0f);
+    private final Vector2f projectionSize = new Vector2f(PROJECTION_WIDTH, PROJECTION_HEIGHT);
 
     private float zoom = 1.0f;
 

@@ -1,5 +1,6 @@
 package com.github.wnebyte.engine.core.scene;
 
+import com.github.wnebyte.engine.util.Settings;
 import imgui.ImGui;
 import imgui.ImVec2;
 import org.joml.Vector2f;
@@ -54,7 +55,7 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
             ImGui.pushID(i);
             if (ImGui.imageButton(id, spriteWidth, spriteHeight,
                     texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) { // [0].x, [0].y, [2].x, [2].y
-                GameObject object = Prefabs.generateSpriteObject(sprite, 32, 32);
+                GameObject object = Prefabs.generateSpriteObject(sprite, 0.25f, 0.25f);
                 // Attach this to the mouse cursor
                 levelEditorStuff.getComponent(MouseControls.class).drag(object);
             }

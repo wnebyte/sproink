@@ -1,8 +1,8 @@
 package com.github.wnebyte.engine.renderer;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.components.SpriteRenderer;
 
@@ -39,7 +39,7 @@ public class Renderer {
         }
 
         if (!added) {
-            RenderBatch newBatch = new RenderBatch(MAX_BATCH_SIZE, spr.gameObject.transform.zIndex);
+            RenderBatch newBatch = new RenderBatch(this, MAX_BATCH_SIZE, spr.gameObject.transform.zIndex);
             newBatch.start();
             batches.add(newBatch);
             newBatch.addSprite(spr);
@@ -49,8 +49,8 @@ public class Renderer {
 
     public void render() {
         shader.use();
-        for (RenderBatch batch : batches) {
-            batch.render();
+        for (int i = 0; i < batches.size(); i++) {
+            batches.get(i).render();
         }
     }
 

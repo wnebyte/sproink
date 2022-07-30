@@ -1,6 +1,10 @@
 package com.github.wnebyte.engine.core.ecs;
 
+import com.github.wnebyte.engine.components.SpriteRenderer;
 import com.github.wnebyte.engine.core.Transform;
+import com.github.wnebyte.engine.util.ResourceFlyWeight;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import imgui.ImGui;
 
 import java.util.*;
@@ -104,12 +108,37 @@ public class GameObject {
         return isDead;
     }
 
+    public void generateId() {
+        id = ID_COUNTER++;
+    }
+
     public void destroy() {
         isDead = true;
         for (int i = 0; i < components.size(); i++) {
             Component c = components.get(i);
             c.destroy();
         }
+    }
+
+    public GameObject copy() {
+        // Todo: come up with cleaner solution
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Component.class, new ComponentTypeAdapter())
+                .registerTypeAdapter(GameObject.class, new GameObjectTypeAdapter())
+                .create();
+        String objAsJson = gson.toJson(this);
+        GameObject go = gson.fromJson(objAsJson, GameObject.class);
+        go.generateId();
+        for (Component c : go.getAllComponents()) {
+            c.generateId();
+        }
+
+        SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
+        if (spr != null && spr.getTexture() != null) {
+            spr.setTexture(ResourceFlyWeight.getTexture(spr.getTexture().getPath()));
+        }
+
+        return go;
     }
 
     public static void init(int maxId) {

@@ -1,5 +1,6 @@
 package com.github.wnebyte.engine.components;
 
+import com.github.wnebyte.engine.core.event.KeyListener;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import com.github.wnebyte.engine.core.Prefabs;
@@ -9,9 +10,13 @@ import com.github.wnebyte.engine.core.event.MouseListener;
 import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.editor.PropertiesWindow;
 
-import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
+import static org.lwjgl.glfw.GLFW.*;
 
 public class Gizmo extends Component {
+
+    private final float gizmoWidth = 16f / 80f;
+
+    private final float gizmoHeight = 48f / 80f;
 
     private final Vector4f xAxisColor = new Vector4f(1, 0.3f, 0.3f, 1);
 
@@ -21,13 +26,9 @@ public class Gizmo extends Component {
 
     private final Vector4f yAxisColorHover = new Vector4f(0, 1, 0, 1);
 
-    private final Vector2f xAxisOffset = new Vector2f(64, -5);
+    private final Vector2f xAxisOffset = new Vector2f(24f / 80f, -6 / 80f);
 
-    private final Vector2f yAxisOffset = new Vector2f(16, 61);
-
-    private final int gizmoWidth = 16;
-
-    private final int gizmoHeight = 48;
+    private final Vector2f yAxisOffset = new Vector2f(-7f / 80f, 21 / 80f);
 
     protected boolean xAxisActive = false;
 
@@ -49,8 +50,8 @@ public class Gizmo extends Component {
 
     public Gizmo(Sprite arrowSprite, PropertiesWindow propertiesWindow) {
         this.propertiesWindow = propertiesWindow;
-        xAxisObject = Prefabs.generateSpriteObject(arrowSprite, 16, 48);
-        yAxisObject = Prefabs.generateSpriteObject(arrowSprite, 16, 48);
+        xAxisObject = Prefabs.generateSpriteObject(arrowSprite, gizmoWidth, gizmoHeight);
+        yAxisObject = Prefabs.generateSpriteObject(arrowSprite, gizmoWidth, gizmoHeight);
         xAxisSprite = xAxisObject.getComponent(SpriteRenderer.class);
         yAxisSprite = yAxisObject.getComponent(SpriteRenderer.class);
         xAxisObject.addComponent(new NonPickable());
@@ -76,6 +77,22 @@ public class Gizmo extends Component {
         activeGameObject = propertiesWindow.getActiveGameObject();
         if (activeGameObject != null) {
             setActive();
+
+            // Todo: move this into it's own keyEditorBinding component
+            if (KeyListener.isKeyPressed(GLFW_KEY_LEFT_CONTROL) &&
+                    KeyListener.keyBeginPress(GLFW_KEY_D)) {
+                GameObject newObject = activeGameObject.copy();
+                Window.getScene().addGameObjectToScene(newObject);
+                newObject.transform.position.add(new Vector2f(0.1f, 0.1f));
+                propertiesWindow.setActiveGameObject(newObject);
+                System.out.println("(Debug): Copy");
+                return;
+            } else if (KeyListener.keyBeginPress(GLFW_KEY_DELETE)) {
+                activeGameObject.destroy();
+                setInactive();
+                propertiesWindow.setActiveGameObject(null);
+                return;
+            }
         } else {
             setInactive();
             return;
@@ -112,10 +129,10 @@ public class Gizmo extends Component {
 
     private boolean checkXHoverState() {
         Vector2f mousePos = new Vector2f(MouseListener.getOrthoX(), MouseListener.getOrthoY());
-        if (mousePos.x <= xAxisObject.transform.position.x &&
-                mousePos.x >= xAxisObject.transform.position.x - gizmoHeight &&
-                mousePos.y >= xAxisObject.transform.position.y &&
-                mousePos.y <= xAxisObject.transform.position.y + gizmoWidth) {
+        if (mousePos.x <= xAxisObject.transform.position.x + (gizmoHeight / 2.0f) &&
+                mousePos.x >= xAxisObject.transform.position.x - (gizmoWidth / 2.0f) &&
+                mousePos.y >= xAxisObject.transform.position.y - (gizmoHeight / 2.0f) &&
+                mousePos.y <= xAxisObject.transform.position.y + (gizmoWidth / 2.0f)) {
             xAxisSprite.setColor(xAxisColorHover);
             return true;
         } else {
@@ -126,10 +143,10 @@ public class Gizmo extends Component {
 
     private boolean checkYHoverState() {
         Vector2f mousePos = new Vector2f(MouseListener.getOrthoX(), MouseListener.getOrthoY());
-        if (mousePos.x <= yAxisObject.transform.position.x &&
-                mousePos.x >= yAxisObject.transform.position.x - gizmoWidth &&
-                mousePos.y <= yAxisObject.transform.position.y &&
-                mousePos.y >= yAxisObject.transform.position.y - gizmoHeight) {
+        if (mousePos.x <= yAxisObject.transform.position.x + (gizmoWidth / 2.0f) &&
+                mousePos.x >= yAxisObject.transform.position.x - (gizmoWidth / 2.0f) &&
+                mousePos.y <= yAxisObject.transform.position.y + (gizmoHeight / 2.0f) &&
+                mousePos.y >= yAxisObject.transform.position.y - (gizmoHeight / 2.0f)) {
             yAxisSprite.setColor(yAxisColorHover);
             return true;
         } else {

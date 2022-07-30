@@ -66,10 +66,13 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
     private List<Texture> textures;
 
+    private Renderer renderer;
+
     private int zIndex;
 
-    public RenderBatch(int maxBatchSize, int zIndex) {
+    public RenderBatch(Renderer renderer, int maxBatchSize, int zIndex) {
        // this.shader = ResourceFlyWeight.getShader("/shaders/default.glsl");
+        this.renderer = renderer;
         this.sprites = new SpriteRenderer[maxBatchSize];
         this.maxBatchSize = maxBatchSize;
 
@@ -144,6 +147,13 @@ public class RenderBatch implements Comparable<RenderBatch> {
                 spr.setClean();
                 rebufferData = true;
             }
+
+            // Todo: better solution for this
+            if (spr.gameObject.transform.zIndex != zIndex) {
+                destroyIfExists(spr.gameObject);
+                renderer.add(spr.gameObject);
+                i--;
+            }
         }
         if (rebufferData) {
             glBindBuffer(GL_ARRAY_BUFFER, vboID);
@@ -209,7 +219,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
             }
         }
 
-        boolean isRotated = sprite.gameObject.transform.rotation != 0.0f;
+        boolean isRotated = (sprite.gameObject.transform.rotation != 0.0f);
         Matrix4f transformMatrix = new Matrix4f().identity();
         if (isRotated) {
             transformMatrix.translate(
@@ -219,15 +229,15 @@ public class RenderBatch implements Comparable<RenderBatch> {
         }
 
         // Add vertex with the appropriate properties
-        float xAdd = 1.0f;
-        float yAdd = 1.0f;
+        float xAdd = 0.5f;
+        float yAdd = 0.5f;
         for (int i = 0; i < 4; i++) {
             if (i == 1) {
-                yAdd = 0.0f;
+                yAdd = -0.5f;
             } else if (i == 2) {
-                xAdd = 0.0f;
+                xAdd = -0.5f;
             } else if (i == 3) {
-                yAdd = 1.0f;
+                yAdd = 0.5f;
             }
 
             Vector4f currentPos = new Vector4f(

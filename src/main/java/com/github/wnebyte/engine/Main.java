@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #39 - Adding an Engine Runtime (Play/Stop Buttons)
+Coding a 2D Game Engine #40 - Refactoring and Physics
  */
 public class Main {
 
