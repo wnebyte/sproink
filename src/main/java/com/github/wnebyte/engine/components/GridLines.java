@@ -11,7 +11,7 @@ import com.github.wnebyte.engine.util.Settings;
 public class GridLines extends Component {
 
     @Override
-    public void update(float dt) {
+    public void editorUpdate(float dt) {
         Camera camera = Window.getScene().getCamera();
         Vector2f cameraPos = camera.getPosition();
         Vector2f projectionSize = camera.getProjectionSize();

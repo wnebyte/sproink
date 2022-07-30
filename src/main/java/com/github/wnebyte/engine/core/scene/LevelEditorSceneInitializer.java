@@ -4,68 +4,28 @@ import imgui.ImGui;
 import imgui.ImVec2;
 import org.joml.Vector2f;
 import com.github.wnebyte.engine.core.Prefabs;
-import com.github.wnebyte.engine.core.Transform;
 import com.github.wnebyte.engine.core.ecs.*;
-import com.github.wnebyte.engine.core.camera.Camera;
 import com.github.wnebyte.engine.renderer.Texture;
 import com.github.wnebyte.engine.components.*;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
 
-public class LevelEditorScene extends Scene {
+public class LevelEditorSceneInitializer implements SceneInitializer {
 
     private Spritesheet sprites;
 
-    private final GameObject levelEditorStuff = createGameObject("LevelEditor");
+    private GameObject levelEditorStuff;
 
     @Override
-    public void init() {
-        loadResources();
+    public void init(Scene scene) {
         sprites = ResourceFlyWeight.getSpritesheet("/images/spritesheets/decorationsAndBlocks.png");
         Spritesheet gizmos = ResourceFlyWeight.getSpritesheet("/images/gizmos.png");
-        camera = new Camera(new Vector2f(-250, 0));
+        levelEditorStuff = scene.createGameObject("LevelEditor");
+        levelEditorStuff.setNoSerialize();
         levelEditorStuff.addComponent(new MouseControls());
         levelEditorStuff.addComponent(new GridLines());
-        levelEditorStuff.addComponent(new EditorCamera(camera));
+        levelEditorStuff.addComponent(new EditorCamera(scene.getCamera()));
         levelEditorStuff.addComponent(new GizmoSystem(gizmos));
-        levelEditorStuff.start();
-    }
-
-    private void loadResources() {
-        ResourceFlyWeight.getShader("/shaders/default.glsl");
-        ResourceFlyWeight.addSpritesheet("/images/spritesheets/decorationsAndBlocks.png",
-                new Spritesheet(ResourceFlyWeight.getTexture("/images/spritesheets/decorationsAndBlocks.png"),
-                        16, 16, 81, 0));
-        ResourceFlyWeight.addSpritesheet("/images/gizmos.png",
-                new Spritesheet(ResourceFlyWeight.getTexture("/images/gizmos.png"),
-                        24, 48, 3, 0));
-        ResourceFlyWeight.getTexture("/images/blendImage2.png");
-
-        for (GameObject go : gameObjects) {
-            SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
-            if (spr != null) {
-                Texture texture = spr.getTexture();
-                if (texture != null) {
-                    spr.setTexture(ResourceFlyWeight.getTexture(texture.getPath()));
-                }
-            }
-        }
-    }
-
-    float x = 0f;
-    float y = 0f;
-
-    @Override
-    public void update(float dt) {
-        levelEditorStuff.update(dt);
-        camera.adjustProjection();
-        for (GameObject go : this.gameObjects) {
-            go.update(dt);
-        }
-    }
-
-    @Override
-    public void render() {
-        renderer.render();
+        scene.addGameObjectToScene(levelEditorStuff);
     }
 
     @Override
@@ -110,6 +70,28 @@ public class LevelEditorScene extends Scene {
         }
 
         ImGui.end();
+    }
+
+    @Override
+    public void loadResources(Scene scene) {
+        ResourceFlyWeight.getShader("/shaders/default.glsl");
+        ResourceFlyWeight.addSpritesheet("/images/spritesheets/decorationsAndBlocks.png",
+                new Spritesheet(ResourceFlyWeight.getTexture("/images/spritesheets/decorationsAndBlocks.png"),
+                        16, 16, 81, 0));
+        ResourceFlyWeight.addSpritesheet("/images/gizmos.png",
+                new Spritesheet(ResourceFlyWeight.getTexture("/images/gizmos.png"),
+                        24, 48, 3, 0));
+        ResourceFlyWeight.getTexture("/images/blendImage2.png");
+
+        for (GameObject go : scene.getGameObjects()) {
+            SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
+            if (spr != null) {
+                Texture texture = spr.getTexture();
+                if (texture != null) {
+                    spr.setTexture(ResourceFlyWeight.getTexture(texture.getPath()));
+                }
+            }
+        }
     }
 }
 

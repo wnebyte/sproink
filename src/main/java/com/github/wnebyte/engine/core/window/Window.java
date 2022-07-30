@@ -1,26 +1,27 @@
 package com.github.wnebyte.engine.core.window;
 
-import com.github.wnebyte.engine.renderer.*;
-import com.github.wnebyte.engine.util.ResourceFlyWeight;
-import imgui.ImGui;
-import org.joml.Vector4f;
+import com.github.wnebyte.engine.observer.event.*;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import com.github.wnebyte.engine.core.event.KeyListener;
 import com.github.wnebyte.engine.core.event.MouseListener;
-import com.github.wnebyte.engine.core.scene.LevelEditorScene;
-import com.github.wnebyte.engine.core.scene.LevelScene;
+import com.github.wnebyte.engine.core.scene.LevelEditorSceneInitializer;
+import com.github.wnebyte.engine.core.scene.SceneInitializer;
 import com.github.wnebyte.engine.core.scene.Scene;
 import com.github.wnebyte.engine.core.ui.ImGuiLayer;
-
+import com.github.wnebyte.engine.core.ecs.GameObject;
+import com.github.wnebyte.engine.observer.EventSystem;
+import com.github.wnebyte.engine.observer.Observer;
+import com.github.wnebyte.engine.renderer.*;
+import com.github.wnebyte.engine.util.ResourceFlyWeight;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-public class Window {
+@SuppressWarnings("resource")
+public class Window implements Observer {
 
     public static final int DEFAULT_WIDTH = 1920;
 
@@ -42,6 +43,8 @@ public class Window {
 
     private PickingTexture pickingTexture;
 
+    private boolean runtimePlaying = false;
+
     private float r = 1.0f;
 
     private float g = 1.0f;
@@ -54,6 +57,7 @@ public class Window {
         this.width = DEFAULT_WIDTH;
         this.height = DEFAULT_HEIGHT;
         this.title = "Engine";
+        EventSystem.getInstance().addObserver(this);
     }
 
     public static Window get() {
@@ -67,24 +71,15 @@ public class Window {
         return get().scene;
     }
 
-    public static void setScene(int newScene) {
-        switch (newScene) {
-            case 0:
-                window.scene = new LevelEditorScene();
-                window.scene.load();
-                window.scene.init();
-                window.scene.start();
-                break;
-            case 1:
-                window.scene = new LevelScene();
-                window.scene.load();
-                window.scene.init();
-                window.scene.start();
-                break;
-            default:
-                assert false : "Unknown scene '" + newScene + "'";
-                break;
+    public static void setScene(SceneInitializer sceneInitializer) {
+        if (window.scene != null) {
+            window.scene.destroy();
         }
+        getImGuiLayer().getPropertiesWindow().setActiveGameObject(null);
+        window.scene = new Scene(sceneInitializer);
+        window.scene.load();
+        window.scene.init();
+        window.scene.start();
     }
 
     public void run() {
@@ -166,7 +161,7 @@ public class Window {
         imGuiLayer = new ImGuiLayer(glfwWindow, pickingTexture);
         imGuiLayer.init();
 
-        setScene(0);
+        setScene(new LevelEditorSceneInitializer());
     }
 
     private void loop() {
@@ -203,7 +198,11 @@ public class Window {
             if (dt >= 0) {
                 DebugDraw.draw();
                 Renderer.bindShader(defaultShader);
-                scene.update(dt);
+                if (runtimePlaying) {
+                    scene.update(dt);
+                } else {
+                    scene.editorUpdate(dt);
+                }
                 scene.render();
             }
             frameBuffer.unbind();
@@ -217,7 +216,7 @@ public class Window {
             beginTime = endTime;
         }
 
-        scene.saveExit();
+        scene.save();
 
     }
 
@@ -247,5 +246,23 @@ public class Window {
 
     public static ImGuiLayer getImGuiLayer() {
         return get().imGuiLayer;
+    }
+
+    @Override
+    public void notify(GameObject go, Event event) {
+        if (event instanceof GameEngineStartPlayEvent) {
+            runtimePlaying = true;
+            scene.save();
+            setScene(new LevelEditorSceneInitializer());
+            System.out.println("(Debug): Start Play");
+        } else if (event instanceof GameEngineStopPlayEvent) {
+            runtimePlaying = false;
+            setScene(new LevelEditorSceneInitializer());
+            System.out.println("(Debug): Stop Play");
+        } else if (event instanceof LoadLevelEvent) {
+            setScene(new LevelEditorSceneInitializer());
+        } else if (event instanceof SaveLevelEvent) {
+            scene.save();
+        }
     }
 }

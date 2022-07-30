@@ -19,6 +19,8 @@ public class GameObject {
 
     private boolean serialize = true;
 
+    private boolean isDead = false;
+
     public GameObject(String name) {
         this.name = name;
         this.components = new ArrayList<>();
@@ -66,6 +68,12 @@ public class GameObject {
         }
     }
 
+    public void editorUpdate(float dt) {
+        for (Component c : components) {
+            c.editorUpdate(dt);
+        }
+    }
+
     public void update(float dt) {
         for (Component c : components) {
             c.update(dt);
@@ -90,6 +98,18 @@ public class GameObject {
 
     public boolean isSerialize() {
         return serialize;
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public void destroy() {
+        isDead = true;
+        for (int i = 0; i < components.size(); i++) {
+            Component c = components.get(i);
+            c.destroy();
+        }
     }
 
     public static void init(int maxId) {

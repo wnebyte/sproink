@@ -26,6 +26,14 @@ public class SpriteRenderer extends Component {
     }
 
     @Override
+    public void editorUpdate(float dt) {
+        if (!lastTransform.equals(gameObject.transform)) {
+            gameObject.transform.copy(lastTransform);
+            isDirty = true;
+        }
+    }
+
+    @Override
     public void update(float dt) {
         if (!lastTransform.equals(gameObject.transform)) {
             gameObject.transform.copy(lastTransform);
@@ -58,6 +66,10 @@ public class SpriteRenderer extends Component {
 
     public void setClean() {
         isDirty = false;
+    }
+
+    public void setDirty() {
+        isDirty = true;
     }
 
     public void setSprite(Sprite sprite) {

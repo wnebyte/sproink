@@ -3,6 +3,7 @@ package com.github.wnebyte.engine.renderer;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.github.wnebyte.engine.core.ecs.GameObject;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -173,6 +174,21 @@ public class RenderBatch implements Comparable<RenderBatch> {
             texture.unbind();
         }
         shader.detach();
+    }
+
+    public boolean destroyIfExists(GameObject go) {
+        SpriteRenderer sprite = go.getComponent(SpriteRenderer.class);
+        for (int i = 0; i < numSprites; i++) {
+            if (sprites[i].equals(sprite)) {
+                for (int j = i; j < numSprites - 1; j++) {
+                    sprites[j] = sprites[j + 1];
+                    sprites[j].setDirty();
+                }
+                numSprites--;
+                return true;
+            }
+        }
+        return false;
     }
 
     private void loadVertexProperties(int index) {

@@ -1,5 +1,6 @@
 package com.github.wnebyte.engine.core.ui;
 
+import com.github.wnebyte.engine.editor.MenuBar;
 import imgui.*;
 import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
@@ -30,10 +31,13 @@ public class ImGuiLayer {
 
     private final PropertiesWindow propertiesWindow;
 
+    private final MenuBar menuBar;
+
     public ImGuiLayer(long glfwWindow, PickingTexture pickingTexture) {
         this.glfwWindow = glfwWindow;
         this.gameViewWindow = new GameViewWindow();
         this.propertiesWindow = new PropertiesWindow(pickingTexture);
+        this.menuBar = new MenuBar();
     }
 
     public void init() {
@@ -193,6 +197,7 @@ public class ImGuiLayer {
         gameViewWindow.imGui();
         propertiesWindow.update(dt, scene);
         propertiesWindow.imGui();
+        menuBar.imGui();
         ImGui.end();
         ImGui.render();
         endFrame();

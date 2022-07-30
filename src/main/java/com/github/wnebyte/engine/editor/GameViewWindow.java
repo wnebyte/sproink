@@ -1,19 +1,35 @@
 package com.github.wnebyte.engine.editor;
 
-import com.github.wnebyte.engine.core.event.MouseListener;
-import com.github.wnebyte.engine.core.window.Window;
+import com.github.wnebyte.engine.observer.EventSystem;
+import com.github.wnebyte.engine.observer.event.GameEngineStopPlayEvent;
+import com.github.wnebyte.engine.observer.event.GameEngineStartPlayEvent;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiWindowFlags;
 import org.joml.Vector2f;
+import com.github.wnebyte.engine.core.event.MouseListener;
+import com.github.wnebyte.engine.core.window.Window;
 
 public class GameViewWindow {
 
     private float leftX, rightX, topY, bottomY;
 
+    private boolean isPlaying = false;
+
     public void imGui() {
         ImGui.begin("Game Viewport",
-                ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+                ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.MenuBar);
+
+        ImGui.beginMenuBar();
+        if (ImGui.menuItem("Play", "", isPlaying, !isPlaying)) {
+            isPlaying = true;
+            EventSystem.getInstance().notify(null, new GameEngineStartPlayEvent());
+        }
+        if (ImGui.menuItem("Stop", "", !isPlaying, isPlaying)) {
+            isPlaying = false;
+            EventSystem.getInstance().notify(null, new GameEngineStopPlayEvent());
+        }
+        ImGui.endMenuBar();
 
         ImVec2 windowSize = getMaxSizeForViewport();
         ImVec2 windowPos = getCenteredPositionForViewport(windowSize);
@@ -24,12 +40,6 @@ public class GameViewWindow {
         ImGui.getCursorScreenPos(topLeft);
         topLeft.x -= ImGui.getScrollX();
         topLeft.y -= ImGui.getScrollY();
-        /*
-        leftX = topLeft.x;
-        topY = topLeft.y; // s
-        rightX = topLeft.x + windowSize.x;
-        bottomY = topLeft.y + windowSize.y; // s
-         */
         leftX = topLeft.x;
         bottomY = topLeft.y;
         rightX = topLeft.x + windowSize.x;

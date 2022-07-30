@@ -6,19 +6,19 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.ArrayList;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.joml.Vector2f;
 import com.github.wnebyte.engine.core.Transform;
 import com.github.wnebyte.engine.core.ecs.Component;
 import com.github.wnebyte.engine.core.ecs.ComponentTypeAdapter;
 import com.github.wnebyte.engine.core.ecs.GameObjectTypeAdapter;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import imgui.ImGui;
 import com.github.wnebyte.engine.core.camera.Camera;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.renderer.Renderer;
+import com.github.wnebyte.engine.physics2d.Physics2D;
 
-public abstract class Scene {
+public class Scene {
 
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(Component.class, new ComponentTypeAdapter())
@@ -26,31 +26,87 @@ public abstract class Scene {
             .setPrettyPrinting()
             .create();
 
-    protected Camera camera;
+    private Camera camera;
 
-    protected Renderer renderer = new Renderer();
+    private boolean isRunning;
 
-    protected List<GameObject> gameObjects = new ArrayList<>();
+    private final Renderer renderer;
 
-    protected boolean levelLoaded = false;
+    private final List<GameObject> gameObjects;
 
-    private boolean isRunning = false;
+    private final Physics2D physics2d;
+
+    private final SceneInitializer sceneInitializer;
+
+    public Scene(SceneInitializer sceneInitializer) {
+        this.sceneInitializer = sceneInitializer;
+        this.physics2d = new Physics2D();
+        this.renderer = new Renderer();
+        this.gameObjects = new ArrayList<>();
+        this.isRunning = false;
+    }
 
     public void init() {
-
+        camera = new Camera(new Vector2f(-250, 0));
+        sceneInitializer.loadResources(this);
+        sceneInitializer.init(this);
     }
 
     public void start() {
-        for (GameObject go : gameObjects) {
+        for (int i = 0; i < gameObjects.size(); i++) {
+            GameObject go = gameObjects.get(i);
             go.start();
             renderer.add(go);
+            physics2d.add(go);
         }
         isRunning = true;
     }
 
-    public abstract void update(float dt);
+    public void editorUpdate(float dt) {
+        camera.adjustProjection();
+        for (int i = 0; i < gameObjects.size(); i++) {
+            GameObject go = gameObjects.get(i);
+            go.editorUpdate(dt);
 
-    public abstract void render();
+            if (go.isDead()) {
+                gameObjects.remove(i);
+                renderer.destroyGameObject(go);
+                physics2d.destroyGameObject(go);
+                i--;
+            }
+        }
+    }
+
+    public void update(float dt) {
+        camera.adjustProjection();
+        physics2d.update(dt);
+
+        for (int i = 0; i < gameObjects.size(); i++) {
+            GameObject go = gameObjects.get(i);
+            go.update(dt);
+
+            if (go.isDead()) {
+                gameObjects.remove(i);
+                renderer.destroyGameObject(go);
+                physics2d.destroyGameObject(go);
+                i--;
+            }
+        }
+    }
+
+    public void imGui() {
+        sceneInitializer.imGui();
+    }
+
+    public void render() {
+        renderer.render();
+    }
+
+    public void destroy() {
+        for (GameObject go : gameObjects) {
+            go.destroy();
+        }
+    }
 
     public void addGameObjectToScene(GameObject go) {
         if (!isRunning) {
@@ -59,7 +115,12 @@ public abstract class Scene {
             gameObjects.add(go);
             go.start();
             renderer.add(go);
+            physics2d.add(go);
         }
+    }
+
+    public List<GameObject> getGameObjects() {
+        return gameObjects;
     }
 
     public GameObject getGameObject(int id) {
@@ -73,8 +134,6 @@ public abstract class Scene {
         return camera;
     }
 
-    public void imGui() {}
-
     public GameObject createGameObject(String name) {
         GameObject go = new GameObject(name);
         go.addComponent(new Transform());
@@ -82,7 +141,7 @@ public abstract class Scene {
         return go;
     }
 
-    public void saveExit() {
+    public void save() {
         try {
             FileWriter writer = new FileWriter("level.txt");
             List<GameObject> out = new ArrayList<>();
@@ -128,7 +187,6 @@ public abstract class Scene {
             maxCompId++;
             GameObject.init(maxGoId);
             Component.init(maxCompId);
-            this.levelLoaded = true;
         }
 
     }

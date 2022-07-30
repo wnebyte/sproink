@@ -18,6 +18,8 @@ public abstract class Component {
 
     public void start() { }
 
+    public void editorUpdate(float dt) {}
+
     public void update(float dt) {}
 
     public void imGui() {
@@ -72,6 +74,10 @@ public abstract class Component {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    public void destroy() {
+
     }
 
     public void generateId() {
