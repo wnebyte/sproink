@@ -1,11 +1,14 @@
 package com.github.wnebyte.engine.editor;
 
-import com.github.wnebyte.engine.components.NonPickable;
 import imgui.ImGui;
-import com.github.wnebyte.engine.renderer.PickingTexture;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.core.event.MouseListener;
 import com.github.wnebyte.engine.core.scene.Scene;
+import com.github.wnebyte.engine.components.NonPickable;
+import com.github.wnebyte.engine.renderer.PickingTexture;
+import com.github.wnebyte.engine.physics2d.components.Box2DCollider;
+import com.github.wnebyte.engine.physics2d.components.CircleCollider;
+import com.github.wnebyte.engine.physics2d.components.RigidBody2D;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 public class PropertiesWindow {
@@ -40,6 +43,31 @@ public class PropertiesWindow {
     public void imGui() {
         if (activeGameObject != null) {
             ImGui.begin("Properties");
+
+            if (ImGui.beginPopupContextWindow("ComponentAdder")) {
+                if (ImGui.menuItem("Add Rigid Body")) {
+                    if (activeGameObject.getComponent(RigidBody2D.class) == null) {
+                        activeGameObject.addComponent(new RigidBody2D());
+                    }
+                }
+
+                if (ImGui.menuItem("Add Box Collider")) {
+                    if (activeGameObject.getComponent(Box2DCollider.class) == null &&
+                            activeGameObject.getComponent(CircleCollider.class) == null) {
+                        activeGameObject.addComponent(new Box2DCollider());
+                    }
+                }
+
+                if (ImGui.menuItem("Add Circle Collider")) {
+                    if (activeGameObject.getComponent(CircleCollider.class) == null &&
+                            activeGameObject.getComponent(Box2DCollider.class) == null) {
+                        activeGameObject.addComponent(new CircleCollider());
+                    }
+                }
+
+                ImGui.endPopup();
+            }
+
             activeGameObject.imGui();
             ImGui.end();
         }

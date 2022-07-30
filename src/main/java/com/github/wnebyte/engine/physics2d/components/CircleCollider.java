@@ -1,8 +1,10 @@
 package com.github.wnebyte.engine.physics2d.components;
 
-import com.github.wnebyte.engine.core.ecs.Component;
+import com.github.wnebyte.engine.components.Collider;
 
-public class CircleCollider extends Component {
+public class CircleCollider extends Collider {
+
+    private float radius = 1.0f;
 
     public float getRadius() {
         return radius;
@@ -11,6 +13,4 @@ public class CircleCollider extends Component {
     public void setRadius(float radius) {
         this.radius = radius;
     }
-
-    private float radius = 1.0f;
 }

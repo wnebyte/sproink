@@ -11,6 +11,7 @@ project.ext.lwjglVersion = "3.2.3"
 project.ext.jomlVersion = "1.10.2"
 project.ext.lwjglNatives = "natives-windows"
 project.ext.imguiVersion = '1.86.0'
+project.ext.box2DVersion = '2.2.1.1'
 
 sourceSets {
     main {

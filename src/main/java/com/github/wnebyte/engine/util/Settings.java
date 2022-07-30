@@ -1,6 +1,6 @@
 package com.github.wnebyte.engine.util;
 
-public class Constants {
+public class Settings {
 
     public static int GRID_WIDTH = 32;
 
