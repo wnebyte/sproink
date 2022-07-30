@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.ArrayList;
+
+import com.github.wnebyte.engine.core.Transform;
 import com.github.wnebyte.engine.core.ecs.Component;
 import com.github.wnebyte.engine.core.ecs.ComponentTypeAdapter;
 import com.github.wnebyte.engine.core.ecs.GameObjectTypeAdapter;
@@ -72,6 +74,13 @@ public abstract class Scene {
     }
 
     public void imGui() {}
+
+    public GameObject createGameObject(String name) {
+        GameObject go = new GameObject(name);
+        go.addComponent(new Transform());
+        go.transform = go.getComponent(Transform.class);
+        return go;
+    }
 
     public void saveExit() {
         try {

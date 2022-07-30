@@ -3,7 +3,6 @@ package com.github.wnebyte.engine.core.scene;
 import imgui.ImGui;
 import imgui.ImVec2;
 import org.joml.Vector2f;
-import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.core.Prefabs;
 import com.github.wnebyte.engine.core.Transform;
 import com.github.wnebyte.engine.core.ecs.*;
@@ -16,7 +15,7 @@ public class LevelEditorScene extends Scene {
 
     private Spritesheet sprites;
 
-    private final GameObject levelEditorStuff = new GameObject("LevelEditor", new Transform(), 0);
+    private final GameObject levelEditorStuff = createGameObject("LevelEditor");
 
     @Override
     public void init() {

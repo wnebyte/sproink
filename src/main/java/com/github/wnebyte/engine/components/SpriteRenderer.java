@@ -1,6 +1,8 @@
 package com.github.wnebyte.engine.components;
 
 import java.util.Objects;
+
+import com.github.wnebyte.engine.editor.JImGui;
 import imgui.ImGui;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
@@ -18,20 +20,6 @@ public class SpriteRenderer extends Component {
 
     private transient boolean isDirty = true;
 
-    /*
-    public SpriteRenderer(Vector4f color) {
-        this.color = color;
-        this.sprite = new Sprite(null);
-        this.isDirty = true;
-    }
-
-    public SpriteRenderer(Sprite sprite) {
-        this.sprite = sprite;
-        this.color = new Vector4f(1, 1, 1, 1);
-        this.isDirty = true;
-    }
-     */
-
     @Override
     public void start() {
         this.lastTransform = gameObject.transform.copy();
@@ -47,9 +35,7 @@ public class SpriteRenderer extends Component {
 
     @Override
     public void imGui() {
-        float[] refColors = { color.x, color.y, color.z, color.w };
-        if (ImGui.colorPicker4("Color Picker: ", refColors)) {
-            color.set(refColors[0], refColors[1], refColors[2], refColors[3]);
+        if (JImGui.colorPicker4("Color", color)) {
             isDirty = true;
         }
     }

@@ -2,14 +2,18 @@ package com.github.wnebyte.engine.core;
 
 import java.util.Objects;
 import org.joml.Vector2f;
+import com.github.wnebyte.engine.core.ecs.Component;
+import com.github.wnebyte.engine.editor.JImGui;
 
-public class Transform {
+public class Transform extends Component {
 
     public final Vector2f position;
 
     public final Vector2f scale;
 
-    public float rotation = 0.0f;
+    public float rotation;
+
+    public int zIndex;
 
     public Transform() {
         this(new Vector2f(), new Vector2f());
@@ -22,6 +26,16 @@ public class Transform {
     public Transform(Vector2f position, Vector2f scale) {
         this.position = position;
         this.scale = scale;
+        this.rotation = 0.0f;
+        this.zIndex = 0;
+    }
+
+    @Override
+    public void imGui() {
+        JImGui.drawVec2Control("Position", position);
+        JImGui.drawVec2Control("Scale", scale, 32.0f);
+        JImGui.dragFloat("Rotation", rotation);
+        JImGui.dragInt("Z-Index", zIndex);
     }
 
     public Transform copy() {
@@ -31,6 +45,8 @@ public class Transform {
     public void copy(Transform transform) {
         transform.position.set(this.position);
         transform.scale.set(this.scale);
+        transform.rotation = this.rotation;
+        transform.zIndex = this.zIndex;
     }
 
     @Override
@@ -41,6 +57,8 @@ public class Transform {
         Transform transform = (Transform) o;
         return Objects.equals(transform.position, this.position) &&
                 Objects.equals(transform.scale, this.scale) &&
+                Objects.equals(transform.rotation, this.rotation) &&
+                Objects.equals(transform.zIndex, this.zIndex) &&
                 super.equals(transform);
     }
 
@@ -51,13 +69,15 @@ public class Transform {
                 13 +
                 Objects.hashCode(this.position) +
                 Objects.hashCode(this.scale) +
+                Objects.hashCode(this.rotation) +
+                Objects.hashCode(this.zIndex) +
                 super.hashCode();
     }
 
     @Override
     public String toString() {
         return String.format(
-                "Transform[position: %s, scale: %s]", position, scale
+                "Transform[position: %s, scale: %s, rotation: %.2f, zIndex: %d]", position, scale, rotation, zIndex
         );
     }
 }

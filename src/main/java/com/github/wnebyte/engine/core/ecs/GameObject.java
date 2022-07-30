@@ -1,6 +1,7 @@
 package com.github.wnebyte.engine.core.ecs;
 
 import com.github.wnebyte.engine.core.Transform;
+import imgui.ImGui;
 
 import java.util.*;
 
@@ -8,7 +9,7 @@ public class GameObject {
 
     private static int ID_COUNTER = 0;
 
-    public final Transform transform;
+    public transient Transform transform;
 
     private int id = -1;
 
@@ -16,23 +17,11 @@ public class GameObject {
 
     private final List<Component> components;
 
-    private final int zIndex;
-
     private boolean serialize = true;
 
     public GameObject(String name) {
-        this(name, new Transform(), 0);
-    }
-
-    public GameObject(String name, Transform transform) {
-        this(name, transform, 0);
-    }
-
-    public GameObject(String name, Transform transform, int zIndex) {
         this.name = name;
-        this.transform = transform;
         this.components = new ArrayList<>();
-        this.zIndex = zIndex;
         this.id = ID_COUNTER++;
     }
 
@@ -85,12 +74,10 @@ public class GameObject {
 
     public void imGui() {
         for (Component c : components) {
-            c.imGui();
+            if (ImGui.collapsingHeader(c.getClass().getSimpleName())) {
+                c.imGui();
+            }
         }
-    }
-
-    public int zIndex() {
-        return zIndex;
     }
 
     public int getId() {
