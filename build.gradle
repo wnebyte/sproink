@@ -34,6 +34,9 @@ sourceSets {
 }
 
 repositories {
+    flatDir {
+        dirs 'lib'
+    }
     mavenCentral()
 }
 
@@ -63,6 +66,10 @@ dependencies {
 
     // gson
     implementation "com.google.code.gson:gson:2.8.6"
+
+    // lib
+    //implementation fileTree(dir: 'lib', include: ['*.jar'])
+    implementation name: 'jbox2d-library'
 
     // junit
     testCompile group: 'junit', name: 'junit', version: '4.12'

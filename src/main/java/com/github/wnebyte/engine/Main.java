@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #36 - Properties Panel
+Coding a 2D Game Engine #37 - Integrating JBox2D in our Engine
  */
 public class Main {
 
