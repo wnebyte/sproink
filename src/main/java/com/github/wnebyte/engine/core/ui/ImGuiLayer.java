@@ -1,31 +1,38 @@
 package com.github.wnebyte.engine.core.ui;
 
-import com.github.wnebyte.engine.editor.MenuBar;
+import com.github.wnebyte.engine.editor.SceneHierarchyWindow;
 import imgui.*;
 import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
 import imgui.flag.*;
 import imgui.gl3.ImGuiImplGl3;
+import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
 import com.github.wnebyte.engine.core.event.KeyListener;
 import com.github.wnebyte.engine.core.event.MouseListener;
 import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.core.scene.Scene;
 import com.github.wnebyte.engine.renderer.PickingTexture;
+import com.github.wnebyte.engine.util.ResourceUtil;
 import com.github.wnebyte.engine.editor.GameViewWindow;
 import com.github.wnebyte.engine.editor.PropertiesWindow;
-import com.github.wnebyte.engine.util.ResourceUtil;
+import com.github.wnebyte.engine.editor.MenuBar;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.glBindFramebuffer;
+import static org.lwjgl.opengl.GL30C.GL_FRAMEBUFFER;
 
 public class ImGuiLayer {
 
     private final long glfwWindow;
 
     // Mouse cursors provided by GLFW
-    private final long[] mouseCursors = new long[ImGuiMouseCursor.COUNT];
+   // private final long[] mouseCursors = new long[ImGuiMouseCursor.COUNT];
 
     // LWJGL3 renderer (SHOULD be initialized)
     private final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
+
+    private final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
 
     private final GameViewWindow gameViewWindow;
 
@@ -33,11 +40,14 @@ public class ImGuiLayer {
 
     private final MenuBar menuBar;
 
+    private final SceneHierarchyWindow sceneHierarchyWindow;
+
     public ImGuiLayer(long glfwWindow, PickingTexture pickingTexture) {
         this.glfwWindow = glfwWindow;
         this.gameViewWindow = new GameViewWindow();
         this.propertiesWindow = new PropertiesWindow(pickingTexture);
         this.menuBar = new MenuBar();
+        this.sceneHierarchyWindow = new SceneHierarchyWindow();
     }
 
     public void init() {
@@ -50,11 +60,13 @@ public class ImGuiLayer {
         final ImGuiIO io = ImGui.getIO();
 
         io.setIniFilename("imgui.ini"); // We don't want to save .ini file
-        io.setConfigFlags(ImGuiConfigFlags.NavEnableKeyboard); // Navigation with keyboard
+       // io.setConfigFlags(ImGuiConfigFlags.NavEnableKeyboard); // Navigation with keyboard
         io.setConfigFlags(ImGuiConfigFlags.DockingEnable);
-        io.setBackendFlags(ImGuiBackendFlags.HasMouseCursors); // Mouse cursors to display while resizing windows etc.
+       // io.setConfigFlags(ImGuiConfigFlags.ViewportsEnable);
+       // io.setBackendFlags(ImGuiBackendFlags.HasMouseCursors); // Mouse cursors to display while resizing windows etc.
         io.setBackendPlatformName("imgui_java_impl_glfw");
 
+        /*
         // ------------------------------------------------------------
         // Keyboard mapping. ImGui will use those indices to peek into the io.KeysDown[] array.
         final int[] keyMap = new int[ImGuiKey.COUNT];
@@ -93,6 +105,7 @@ public class ImGuiLayer {
         mouseCursors[ImGuiMouseCursor.ResizeNWSE] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
         mouseCursors[ImGuiMouseCursor.Hand] = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
         mouseCursors[ImGuiMouseCursor.NotAllowed] = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+         */
 
         // ------------------------------------------------------------
         // GLFW callbacks to handle user input
@@ -185,25 +198,24 @@ public class ImGuiLayer {
         // Method initializes LWJGL3 renderer.
         // This method SHOULD be called after you've initialized your ImGui configuration (fonts and so on).
         // ImGui context should be created as well.
+        imGuiGlfw.init(glfwWindow, false);
         imGuiGl3.init("#version 330 core");
     }
 
     public void update(float dt, Scene scene) {
         startFrame(dt);
-        ImGui.newFrame();
         setupDockSpace();
         scene.imGui();
-        ImGui.showDemoWindow();
+       // ImGui.showDemoWindow();
         gameViewWindow.imGui();
         propertiesWindow.update(dt, scene);
         propertiesWindow.imGui();
-        menuBar.imGui();
-        ImGui.end();
-        ImGui.render();
+        sceneHierarchyWindow.imGui();
         endFrame();
     }
 
     private void startFrame(final float deltaTime) {
+        /*
         // Get window properties and mouse position
         int[] winWidth = { Window.getWidth() };
         int[] winHeight = { Window.getHeight() };
@@ -225,12 +237,28 @@ public class ImGuiLayer {
         final int imguiCursor = ImGui.getMouseCursor();
         glfwSetCursor(glfwWindow, mouseCursors[imguiCursor]);
         glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+         */
+
+        imGuiGlfw.newFrame();
+        ImGui.newFrame();
     }
 
     private void endFrame() {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, Window.getWidth(), Window.getHeight());
+        glClearColor(0, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
         // After Dear ImGui prepared a draw data, we use it in the LWJGL3 renderer.
         // At that moment ImGui will be rendered to the current OpenGL context.
+        ImGui.render();
         imGuiGl3.renderDrawData(ImGui.getDrawData());
+
+        /*
+        long backupWindowPointer = glfwGetCurrentContext();
+        ImGui.updatePlatformWindows();
+        ImGui.renderPlatformWindowsDefault();
+        glfwMakeContextCurrent(backupWindowPointer);
+         */
     }
 
     // If you want to clean a room after yourself - do it by yourself
@@ -242,7 +270,13 @@ public class ImGuiLayer {
     private void setupDockSpace() {
         int windowFlags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking;
 
-        ImGui.setNextWindowPos(0.0f, 0.0f, ImGuiCond.Always);
+        /*
+        ImGuiViewport mainViewport = ImGui.getMainViewport();
+        ImGui.setNextWindowPos(mainViewport.getWorkPosX(), mainViewport.getWorkPosY());
+        ImGui.setNextWindowSize(mainViewport.getWorkSizeX(), mainViewport.getWorkSizeY());
+        ImGui.setNextWindowViewport(mainViewport.getID());
+         */
+        ImGui.setNextWindowPos(0.0f, 0.0f);
         ImGui.setNextWindowSize(Window.getWidth(), Window.getHeight());
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
@@ -255,9 +289,21 @@ public class ImGuiLayer {
 
         // Dockspace
         ImGui.dockSpace(ImGui.getID("Dockspace"));
+
+        menuBar.imGui();
+
+        ImGui.end();
     }
 
     public PropertiesWindow getPropertiesWindow() {
         return propertiesWindow;
+    }
+
+    public GameViewWindow getGameViewWindow() {
+        return gameViewWindow;
+    }
+
+    public MenuBar getMenuBar() {
+        return menuBar;
     }
 }

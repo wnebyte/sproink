@@ -1,14 +1,14 @@
 package com.github.wnebyte.engine.editor;
 
-import com.github.wnebyte.engine.observer.EventSystem;
-import com.github.wnebyte.engine.observer.event.GameEngineStopPlayEvent;
-import com.github.wnebyte.engine.observer.event.GameEngineStartPlayEvent;
+import org.joml.Vector2f;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiWindowFlags;
-import org.joml.Vector2f;
 import com.github.wnebyte.engine.core.event.MouseListener;
 import com.github.wnebyte.engine.core.window.Window;
+import com.github.wnebyte.engine.observer.EventSystem;
+import com.github.wnebyte.engine.observer.event.GameEngineStopPlayEvent;
+import com.github.wnebyte.engine.observer.event.GameEngineStartPlayEvent;
 
 public class GameViewWindow {
 

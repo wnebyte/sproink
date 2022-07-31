@@ -1,7 +1,6 @@
 package com.github.wnebyte.engine.core;
 
 import com.github.wnebyte.engine.core.window.Window;
-import org.joml.Vector2f;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.components.Sprite;
 import com.github.wnebyte.engine.components.SpriteRenderer;

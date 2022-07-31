@@ -7,6 +7,48 @@ import com.github.wnebyte.engine.editor.JImGui;
 
 public class Transform extends Component {
 
+    /*
+    ###########################
+    #      STATIC METHODS     #
+    ###########################
+    */
+
+    public static Transform copyOf(Transform transform) {
+        return (transform == null) ? null : transform.copy();
+    }
+
+    public static Transform newInstance() {
+        return new Transform();
+    }
+
+    public static Transform newInstance(Vector2f position) {
+        return new Transform(position);
+    }
+
+    public static Transform newInstance(Vector2f position, Vector2f scale) {
+        return new Transform(position, scale);
+    }
+
+    public static Transform newInstance(Vector2f position, Vector2f scale, float rotation, int zIndex) {
+        return new Transform(position, scale, rotation, zIndex);
+    }
+
+    /*
+    ###########################
+    #       STATIC FIELDS     #
+    ###########################
+    */
+
+    private static final float DEFAULT_ROTATION = 0.0f;
+
+    private static final int DEFAULT_Z_INDEX = 0;
+
+    /*
+    ###########################
+    #         FIELDS          #
+    ###########################
+    */
+
     public final Vector2f position;
 
     public final Vector2f scale;
@@ -14,6 +56,12 @@ public class Transform extends Component {
     public float rotation;
 
     public int zIndex;
+
+    /*
+    ###########################
+    #       CONSTRUCTORS      #
+    ###########################
+    */
 
     public Transform() {
         this(new Vector2f(), new Vector2f());
@@ -24,11 +72,21 @@ public class Transform extends Component {
     }
 
     public Transform(Vector2f position, Vector2f scale) {
+        this(position, scale, DEFAULT_ROTATION, DEFAULT_Z_INDEX);
+    }
+
+    public Transform(Vector2f position, Vector2f scale, float rotation, int zIndex) {
         this.position = position;
         this.scale = scale;
-        this.rotation = 0.0f;
-        this.zIndex = 0;
+        this.rotation = rotation;
+        this.zIndex = zIndex;
     }
+
+    /*
+    ###########################
+    #         METHODS         #
+    ###########################
+    */
 
     @Override
     public void imGui() {
@@ -39,7 +97,7 @@ public class Transform extends Component {
     }
 
     public Transform copy() {
-        return new Transform(new Vector2f(this.position), new Vector2f(this.scale));
+        return new Transform(new Vector2f(position), new Vector2f(scale), rotation, zIndex);
     }
 
     public void copy(Transform transform) {

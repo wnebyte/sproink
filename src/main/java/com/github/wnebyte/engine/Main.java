@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #40 - Refactoring and Physics
+Coding a 2D Game Engine #42 - Beginning Scene Hierarchy & ImGui Upgrade
  */
 public class Main {
 

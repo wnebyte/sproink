@@ -64,6 +64,7 @@ public class Scene {
 
     public void editorUpdate(float dt) {
         camera.adjustProjection();
+
         for (int i = 0; i < gameObjects.size(); i++) {
             GameObject go = gameObjects.get(i);
             go.editorUpdate(dt);
@@ -121,6 +122,10 @@ public class Scene {
 
     public List<GameObject> getGameObjects() {
         return gameObjects;
+    }
+
+    public Physics2D getPhysics2d() {
+        return physics2d;
     }
 
     public GameObject getGameObject(int id) {

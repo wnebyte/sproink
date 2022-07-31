@@ -8,7 +8,7 @@ import com.github.wnebyte.engine.observer.event.SaveLevelEvent;
 public class MenuBar {
 
     public void imGui() {
-        ImGui.beginMainMenuBar();
+        ImGui.beginMenuBar();
 
         if (ImGui.beginMenu("File")) {
             if (ImGui.menuItem("Save", "CTRL+S")) {
@@ -20,6 +20,6 @@ public class MenuBar {
             ImGui.endMenu();
         }
 
-        ImGui.endMainMenuBar();;
+        ImGui.endMenuBar();
     }
 }
