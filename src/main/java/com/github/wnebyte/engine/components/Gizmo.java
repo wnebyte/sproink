@@ -1,14 +1,15 @@
 package com.github.wnebyte.engine.components;
 
-import com.github.wnebyte.engine.core.event.KeyListener;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import com.github.wnebyte.engine.core.Prefabs;
 import com.github.wnebyte.engine.core.ecs.Component;
 import com.github.wnebyte.engine.core.ecs.GameObject;
+import com.github.wnebyte.engine.core.event.KeyListener;
 import com.github.wnebyte.engine.core.event.MouseListener;
 import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.editor.PropertiesWindow;
+
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -71,6 +72,15 @@ public class Gizmo extends Component {
     }
 
     @Override
+    public void update(float dt) {
+        if (using) {
+            setInactive();
+        }
+        xAxisObject.getComponent(SpriteRenderer.class).setColor(new Vector4f(0, 0, 0, 0));
+        yAxisObject.getComponent(SpriteRenderer.class).setColor(new Vector4f(0, 0, 0, 0));
+    }
+
+    @Override
     public void editorUpdate(float dt) {
         if (!using) return;
 
@@ -117,13 +127,6 @@ public class Gizmo extends Component {
             yAxisObject.transform.position.set(activeGameObject.transform.position);
             xAxisObject.transform.position.add(xAxisOffset);
             yAxisObject.transform.position.add(yAxisOffset);
-        }
-    }
-
-    @Override
-    public void update(float dt) {
-        if (using) {
-            setInactive();
         }
     }
 

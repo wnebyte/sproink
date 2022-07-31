@@ -31,6 +31,9 @@ public class MouseControls extends Component {
 
     public void drop() {
         GameObject go = draggable.copy();
+        if (go.getComponent(StateMachine.class) != null) {
+            go.getComponent(StateMachine.class).refreshTextures();
+        }
         go.getComponent(SpriteRenderer.class).setColor(new Vector4f(1, 1, 1, 1));
         go.removeComponent(NonPickable.class);
         Window.getScene().addGameObjectToScene(go);

@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #44
+Coding a 2D Game Engine #45 - 2D Animations
  */
 public class Main {
 

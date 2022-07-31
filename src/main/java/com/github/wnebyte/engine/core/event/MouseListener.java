@@ -1,11 +1,10 @@
 package com.github.wnebyte.engine.core.event;
 
-import com.github.wnebyte.engine.core.camera.Camera;
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
-import com.github.wnebyte.engine.core.window.Window;
 import org.joml.Vector4f;
-
+import org.joml.Matrix4f;
+import com.github.wnebyte.engine.core.window.Window;
+import com.github.wnebyte.engine.core.camera.Camera;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
@@ -15,7 +14,7 @@ public class MouseListener {
 
     private double scrollX, scrollY;
 
-    private double xPos, yPos, lastWorldX, lastWorldY;
+    private double xPos, yPos;
 
     private final boolean[] mouseButtonPressed = new boolean[9];
 
