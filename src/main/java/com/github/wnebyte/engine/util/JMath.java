@@ -4,6 +4,20 @@ import org.joml.Vector2f;
 
 public class JMath {
 
+    public static void sub(int[] array, int value) {
+        if (array == null) return;
+        for (int i = 0; i < array.length; i++) {
+            array[i] -= value;
+        }
+    }
+
+    public static void sub(float[] array, float value) {
+        if (array == null) return;
+        for (int i = 0; i < array.length; i++) {
+            array[i] -= value;
+        }
+    }
+
     public static void rotate(Vector2f vec, float angleDeg, Vector2f origin) {
         float x = vec.x - origin.x;
         float y = vec.y - origin.y;

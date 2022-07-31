@@ -1,6 +1,5 @@
 package com.github.wnebyte.engine.core.window;
 
-import com.github.wnebyte.engine.observer.event.*;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.openal.AL;
@@ -18,6 +17,7 @@ import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.observer.EventSystem;
 import com.github.wnebyte.engine.observer.Observer;
 import com.github.wnebyte.engine.renderer.*;
+import com.github.wnebyte.engine.observer.event.*;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -77,7 +77,7 @@ public class Window implements Observer {
     }
 
     public static Scene getScene() {
-        return get().scene;
+        return window.scene;
     }
 
     public static void setScene(SceneInitializer sceneInitializer) {
@@ -220,7 +220,6 @@ public class Window implements Observer {
             glClear(GL_COLOR_BUFFER_BIT);
 
             if (dt >= 0) {
-                DebugDraw.draw();
                 Renderer.bindShader(defaultShader);
                 if (runtimePlaying) {
                     scene.update(dt);
@@ -228,6 +227,7 @@ public class Window implements Observer {
                     scene.editorUpdate(dt);
                 }
                 scene.render();
+                DebugDraw.draw();
             }
             frameBuffer.unbind();
 

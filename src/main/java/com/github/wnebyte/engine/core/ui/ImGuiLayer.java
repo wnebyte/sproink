@@ -122,6 +122,8 @@ public class ImGuiLayer {
             io.setMouseWheel(io.getMouseWheel() + (float) yOffset);
             if (!io.getWantCaptureMouse() || gameViewWindow.getWantCaptureMouse()) {
                 MouseListener.mouseScrollCallback(w, xOffset, yOffset);
+            } else {
+                MouseListener.clear();
             }
         });
 
@@ -174,7 +176,6 @@ public class ImGuiLayer {
         scene.imGui();
        // ImGui.showDemoWindow();
         gameViewWindow.imGui();
-        propertiesWindow.update(dt, scene);
         propertiesWindow.imGui();
         sceneHierarchyWindow.imGui();
         endFrame();

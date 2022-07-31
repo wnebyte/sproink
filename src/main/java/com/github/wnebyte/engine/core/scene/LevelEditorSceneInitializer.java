@@ -25,6 +25,7 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
         levelEditorStuff = scene.createGameObject("LevelEditor");
         levelEditorStuff.setNoSerialize();
         levelEditorStuff.addComponent(new MouseControls());
+        levelEditorStuff.addComponent(new KeyControls());
         levelEditorStuff.addComponent(new GridLines());
         levelEditorStuff.addComponent(new EditorCamera(scene.getCamera()));
         levelEditorStuff.addComponent(new GizmoSystem(gizmos));
