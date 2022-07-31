@@ -3,6 +3,7 @@ package com.github.wnebyte.engine.editor;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiStyleVar;
+import imgui.type.ImString;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
@@ -129,5 +130,25 @@ public class JImGui {
         ImGui.popID();
 
         return res;
+    }
+
+    public static String inputText(String label, String value) {
+        ImGui.pushID(label);
+        ImGui.columns(2);
+        ImGui.setColumnWidth(0, DEFAULT_COLUMN_WIDTH);
+        ImGui.text(label);
+        ImGui.nextColumn();
+
+        ImString imString = new ImString(value, 256);
+        if (ImGui.inputText("##" + label, imString)) {
+            ImGui.columns(1);
+            ImGui.popID();
+            return imString.get();
+        }
+
+        ImGui.columns(1);
+        ImGui.popID();
+
+        return value;
     }
 }

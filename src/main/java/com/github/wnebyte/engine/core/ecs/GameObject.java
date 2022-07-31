@@ -17,7 +17,7 @@ public class GameObject {
 
     private int id = -1;
 
-    private final String name;
+    private String name;
 
     private final List<Component> components;
 
@@ -92,12 +92,16 @@ public class GameObject {
         }
     }
 
+    public int getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
 
-    public int getId() {
-        return id;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setNoSerialize() {
@@ -155,7 +159,8 @@ public class GameObject {
         if (o == this) return true;
         if (!(o instanceof GameObject)) return false;
         GameObject go = (GameObject) o;
-        return Objects.equals(go.name, this.name) &&
+        return Objects.equals(go.id, this.id) &&
+                Objects.equals(go.name, this.name) &&
                 Arrays.equals(go.components.toArray(), this.components.toArray()) &&
                 Objects.equals(go.transform, this.transform) &&
                 super.equals(go);
@@ -166,6 +171,7 @@ public class GameObject {
         int result = 76;
         return result +
                 13 +
+                Objects.hashCode(this.id) +
                 Objects.hashCode(this.name) +
                 Objects.hashCode(this.components) +
                 Objects.hashCode(this.transform) +

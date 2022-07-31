@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #42 - Beginning Scene Hierarchy & ImGui Upgrade
+Coding a 2D Game Engine #43 - Scene Panel Drag & Drop (ImGui)
  */
 public class Main {
 

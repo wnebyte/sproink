@@ -15,7 +15,7 @@ public class PropertiesWindow {
 
     private GameObject activeGameObject;
 
-    private PickingTexture pickingTexture;
+    private final PickingTexture pickingTexture;
 
     private float debounce = 0.2f;
 

@@ -90,6 +90,8 @@ public class Transform extends Component {
 
     @Override
     public void imGui() {
+        String name = JImGui.inputText("Name", gameObject.getName());
+        gameObject.setName(name);
         JImGui.drawVec2Control("Position", position);
         JImGui.drawVec2Control("Scale", scale, 32.0f);
         rotation = JImGui.dragFloat("Rotation", rotation);
