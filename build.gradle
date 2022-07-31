@@ -10,7 +10,7 @@ sourceCompatibility = 1.8
 project.ext.lwjglVersion = "3.2.3"
 project.ext.jomlVersion = "1.10.2"
 project.ext.lwjglNatives = "natives-windows"
-project.ext.imguiVersion = '1.86.0' // 1.81.0
+project.ext.imguiVersion = '1.86.0'
 project.ext.box2DVersion = '2.2.1.1'
 
 sourceSets {
@@ -20,7 +20,7 @@ sourceSets {
         }
         resources {
             srcDirs = ["src/main/resources"]
-            includes = ["**/*.glsl", "**/*.png", "**/*.ttf"]
+            includes = ["**/*.glsl", "**/*.png", "**/*.ttf", "**/*.ogg"]
         }
     }
     test {
@@ -29,7 +29,7 @@ sourceSets {
         }
         resources {
             srcDirs = ["src/test/resources"]
-            includes = ["**/*.glsl", "**/*.png", "**/*.ttf"]
+            includes = ["**/*.glsl", "**/*.png", "**/*.ttf", "**/*.ogg"]
         }
     }
 }
@@ -61,18 +61,12 @@ dependencies {
     implementation "org.joml:joml:${jomlVersion}"
 
     // imgui
-    /*
-    implementation "io.github.spair:imgui-java-binding:$imguiVersion"
-    implementation "io.github.spair:imgui-java-lwjgl3:$imguiVersion"
-    runtimeOnly "io.github.spair:imgui-java-natives-windows-ft:$imguiVersion"
-     */
     implementation "io.github.spair:imgui-java-app:$imguiVersion"
 
     // gson
     implementation "com.google.code.gson:gson:2.8.6"
 
     // lib
-    //implementation fileTree(dir: 'lib', include: ['*.jar'])
     implementation name: 'jbox2d-library'
 
     // junit

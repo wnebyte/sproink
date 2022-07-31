@@ -1,10 +1,13 @@
 package com.github.wnebyte.engine.core.scene;
 
+import java.io.File;
+import java.util.Collection;
 import imgui.ImGui;
 import imgui.ImVec2;
 import org.joml.Vector2f;
 import com.github.wnebyte.engine.core.Prefabs;
 import com.github.wnebyte.engine.core.ecs.*;
+import com.github.wnebyte.engine.core.audio.Sound;
 import com.github.wnebyte.engine.renderer.Texture;
 import com.github.wnebyte.engine.components.*;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
@@ -57,7 +60,6 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
                     if (ImGui.imageButton(id, spriteWidth, spriteHeight,
                             texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) { // [0].x, [0].y, [2].x, [2].y
                         GameObject object = Prefabs.generateSpriteObject(sprite, 0.25f, 0.25f);
-                        // Attach this to the mouse cursor
                         levelEditorStuff.getComponent(MouseControls.class).drag(object);
                     }
                     ImGui.popID();
@@ -102,6 +104,24 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
                 ImGui.sameLine();
                 ImGui.endTabItem();
             }
+            if (ImGui.beginTabItem("Sounds")) {
+                Collection<Sound> sounds = ResourceFlyWeight.getAllSounds();
+                for (Sound sound : sounds) {
+                    File tmp = new File(sound.getPath());
+                    if (ImGui.button(tmp.getName())) {
+                        if (!sound.isPlaying()) {
+                            sound.play();
+                        } else {
+                            sound.stop();
+                        }
+                    }
+
+                    if (ImGui.getContentRegionAvailX() > 100) {
+                        ImGui.sameLine();
+                    }
+                }
+                ImGui.endTabItem();
+            }
             ImGui.endTabBar();
         }
         ImGui.end();
@@ -123,6 +143,25 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
                 new Spritesheet(ResourceFlyWeight.getTexture("/images/items.png"),
                         16, 16, 43, 0));
         ResourceFlyWeight.getTexture("/images/blendImage2.png");
+
+        ResourceFlyWeight.addSound("/sounds/main-theme-overworld.ogg", true);
+        ResourceFlyWeight.addSound("/sounds/flagpole.ogg", false);
+        ResourceFlyWeight.addSound("/sounds/break_block.ogg", false);
+        ResourceFlyWeight.addSound("/sounds/bump.ogg", false);
+        ResourceFlyWeight.addSound("/sounds/coin.ogg", false);
+        ResourceFlyWeight.addSound("/sounds/gameover.ogg", false);
+        ResourceFlyWeight.addSound("/sounds/jump-small.ogg", false);
+        ResourceFlyWeight.addSound("/sounds/mario_die.ogg", false);
+        ResourceFlyWeight.addSound("/sounds/pipe.ogg", false);
+        ResourceFlyWeight.addSound("/sounds/powerup.ogg", false);
+        ResourceFlyWeight.addSound("/sounds/powerup_appears.ogg", false);
+        ResourceFlyWeight.addSound("/sounds/stage_clear.ogg", false);
+        ResourceFlyWeight.addSound("/sounds/stomp.ogg", false);
+        ResourceFlyWeight.addSound("/sounds/kick.ogg", false);
+        ResourceFlyWeight.addSound("/sounds/invincible.ogg", false);
+
+
+
 
         for (GameObject go : scene.getGameObjects()) {
             SpriteRenderer spr = go.getComponent(SpriteRenderer.class);

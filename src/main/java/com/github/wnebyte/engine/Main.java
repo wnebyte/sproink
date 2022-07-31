@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #45 - 2D Animations
+Coding a 2D Game Engine #46 - Sounds with OpenAL
  */
 public class Main {
 

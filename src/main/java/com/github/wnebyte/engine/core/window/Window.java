@@ -3,6 +3,10 @@ package com.github.wnebyte.engine.core.window;
 import com.github.wnebyte.engine.observer.event.*;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.openal.AL;
+import org.lwjgl.openal.ALC;
+import org.lwjgl.openal.ALCCapabilities;
+import org.lwjgl.openal.ALCapabilities;
 import org.lwjgl.opengl.GL;
 import com.github.wnebyte.engine.core.event.KeyListener;
 import com.github.wnebyte.engine.core.event.MouseListener;
@@ -17,6 +21,7 @@ import com.github.wnebyte.engine.renderer.*;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.openal.ALC10.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
@@ -44,6 +49,10 @@ public class Window implements Observer {
     private PickingTexture pickingTexture;
 
     private boolean runtimePlaying = false;
+
+    private long audioContext;
+
+    private long audioDevice;
 
     private float r = 1.0f;
 
@@ -87,6 +96,10 @@ public class Window implements Observer {
 
         init();
         loop();
+
+        // Destroy the audio context
+        alcDestroyContext(audioContext);
+        alcCloseDevice(audioDevice);
 
         // Free the allocated memory
         glfwFreeCallbacks(glfwWindow);
@@ -143,6 +156,17 @@ public class Window implements Observer {
 
         // Make the window visible
         glfwShowWindow(glfwWindow);
+
+        // Initialize audio device
+        String defaultDeviceName = alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER);
+        audioDevice = alcOpenDevice(defaultDeviceName);
+        int[] attributes = {0};
+        audioContext = alcCreateContext(audioDevice, attributes);
+        alcMakeContextCurrent(audioContext);
+
+        ALCCapabilities alcCapabilities = ALC.createCapabilities(audioDevice);
+        ALCapabilities alCapabilities = AL.createCapabilities(alcCapabilities);
+        assert alCapabilities.OpenAL10 : "Audio library not supported";
 
         // This line is critical for LWJGL's interoperation with GLFW's
         // OpenGL context, or any context that is managed externally.
