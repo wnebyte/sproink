@@ -1,14 +1,12 @@
 package com.github.wnebyte.engine.components;
 
 import java.util.Objects;
-
-import com.github.wnebyte.engine.editor.JImGui;
-import imgui.ImGui;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import com.github.wnebyte.engine.core.Transform;
 import com.github.wnebyte.engine.core.ecs.Component;
 import com.github.wnebyte.engine.renderer.Texture;
+import com.github.wnebyte.engine.editor.JImGui;
 
 public class SpriteRenderer extends Component {
 
