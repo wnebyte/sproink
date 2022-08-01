@@ -1,6 +1,5 @@
 package com.github.wnebyte.engine.core.window;
 
-import com.github.wnebyte.engine.physics2d.Physics2D;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.openal.AL;
@@ -20,6 +19,7 @@ import com.github.wnebyte.engine.observer.Observer;
 import com.github.wnebyte.engine.renderer.*;
 import com.github.wnebyte.engine.observer.event.*;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
+import com.github.wnebyte.engine.physics2d.Physics2D;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.openal.ALC10.*;
@@ -90,10 +90,6 @@ public class Window implements Observer {
         window.scene.load();
         window.scene.init();
         window.scene.start();
-    }
-
-    public static Physics2D getPhysics2d() {
-        return window.scene.getPhysics2d();
     }
 
     public void run() {
@@ -275,7 +271,11 @@ public class Window implements Observer {
     }
 
     public static ImGuiLayer getImGuiLayer() {
-        return get().imGuiLayer;
+        return window.imGuiLayer;
+    }
+
+    public static Physics2D getPhysics2d() {
+        return window.scene.getPhysics2d();
     }
 
     @Override

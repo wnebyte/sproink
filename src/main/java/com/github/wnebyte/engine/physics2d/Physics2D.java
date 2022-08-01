@@ -1,6 +1,9 @@
 package com.github.wnebyte.engine.physics2d;
 
+import com.github.wnebyte.engine.components.Ground;
+import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.physics2d.components.*;
+import com.github.wnebyte.engine.renderer.DebugDraw;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.joml.Vector2f;
 import org.jbox2d.dynamics.*;
@@ -8,6 +11,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.collision.shapes.PolygonShape;
 import com.github.wnebyte.engine.core.Transform;
 import com.github.wnebyte.engine.core.ecs.GameObject;
+import org.joml.Vector3f;
 
 public class Physics2D {
 
@@ -103,7 +107,6 @@ public class Physics2D {
         Fixture fixture = body.getFixtureList();
         for (fixture = fixture.getNext(); fixture != null;) {
             fixture.m_isSensor = true;
-
         }
     }
 
@@ -114,7 +117,6 @@ public class Physics2D {
         Fixture fixture = body.getFixtureList();
         for (fixture = fixture.getNext(); fixture != null;) {
             fixture.m_isSensor = false;
-
         }
     }
 
@@ -127,9 +129,10 @@ public class Physics2D {
     }
 
     public RaycastInfo raycast(GameObject reqGo, Vector2f point1, Vector2f point2) {
-        RaycastInfo raycast = new RaycastInfo(reqGo);
-        world.raycast(raycast, new Vec2(point1.x, point1.y), new Vec2(point2.x, point2.y));
-        return raycast;
+        RaycastInfo callback = new RaycastInfo(reqGo);
+        world.raycast(callback, new Vec2(point1.x, point1.y),
+                new Vec2(point2.x, point2.y));
+        return callback;
     }
 
     public void resetBox2DCollider(RigidBody2D rb, Box2DCollider collider) {
@@ -223,5 +226,26 @@ public class Physics2D {
             size++;
         }
         return size;
+    }
+
+    public boolean checkOnGround(
+            GameObject gameObject,
+            float innerPlayerWidth,
+            float height) {
+        Vector2f raycastBegin = new Vector2f(gameObject.transform.position);
+        raycastBegin.sub(innerPlayerWidth / 2.0f, 0.0f);
+        Vector2f raycastEnd = new Vector2f(raycastBegin).add(0.0f, height);
+
+        RaycastInfo info = raycast(gameObject, raycastBegin, raycastEnd);
+
+        Vector2f raycast2Begin = new Vector2f(raycastBegin).add(innerPlayerWidth, 0.0f);
+        Vector2f raycast2End = new Vector2f(raycastEnd).add(innerPlayerWidth, 0.0f);
+        RaycastInfo info2 = Window.getPhysics2d().raycast(gameObject, raycast2Begin, raycast2End);
+
+       // DebugDraw.addLine2D(raycastBegin, raycastEnd, new Vector3f(1, 0, 0));
+       // DebugDraw.addLine2D(raycast2Begin, raycast2End, new Vector3f(1, 0, 0));
+
+        return (info.hit && info.getHitGo() != null && info.getHitGo().getComponent(Ground.class) != null) ||
+                (info2.hit && info2.getHitGo() != null && info2.getHitGo().getComponent(Ground.class) != null);
     }
 }

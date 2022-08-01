@@ -117,8 +117,6 @@ public class StateMachine extends Component {
                 return;
             }
         }
-
-        System.out.printf("(Debug): Unable to find trigger: '%s'%n", trigger);
     }
 
     private int stateIndexOf(String stateTitle) {

@@ -41,8 +41,16 @@ public class RaycastInfo implements RayCastCallback {
         this.point = new Vector2f(point.x, point.y);
         this.normal = new Vector2f(normal.x, normal.y);
         this.fraction = fraction;
-        this.hit = (fraction != 0.0f);
+        this.hit = (fraction != 0);
         this.hitGo = (GameObject)fixture.m_userData;
         return fraction;
+    }
+
+    public GameObject getReqGo() {
+        return reqGo;
+    }
+
+    public GameObject getHitGo() {
+        return hitGo;
     }
 }

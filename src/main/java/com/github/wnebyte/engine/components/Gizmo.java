@@ -9,8 +9,6 @@ import com.github.wnebyte.engine.core.event.KeyListener;
 import com.github.wnebyte.engine.core.event.MouseListener;
 import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.editor.PropertiesWindow;
-
-
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Gizmo extends Component {

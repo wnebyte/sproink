@@ -140,7 +140,7 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
                         go.addComponent(bc);
                         go.addComponent(new Ground());
                         if (i == 12) {
-                           // go.addComponent(new BreakableBrick());
+                            go.addComponent(new BreakableBlock());
                         }
                         levelEditorStuff.getComponent(MouseControls.class).drag(go);
                     }

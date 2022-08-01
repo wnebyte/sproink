@@ -1,13 +1,15 @@
 package com.github.wnebyte.engine.core;
 
+import org.joml.Vector2f;
 import com.github.wnebyte.engine.components.*;
 import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.animation.AnimationState;
+import com.github.wnebyte.engine.util.ResourceFlyWeight;
+import com.github.wnebyte.engine.physics2d.components.Box2DCollider;
 import com.github.wnebyte.engine.physics2d.components.PillboxCollider;
 import com.github.wnebyte.engine.physics2d.components.RigidBody2D;
 import com.github.wnebyte.engine.physics2d.enums.BodyType;
-import com.github.wnebyte.engine.util.ResourceFlyWeight;
 
 public class Prefabs {
 
@@ -207,23 +209,60 @@ public class Prefabs {
     }
 
     public static GameObject generateQuestionBlock() {
-        Spritesheet sprites = ResourceFlyWeight.getSpritesheet("/images/items.png");
-        GameObject questionBlock = generateSpriteObject(sprites.getSprite(0), 0.25f, 0.25f);
+        Spritesheet items = ResourceFlyWeight.getSpritesheet("/images/items.png");
+        GameObject questionBlock = generateSpriteObject(items.getSprite(0), 0.25f, 0.25f);
 
         AnimationState flicker = new AnimationState();
         flicker.title = "Flicker";
         float defaultFrameTime = 0.23f;
-        flicker.addFrame(sprites.getSprite(0), 0.57f);
-        flicker.addFrame(sprites.getSprite(1), defaultFrameTime);
-        flicker.addFrame(sprites.getSprite(2), defaultFrameTime);
+        flicker.addFrame(items.getSprite(0), 0.57f);
+        flicker.addFrame(items.getSprite(1), defaultFrameTime);
+        flicker.addFrame(items.getSprite(2), defaultFrameTime);
         flicker.setLoop(true);
+
+        AnimationState inactive = new AnimationState();
+        inactive.title = "Inactive";
+        inactive.addFrame(items.getSprite(3), 0.1f);
+        inactive.setLoop(false);
 
         StateMachine stateMachine = new StateMachine();
         stateMachine.addState(flicker);
+        stateMachine.addState(inactive);
         stateMachine.setDefaultState(flicker.title);
+        stateMachine.addStateTrigger(flicker.title, inactive.title, "setInactive");
         questionBlock.addComponent(stateMachine);
+        questionBlock.addComponent(new QuestionBlock());
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.STATIC);
+        questionBlock.addComponent(rb);
+        Box2DCollider boxCollider = new Box2DCollider();
+        boxCollider.setHalfSize(new Vector2f(0.25f, 0.25f));
+        questionBlock.addComponent(boxCollider);
+        questionBlock.addComponent(new Ground());
 
         return questionBlock;
+    }
+
+    public static GameObject generateBlockCoin() {
+        Spritesheet items = ResourceFlyWeight.getSpritesheet("/images/items.png");
+        GameObject coin = generateSpriteObject(items.getSprite(7), 0.25f, 0.25f);
+
+        AnimationState coinFlip = new AnimationState();
+        coinFlip.title = "CoinFlip";
+        float defaultFrameTime = 0.23f;
+        coinFlip.addFrame(items.getSprite(7), 0.57f);
+        coinFlip.addFrame(items.getSprite(8), defaultFrameTime);
+        coinFlip.addFrame(items.getSprite(9), defaultFrameTime);
+        coinFlip.setLoop(true);
+
+        StateMachine stateMachine = new StateMachine();
+        stateMachine.addState(coinFlip);
+        stateMachine.setDefaultState(coinFlip.title);
+        coin.addComponent(stateMachine);
+        coin.addComponent(new BlockCoin());
+
+        return coin;
     }
 
 }

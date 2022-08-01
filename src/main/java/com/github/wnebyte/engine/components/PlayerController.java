@@ -1,13 +1,26 @@
 package com.github.wnebyte.engine.components;
 
 import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.jbox2d.dynamics.contacts.Contact;
 import com.github.wnebyte.engine.core.window.Window;
+import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.core.ecs.Component;
+import com.github.wnebyte.engine.renderer.DebugDraw;
+import com.github.wnebyte.engine.util.ResourceFlyWeight;
+import com.github.wnebyte.engine.physics2d.RaycastInfo;
 import com.github.wnebyte.engine.physics2d.components.RigidBody2D;
 import static com.github.wnebyte.engine.core.event.KeyListener.isKeyPressed;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class PlayerController extends Component {
+
+    private enum PlayerState {
+        SMALL,
+        BIG,
+        FIRE,
+        INVINCIBLE
+    }
 
     public float walkSpeed = 1.9f;
 
@@ -18,6 +31,8 @@ public class PlayerController extends Component {
     public float slowDownForce = 0.05f;
 
     public Vector2f terminalVelocity = new Vector2f(2.1f, 3.1f);
+
+    private PlayerState playerState = PlayerState.SMALL;
 
     public transient boolean onGround = false;
 
@@ -83,7 +98,34 @@ public class PlayerController extends Component {
             }
         }
 
-        acceleration.y = Window.getPhysics2d().getGravity().y * 0.7f;
+        onGround = Window.getPhysics2d()
+                .checkOnGround(gameObject, playerWidth * 0.6f, -0.14f);
+        if (isKeyPressed(GLFW_KEY_SPACE) &&
+                (jumpTime > 0 || onGround || groundDebounce > 0)) {
+            if ((onGround || groundDebounce > 0) && jumpTime == 0) {
+                ResourceFlyWeight.getSound("/sounds/jump-small.ogg").play();
+                jumpTime = 28;
+                velocity.y = jumpImpulse;
+            } else if (jumpTime > 0) {
+                jumpTime--;
+                velocity.y = ((jumpTime / 2.2f) * jumpBoost);
+            } else {
+                velocity.y = 0;
+            }
+            groundDebounce = 0;
+        } else if (!onGround) {
+            if (jumpTime > 0) {
+                velocity.y *= 0.35f;
+                jumpTime = 0;
+            }
+            groundDebounce -= dt;
+            acceleration.y = Window.getPhysics2d().getGravity().y * 0.7f;
+        } else {
+            // on ground
+            velocity.y = 0;
+            acceleration.y = 0;
+            groundDebounce = groundDebounceTime;
+        }
 
         velocity.x += acceleration.x * dt;
         velocity.y += acceleration.y * dt;
@@ -91,5 +133,48 @@ public class PlayerController extends Component {
         velocity.y = Math.max(Math.min(velocity.y, terminalVelocity.y), -terminalVelocity.y);
         rb.setVelocity(velocity);
         rb.setAngularVelocity(0.0f);
+
+        if (!onGround) {
+            stateMachine.trigger("jump");
+        } else {
+            stateMachine.trigger("stopJumping");
+        }
+    }
+
+    @Override
+    public void beginCollision(GameObject collidingGo, Contact contact, Vector2f contactNormal) {
+        if (isDead) return;
+
+        if (collidingGo.getComponent(Ground.class) != null) {
+            if (Math.abs(contactNormal.x) > 0.8f) {
+                // horizontal hit
+                velocity.x = 0;
+            } else if (contactNormal.y > 0.8f) {
+                // hit on the bottom of a block
+                velocity.y = 0;
+                acceleration.y = 0;
+                jumpTime = 0;
+            }
+        }
+    }
+
+    public boolean isBig() {
+        return (playerState == PlayerState.BIG);
+    }
+
+    public boolean isSmall() {
+        return (playerState == PlayerState.SMALL);
+    }
+
+    public boolean isFire() {
+        return (playerState == PlayerState.FIRE);
+    }
+
+    public boolean isInvincible() {
+        return (playerState == PlayerState.INVINCIBLE);
+    }
+
+    public boolean isDead() {
+        return isDead;
     }
 }

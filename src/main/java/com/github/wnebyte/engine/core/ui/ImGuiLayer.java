@@ -60,12 +60,8 @@ public class ImGuiLayer {
         final ImGuiIO io = ImGui.getIO();
 
         io.setIniFilename("imgui.ini"); // We don't want to save .ini file
-       // io.setConfigFlags(ImGuiConfigFlags.NavEnableKeyboard); // Navigation with keyboard
         io.setConfigFlags(ImGuiConfigFlags.DockingEnable);
-       // io.setConfigFlags(ImGuiConfigFlags.ViewportsEnable);
-       // io.setBackendFlags(ImGuiBackendFlags.HasMouseCursors); // Mouse cursors to display while resizing windows etc.
-        /*
-        VIEWPORT ENABLED:
+        /* enables viewports
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
          */
@@ -174,14 +170,13 @@ public class ImGuiLayer {
         startFrame(dt);
         setupDockSpace();
         scene.imGui();
-       // ImGui.showDemoWindow();
         gameViewWindow.imGui();
         propertiesWindow.imGui();
         sceneHierarchyWindow.imGui();
         endFrame();
     }
 
-    private void startFrame(final float deltaTime) {
+    private void startFrame(float deltaTime) {
         imGuiGlfw.newFrame();
         ImGui.newFrame();
     }
