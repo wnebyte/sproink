@@ -1,9 +1,11 @@
 package com.github.wnebyte.engine.physics2d.components;
 
 import org.joml.Vector2f;
+import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-import com.github.wnebyte.engine.physics2d.enums.BodyType;
+import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.core.ecs.Component;
+import com.github.wnebyte.engine.physics2d.enums.BodyType;
 
 public class RigidBody2D extends Component {
 
@@ -16,6 +18,14 @@ public class RigidBody2D extends Component {
     private float mass = 0.0f;
 
     private BodyType bodyType = BodyType.DYNAMIC;
+
+    private float friction = 0.1f;
+
+    private float angularVelocity = 0.0f;
+
+    private float gravityScale = 1.0f;
+
+    private boolean isSensor = false;
 
     private boolean fixedRotation = false;
 
@@ -36,7 +46,22 @@ public class RigidBody2D extends Component {
     }
 
     public void setVelocity(Vector2f velocity) {
-        this.velocity = velocity;
+        this.velocity.set(velocity);
+        if (rawBody != null) {
+            rawBody.setLinearVelocity(new Vec2(velocity.x, velocity.y));
+        }
+    }
+
+    public void addVelocity(Vector2f velocity) {
+        if (rawBody != null) {
+            rawBody.applyForceToCenter(new Vec2(velocity.x, velocity.y));
+        }
+    }
+
+    public void addImpulse(Vector2f impulse) {
+        if (rawBody != null) {
+            rawBody.applyLinearImpulse(new Vec2(impulse.x, impulse.y), rawBody.getWorldCenter());
+        }
     }
 
     public float getAngularDamping() {
@@ -93,5 +118,49 @@ public class RigidBody2D extends Component {
 
     public void setRawBody(Body rawBody) {
         this.rawBody = rawBody;
+    }
+
+    public float getFriction() {
+        return friction;
+    }
+
+    public float getAngularVelocity() {
+        return angularVelocity;
+    }
+
+    public void setAngularVelocity(float angularVelocity) {
+        this.angularVelocity = angularVelocity;
+        if (rawBody != null) {
+            rawBody.setAngularVelocity(angularVelocity);
+        }
+    }
+
+    public float getGravityScale() {
+        return gravityScale;
+    }
+
+    public void setGravityScale(float gravityScale) {
+        this.gravityScale = gravityScale;
+        if (rawBody != null) {
+            rawBody.setGravityScale(gravityScale);
+        }
+    }
+
+    public boolean isSensor() {
+        return isSensor;
+    }
+
+    public void setIsSensor() {
+        this.isSensor = true;
+        if (rawBody != null) {
+            Window.getPhysics2d().setIsSensor(this);
+        }
+    }
+
+    public void setNotSensor() {
+        this.isSensor = false;
+        if (rawBody != null) {
+            Window.getPhysics2d().setIsSensor(this);
+        }
     }
 }

@@ -3,8 +3,10 @@ package com.github.wnebyte.engine.editor;
 import java.util.List;
 import java.util.ArrayList;
 import imgui.ImGui;
+import org.joml.Vector4f;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.renderer.PickingTexture;
+import com.github.wnebyte.engine.components.SpriteRenderer;
 import com.github.wnebyte.engine.physics2d.components.Box2DCollider;
 import com.github.wnebyte.engine.physics2d.components.CircleCollider;
 import com.github.wnebyte.engine.physics2d.components.RigidBody2D;
@@ -13,6 +15,8 @@ public class PropertiesWindow {
 
     private final List<GameObject> activeGameObjects;
 
+    private final List<Vector4f> activeGameObjectsOgColor;
+
     private GameObject activeGameObject;
 
     private final PickingTexture pickingTexture;
@@ -20,6 +24,7 @@ public class PropertiesWindow {
     public PropertiesWindow(PickingTexture pickingTexture) {
         this.pickingTexture = pickingTexture;
         this.activeGameObjects = new ArrayList<>();
+        this.activeGameObjectsOgColor = new ArrayList<>();
     }
 
     public void imGui() {
@@ -60,6 +65,21 @@ public class PropertiesWindow {
         return (activeGameObjects.size() == 1) ? activeGameObjects.get(0) : null;
     }
 
+    public void clearSelected() {
+        if (!activeGameObjectsOgColor.isEmpty()) {
+            int i = 0;
+            for (GameObject go : activeGameObjects) {
+                SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
+                if (spr != null) {
+                    spr.setColor(activeGameObjectsOgColor.get(i));
+                }
+                i++;
+            }
+        }
+        activeGameObjects.clear();
+        activeGameObjectsOgColor.clear();
+    }
+
     public void setActiveGameObject(GameObject go) {
         if (go != null) {
             clearSelected();
@@ -67,15 +87,18 @@ public class PropertiesWindow {
         }
     }
 
-    public void clearSelected() {
-        activeGameObjects.clear();
-    }
-
     public List<GameObject> getActiveGameObjects() {
         return activeGameObjects;
     }
 
     public void addActiveGameObject(GameObject go) {
+        SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
+        if (spr != null) {
+            activeGameObjectsOgColor.add(new Vector4f(spr.getColor()));
+            spr.setColor(new Vector4f(0.8f, 0.8f, 0.0f, 0.8f));
+        } else {
+            activeGameObjectsOgColor.add(new Vector4f());
+        }
         activeGameObjects.add(go);
     }
 

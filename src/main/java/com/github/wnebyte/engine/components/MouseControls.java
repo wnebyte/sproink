@@ -21,7 +21,7 @@ public class MouseControls extends Component {
 
     private GameObject draggable = null;
 
-    private float debounceTime = 0.05f;
+    private float debounceTime = 0.2f   ;
 
     private float debounce = debounceTime;
 
@@ -57,7 +57,7 @@ public class MouseControls extends Component {
         PropertiesWindow props = Window.getImGuiLayer().getPropertiesWindow();
         Scene scene = Window.getScene();
 
-        if (draggable != null && debounce <= 0) {
+        if (draggable != null) {
             draggable.transform.position.x = MouseListener.getWorldX();
             draggable.transform.position.y = MouseListener.getWorldY();
             draggable.transform.position.x =
@@ -68,8 +68,16 @@ public class MouseControls extends Component {
                             Settings.GRID_HEIGHT / 2.0f;
 
             if (MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
-                drop();
-                debounce = debounceTime;
+                float halfWidth  = (Settings.GRID_WIDTH / 2.0f);
+                float halfHeight = (Settings.GRID_HEIGHT / 2.0f);
+                if (MouseListener.isDragging() &&
+                        !blockInSquare(draggable.transform.position.x - halfWidth,
+                                draggable.transform.position.y - halfHeight)) {
+                    drop();
+                } else if (!MouseListener.isDragging() && debounce < 0) {
+                    drop();
+                    debounce = debounceTime;
+                }
             }
 
             if (KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {
@@ -140,5 +148,28 @@ public class MouseControls extends Component {
             }
 
         }
+    }
+
+    private boolean blockInSquare(float x, float y) {
+        PropertiesWindow propertiesWindow = Window.getImGuiLayer().getPropertiesWindow();
+        Vector2f start = new Vector2f(x, y);
+        Vector2f end = new Vector2f(start).add(new Vector2f(Settings.GRID_WIDTH, Settings.GRID_HEIGHT));
+        Vector2f startScreenf = MouseListener.world2Screen(start);
+        Vector2f endScreenf = MouseListener.world2Screen(end);
+        Vector2i startScreen = new Vector2i((int)startScreenf.x + 2, (int)startScreenf.y + 2);
+        Vector2i endScreen = new Vector2i((int)endScreenf.x - 2, (int)endScreenf.y - 2);
+        float[] ids = propertiesWindow.getPickingTexture().readPixels(startScreen, endScreen);
+
+        for (int i = 0; i < ids.length; i++) {
+            float id = ids[i];
+            if (id >= 0) {
+                GameObject picked = Window.getScene().getGameObject((int)id);
+                if (picked.getComponent(NonPickable.class) == null) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

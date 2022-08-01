@@ -1,5 +1,6 @@
 package com.github.wnebyte.engine.core.event;
 
+import java.util.Arrays;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
@@ -22,6 +23,10 @@ public class KeyListener {
         return instance;
     }
 
+    public static void endFrame() {
+        Arrays.fill(get().keyBeginPress, false);
+    }
+
     public static void keyCallback(long window, int key, int scanCode, int action, int mods) {
         if (action == GLFW_PRESS) {
             get().keyPressed[key] = true;
@@ -37,10 +42,6 @@ public class KeyListener {
     }
 
     public static boolean keyBeginPress(int keyCode) {
-        boolean result = get().keyBeginPress[keyCode];
-        if (result) {
-            get().keyBeginPress[keyCode] = false;
-        }
-        return result;
+        return get().keyBeginPress[keyCode];
     }
 }

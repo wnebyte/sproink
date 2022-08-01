@@ -1,5 +1,6 @@
 package com.github.wnebyte.engine.core.window;
 
+import com.github.wnebyte.engine.physics2d.Physics2D;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.openal.AL;
@@ -89,6 +90,10 @@ public class Window implements Observer {
         window.scene.load();
         window.scene.init();
         window.scene.start();
+    }
+
+    public static Physics2D getPhysics2d() {
+        return window.scene.getPhysics2d();
     }
 
     public void run() {
@@ -232,8 +237,9 @@ public class Window implements Observer {
             frameBuffer.unbind();
 
             imGuiLayer.update(dt, scene);
-            glfwSwapBuffers(glfwWindow);
             MouseListener.endFrame();
+            KeyListener.endFrame();
+            glfwSwapBuffers(glfwWindow);
 
             endTime = (float)glfwGetTime();
             dt = endTime - beginTime;
