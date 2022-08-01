@@ -64,10 +64,11 @@ public class MouseControls extends Component {
         debounce -= dt;
         PropertiesWindow props = Window.getImGuiLayer().getPropertiesWindow();
         Scene scene = Window.getScene();
-
+        
         if (draggable != null) {
             float x = MouseListener.getWorldX();
             float y = MouseListener.getWorldY();
+            // clamp the go's position
             draggable.transform.position.x =
                     ((int)Math.floor(x / Settings.GRID_WIDTH) * Settings.GRID_WIDTH) +
                             Settings.GRID_WIDTH / 2.0f;
