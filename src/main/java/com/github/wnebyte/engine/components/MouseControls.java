@@ -66,13 +66,13 @@ public class MouseControls extends Component {
         Scene scene = Window.getScene();
 
         if (draggable != null) {
-            draggable.transform.position.x = MouseListener.getWorldX();
-            draggable.transform.position.y = MouseListener.getWorldY();
+            float x = MouseListener.getWorldX();
+            float y = MouseListener.getWorldY();
             draggable.transform.position.x =
-                    ((int)Math.floor(draggable.transform.position.x / Settings.GRID_WIDTH) * Settings.GRID_WIDTH) +
+                    ((int)Math.floor(x / Settings.GRID_WIDTH) * Settings.GRID_WIDTH) +
                             Settings.GRID_WIDTH / 2.0f;
             draggable.transform.position.y =
-                    ((int)Math.floor(draggable.transform.position.y / Settings.GRID_HEIGHT) * Settings.GRID_HEIGHT) +
+                    ((int)Math.floor(y / Settings.GRID_HEIGHT) * Settings.GRID_HEIGHT) +
                             Settings.GRID_HEIGHT / 2.0f;
 
             if (isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
