@@ -13,7 +13,6 @@ public class ComponentTypeAdapter implements JsonSerializer<Component>, JsonDese
         return result;
     }
 
-
     @Override
     public Component deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();

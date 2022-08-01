@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #48 - How to Use BOX2D Physics
+Coding a 2D Game Engine #49 - Pillbox Colliders and Player Controllers
  */
 public class Main {
 
