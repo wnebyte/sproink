@@ -10,4 +10,8 @@ public abstract class Collider extends Component {
     public Vector2f getOffset() {
         return offset;
     }
+
+    public void setOffset(Vector2f offset) {
+        this.offset.set(offset);
+    }
 }

@@ -1,12 +1,12 @@
 package com.github.wnebyte.engine.components;
 
 import java.util.*;
-import com.github.wnebyte.engine.animation.AnimationState;
-import com.github.wnebyte.engine.animation.Frame;
-import com.github.wnebyte.engine.core.ecs.Component;
 import imgui.ImGui;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
+import com.github.wnebyte.engine.core.ecs.Component;
+import com.github.wnebyte.engine.animation.AnimationState;
+import com.github.wnebyte.engine.animation.Frame;
 
 public class StateMachine extends Component {
 
@@ -109,16 +109,7 @@ public class StateMachine extends Component {
         for (StateTrigger st : stateTransfers.keySet()) {
             if (st.state.equals(currentState.title) && st.trigger.equals(trigger)) {
                 if (stateTransfers.get(st) != null) {
-                    int newStateIndex = -1;
-                    int index = 0;
-                    for (AnimationState state : states) {
-                        if (state.title.equals(stateTransfers.get(st))) {
-                            newStateIndex = index;
-                            break;
-                        }
-                        index++;
-                    }
-
+                    int newStateIndex = stateIndexOf(stateTransfers.get(st));
                     if (newStateIndex > -1) {
                         currentState = states.get(newStateIndex);
                     }
@@ -128,6 +119,18 @@ public class StateMachine extends Component {
         }
 
         System.out.printf("(Debug): Unable to find trigger: '%s'%n", trigger);
+    }
+
+    private int stateIndexOf(String stateTitle) {
+        int index = 0;
+        for (AnimationState state : states) {
+            if (state.title.equals(stateTitle)) {
+                return index;
+            }
+            index++;
+        }
+
+        return -1;
     }
 
     public void addStateTrigger(String from, String to, String onTrigger) {
