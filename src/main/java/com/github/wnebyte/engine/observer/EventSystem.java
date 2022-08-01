@@ -7,26 +7,13 @@ import com.github.wnebyte.engine.observer.event.Event;
 
 public class EventSystem {
 
-    public static EventSystem getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new EventSystem();
-        }
-        return INSTANCE;
-    }
+    private static final List<Observer> observers = new ArrayList<>();
 
-    private static EventSystem INSTANCE = null;
-
-    private final List<Observer> observers;
-
-    private EventSystem() {
-        this.observers = new ArrayList<>();
-    }
-
-    public void addObserver(Observer observer) {
+    public static void addObserver(Observer observer) {
         observers.add(observer);
     }
 
-    public void notify(GameObject go, Event event) {
+    public static void notify(GameObject go, Event event) {
         for (Observer observer : observers) {
             observer.notify(go, event);
         }

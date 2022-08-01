@@ -66,7 +66,7 @@ public class Window implements Observer {
         this.width = DEFAULT_WIDTH;
         this.height = DEFAULT_HEIGHT;
         this.title = "Engine";
-        EventSystem.getInstance().addObserver(this);
+        EventSystem.addObserver(this);
     }
 
     public static Window get() {

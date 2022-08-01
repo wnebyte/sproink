@@ -12,10 +12,10 @@ public class MenuBar {
 
         if (ImGui.beginMenu("File")) {
             if (ImGui.menuItem("Save", "CTRL+S")) {
-                EventSystem.getInstance().notify(null, new SaveLevelEvent());
+                EventSystem.notify(null, new SaveLevelEvent());
             }
             if (ImGui.menuItem("Load", "CTRL+O")) {
-                EventSystem.getInstance().notify(null, new LoadLevelEvent());
+                EventSystem.notify(null, new LoadLevelEvent());
             }
             ImGui.endMenu();
         }
