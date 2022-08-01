@@ -8,20 +8,28 @@ import org.joml.Vector4f;
 import com.github.wnebyte.engine.core.scene.Scene;
 import com.github.wnebyte.engine.core.ecs.Component;
 import com.github.wnebyte.engine.core.ecs.GameObject;
-import com.github.wnebyte.engine.core.event.KeyListener;
 import com.github.wnebyte.engine.core.event.MouseListener;
 import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.renderer.DebugDraw;
 import com.github.wnebyte.engine.editor.PropertiesWindow;
 import com.github.wnebyte.engine.util.Settings;
+import static com.github.wnebyte.engine.core.event.MouseListener.isDragging;
+import static com.github.wnebyte.engine.core.event.MouseListener.isMouseButtonDown;
+import static com.github.wnebyte.engine.core.event.KeyListener.isKeyPressed;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 public class MouseControls extends Component {
 
+    private static final Vector4f DRAG_COLOR
+            = new Vector4f(0.8f, 0.8f, 0.8f, 0.5f);
+
+    private static final Vector4f DEFAULT_COLOR
+            = new Vector4f(1, 1, 1, 1);
+
     private GameObject draggable = null;
 
-    private float debounceTime = 0.2f   ;
+    private float debounceTime = 0.2f;
 
     private float debounce = debounceTime;
 
@@ -36,7 +44,7 @@ public class MouseControls extends Component {
             draggable.destroy();
         }
         draggable = go;
-        draggable.getComponent(SpriteRenderer.class).setColor(new Vector4f(0.8f, 0.8f, 0.8f, 0.5f));
+        draggable.getComponent(SpriteRenderer.class).setColor(DRAG_COLOR);
         draggable.addComponent(new NonPickable());
         Window.getScene().addGameObjectToScene(go);
     }
@@ -46,7 +54,7 @@ public class MouseControls extends Component {
         if (go.getComponent(StateMachine.class) != null) {
             go.getComponent(StateMachine.class).refreshTextures();
         }
-        go.getComponent(SpriteRenderer.class).setColor(new Vector4f(1, 1, 1, 1));
+        go.getComponent(SpriteRenderer.class).setColor(DEFAULT_COLOR);
         go.removeComponent(NonPickable.class);
         Window.getScene().addGameObjectToScene(go);
     }
@@ -67,37 +75,35 @@ public class MouseControls extends Component {
                     ((int)Math.floor(draggable.transform.position.y / Settings.GRID_HEIGHT) * Settings.GRID_HEIGHT) +
                             Settings.GRID_HEIGHT / 2.0f;
 
-            if (MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+            if (isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
                 float halfWidth  = (Settings.GRID_WIDTH / 2.0f);
                 float halfHeight = (Settings.GRID_HEIGHT / 2.0f);
-                if (MouseListener.isDragging() &&
+                if (isDragging() &&
                         !blockInSquare(draggable.transform.position.x - halfWidth,
                                 draggable.transform.position.y - halfHeight)) {
                     drop();
-                } else if (!MouseListener.isDragging() && debounce < 0) {
+                } else if (!isDragging() && debounce < 0) {
                     drop();
                     debounce = debounceTime;
                 }
             }
-
-            if (KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {
+            if (isKeyPressed(GLFW_KEY_ESCAPE)) {
                 draggable.destroy();
                 draggable = null;
             }
-        } else if (!MouseListener.isDragging() &&
-                MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {
+        } else if (!isDragging() && isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {
             int x = (int)MouseListener.getScreenX();
             int y = (int)MouseListener.getScreenY();
             int id = props.getPickingTexture().readPixel(x, y);
-            GameObject pickedObject = scene.getGameObject(id);
-            if (pickedObject != null && pickedObject.getComponent(NonPickable.class) == null) {
-                props.setActiveGameObject(pickedObject);
+            GameObject pickedGo = scene.getGameObject(id);
+            if (pickedGo != null && pickedGo.getComponent(NonPickable.class) == null) {
+                props.setActiveGameObject(pickedGo);
                 System.out.printf("(Debug): ID: '%d'%n", id);
-            } else if (pickedObject == null && !MouseListener.isDragging()) {
+            } else if (pickedGo == null && !isDragging()) {
                 props.clearSelected();
             }
             debounce = 0.2f;
-        } else if (MouseListener.isDragging() && MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+        } else if (isDragging() && isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
             if (!boxSelectSet) {
                 props.clearSelected();
                 boxSelectStart = MouseListener.getScreen();
@@ -141,9 +147,9 @@ public class MouseControls extends Component {
             }
 
             for (Integer id : uniqueIds) {
-                GameObject pickedObject = Window.getScene().getGameObject(id);
-                if (pickedObject != null && pickedObject.getComponent(NonPickable.class) == null) {
-                    props.addActiveGameObject(pickedObject);
+                GameObject pickedGo = Window.getScene().getGameObject(id);
+                if (pickedGo != null && pickedGo.getComponent(NonPickable.class) == null) {
+                    props.addActiveGameObject(pickedGo);
                 }
             }
 
@@ -151,20 +157,20 @@ public class MouseControls extends Component {
     }
 
     private boolean blockInSquare(float x, float y) {
-        PropertiesWindow propertiesWindow = Window.getImGuiLayer().getPropertiesWindow();
+        PropertiesWindow props = Window.getImGuiLayer().getPropertiesWindow();
         Vector2f start = new Vector2f(x, y);
         Vector2f end = new Vector2f(start).add(new Vector2f(Settings.GRID_WIDTH, Settings.GRID_HEIGHT));
         Vector2f startScreenf = MouseListener.world2Screen(start);
         Vector2f endScreenf = MouseListener.world2Screen(end);
         Vector2i startScreen = new Vector2i((int)startScreenf.x + 2, (int)startScreenf.y + 2);
         Vector2i endScreen = new Vector2i((int)endScreenf.x - 2, (int)endScreenf.y - 2);
-        float[] ids = propertiesWindow.getPickingTexture().readPixels(startScreen, endScreen);
+        float[] ids = props.getPickingTexture().readPixels(startScreen, endScreen);
 
         for (int i = 0; i < ids.length; i++) {
             float id = ids[i];
             if (id >= 0) {
-                GameObject picked = Window.getScene().getGameObject((int)id);
-                if (picked.getComponent(NonPickable.class) == null) {
+                GameObject pickedGo = Window.getScene().getGameObject((int)id);
+                if (pickedGo.getComponent(NonPickable.class) == null) {
                     return true;
                 }
             }
