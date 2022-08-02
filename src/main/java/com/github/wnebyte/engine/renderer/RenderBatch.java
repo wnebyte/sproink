@@ -2,15 +2,12 @@ package com.github.wnebyte.engine.renderer;
 
 import java.util.List;
 import java.util.ArrayList;
-
-import com.github.wnebyte.engine.core.ecs.GameObject;
-import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
-
-import com.github.wnebyte.engine.components.SpriteRenderer;
+import org.joml.Matrix4f;
 import com.github.wnebyte.engine.core.window.Window;
-
+import com.github.wnebyte.engine.core.ecs.GameObject;
+import com.github.wnebyte.engine.components.SpriteRenderer;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
@@ -71,14 +68,11 @@ public class RenderBatch implements Comparable<RenderBatch> {
     private int zIndex;
 
     public RenderBatch(Renderer renderer, int maxBatchSize, int zIndex) {
-       // this.shader = ResourceFlyWeight.getShader("/shaders/default.glsl");
         this.renderer = renderer;
         this.sprites = new SpriteRenderer[maxBatchSize];
         this.maxBatchSize = maxBatchSize;
-
         // 4 vertices quads
-        vertices = new float[maxBatchSize * 4 * VERTEX_SIZE];
-
+        this.vertices = new float[maxBatchSize * 4 * VERTEX_SIZE];
         this.numSprites = 0;
         this.hasRoom = true;
         this.textures = new ArrayList<>();
@@ -93,7 +87,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
         // Allocate space for vertices
         vboID = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vboID);
-        glBufferData(GL_ARRAY_BUFFER, vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, (long) vertices.length * Float.BYTES, GL_DYNAMIC_DRAW);
 
         // Create and upload the indices buffer
         int eboID = glGenBuffers();
