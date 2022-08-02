@@ -302,4 +302,42 @@ public class Prefabs {
         return flower;
     }
 
+    public static GameObject generateGoomba() {
+        Spritesheet sprites = ResourceFlyWeight.getSpritesheet("/images/spritesheet.png");
+        GameObject goomba = generateSpriteObject(sprites.getSprite(14), 0.25f, 0.25f);
+
+        AnimationState walk = new AnimationState();
+        walk.title = "Walk";
+        float defaultFrameTime = 0.23f;
+        walk.addFrame(sprites.getSprite(14), defaultFrameTime);
+        walk.addFrame(sprites.getSprite(15), defaultFrameTime);
+        walk.setLoop(true);
+
+        AnimationState squashed = new AnimationState();
+        squashed.title = "Squashed";
+        squashed.addFrame(sprites.getSprite(16), 0.1f);
+        squashed.setLoop(false);
+
+        StateMachine stateMachine = new StateMachine();
+        stateMachine.addState(walk);
+        stateMachine.addState(squashed);
+        stateMachine.setDefaultState(walk.title);
+        stateMachine.addStateTrigger(walk.title, squashed.title, "squashMe");
+        goomba.addComponent(stateMachine);
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.DYNAMIC);
+        rb.setMass(0.1f);
+        rb.setFixedRotation(true);
+        goomba.addComponent(rb);
+
+        CircleCollider cc = new CircleCollider();
+        cc.setRadius(0.12f);
+        goomba.addComponent(cc);
+
+        goomba.addComponent(new GoombaAI());
+
+        return goomba;
+    }
+
 }

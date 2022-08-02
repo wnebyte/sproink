@@ -105,14 +105,13 @@ public abstract class Component {
         }
     }
 
+    public void beginCollision(GameObject go, Contact contact, Vector2f contactNormal) {}
 
-    public void beginCollision(GameObject collidingGo, Contact contact, Vector2f hitNormal) {}
+    public void endCollision(GameObject go, Contact contact, Vector2f contactNormal) {}
 
-    public void endCollision(GameObject collidingGo, Contact contact, Vector2f hitNormal) {}
+    public void preSolve(GameObject go, Contact contact, Vector2f contactNormal) {}
 
-    public void preSolve(GameObject collidingGo, Contact contact, Vector2f hitNormal) {}
-
-    public void postSolve(GameObject collidingGo, Contact contact, Vector2f hitNormal) {}
+    public void postSolve(GameObject go, Contact contact, Vector2f contactNormal) {}
 
     public void destroy() {}
 

@@ -1,11 +1,14 @@
 package com.github.wnebyte.engine.components;
 
 import org.joml.Vector2f;
+import org.joml.Vector4f;
 import org.jbox2d.dynamics.contacts.Contact;
 import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.core.ecs.Component;
+import com.github.wnebyte.engine.core.scene.LevelEditorSceneInitializer;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
+import com.github.wnebyte.engine.physics2d.enums.BodyType;
 import com.github.wnebyte.engine.physics2d.components.RigidBody2D;
 import com.github.wnebyte.engine.physics2d.components.PillboxCollider;
 import static com.github.wnebyte.engine.core.event.KeyListener.isKeyPressed;
@@ -38,6 +41,8 @@ public class PlayerController extends Component {
 
     private transient float groundDebounceTime = 0.1f;
 
+    private transient SpriteRenderer spr;
+
     private transient RigidBody2D rb;
 
     private transient StateMachine stateMachine;
@@ -54,10 +59,23 @@ public class PlayerController extends Component {
 
     private transient boolean isDead = false;
 
+    private transient float isHurtInvincibilityTimeLeft = 0;
+
+    private transient float isHurtInvincibilityTime = 1.4f;
+
+    private transient float deadMaxHeight = 0;
+
+    private transient float deadMinHeight = 0;
+
+    private transient boolean deadGoingUp = true;
+
+    private transient float blinkTime = 0.0f;
+
     private transient int enemyBounce = 0;
 
     @Override
     public void start() {
+        this.spr = gameObject.getComponent(SpriteRenderer.class);
         this.rb = gameObject.getComponent(RigidBody2D.class);
         this.stateMachine = gameObject.getComponent(StateMachine.class);
         this.rb.setGravityScale(0.0f);
@@ -65,6 +83,42 @@ public class PlayerController extends Component {
 
     @Override
     public void update(float dt) {
+        if (isDead) {
+            if (gameObject.transform.position.y < deadMaxHeight && deadGoingUp) {
+                gameObject.transform.position.y += dt * walkSpeed / 2.0f;
+            } else if (gameObject.transform.position.y >= deadMaxHeight && deadGoingUp) {
+                deadGoingUp = false;
+            }  else if (!deadGoingUp && gameObject.transform.position.y > deadMinHeight) {
+                rb.setBodyType(BodyType.KINEMATIC);
+                acceleration.y = Window.getPhysics2d().getGravity().y * 0.7f;
+                velocity.y += acceleration.y * dt;
+                velocity.y = Math.max(Math.min(velocity.y, terminalVelocity.y), -terminalVelocity.y);
+                rb.setVelocity(velocity);
+                rb.setAngularVelocity(0.0f);
+            } else if (!deadGoingUp && gameObject.transform.position.y <= deadMinHeight) {
+                Window.setScene(new LevelEditorSceneInitializer());
+            }
+            return;
+        }
+
+        if (isHurtInvincibilityTimeLeft > 0) {
+            isHurtInvincibilityTimeLeft -= dt;
+            blinkTime -= dt;
+
+            if (blinkTime <= 0) {
+                blinkTime = 0.2f;
+                if (spr.getColor().w == 1) {
+                    spr.setColor(new Vector4f(1, 1, 1, 0));
+                } else {
+                    spr.setColor(new Vector4f(1, 1, 1, 1));
+                }
+            } else {
+                if (spr.getColor().w == 0) {
+                    spr.setColor(new Vector4f(1, 1, 1, 1));
+                }
+            }
+        }
+
         if (isKeyPressed(GLFW_KEY_RIGHT) || isKeyPressed(GLFW_KEY_D)) {
             gameObject.transform.scale.x = playerWidth;
             acceleration.x = walkSpeed;
@@ -111,7 +165,11 @@ public class PlayerController extends Component {
                 velocity.y = 0;
             }
             groundDebounce = 0;
-        } else if (!onGround) {
+        } else if (enemyBounce > 0) {
+            enemyBounce--;
+            velocity.y = ((enemyBounce / 2.2f) * jumpBoost);
+        }
+        else if (!onGround) {
             if (jumpTime > 0) {
                 velocity.y *= 0.35f;
                 jumpTime = 0;
@@ -146,10 +204,10 @@ public class PlayerController extends Component {
     }
 
     @Override
-    public void beginCollision(GameObject collidingGo, Contact contact, Vector2f contactNormal) {
+    public void beginCollision(GameObject go, Contact contact, Vector2f contactNormal) {
         if (isDead) return;
 
-        if (collidingGo.getComponent(Ground.class) != null) {
+        if (go.getComponent(Ground.class) != null) {
             if (Math.abs(contactNormal.x) > 0.8f) {
                 // horizontal hit
                 velocity.x = 0;
@@ -181,6 +239,47 @@ public class PlayerController extends Component {
         stateMachine.trigger("powerup");
     }
 
+    public void die() {
+        stateMachine.trigger("die");
+        if (isSmall()) {
+            velocity.set(0, 0);
+            acceleration.set(0, 0);
+            rb.setVelocity(new Vector2f());
+            rb.setIsSensor();
+            isDead = true;
+            ResourceFlyWeight.getSound("/sounds/mario_die.ogg").play();
+            deadMaxHeight = gameObject.transform.position.y + 0.3f;
+            rb.setBodyType(BodyType.STATIC);
+            if (gameObject.transform.position.y > 0) {
+                deadMinHeight = -0.25f;
+            }
+        }
+        else if (isBig()) {
+            playerState = PlayerState.SMALL;
+            gameObject.transform.scale.y = 0.25f;
+            PillboxCollider pbc = gameObject.getComponent(PillboxCollider.class);
+            if (pbc != null) {
+                jumpBoost /= bigJumpBoostFactor;
+                walkSpeed /= bigJumpBoostFactor;
+                pbc.setHeight(0.31f);
+            }
+            isHurtInvincibilityTimeLeft = isHurtInvincibilityTime;
+            ResourceFlyWeight.getSound("/sounds/pipe.ogg").play();
+        } else if (isFire()) {
+            playerState = PlayerState.BIG;
+            isHurtInvincibilityTimeLeft = isHurtInvincibilityTime;
+            ResourceFlyWeight.getSound("/sounds/pipe.ogg").play();
+        }
+    }
+
+    public void enemyBounce() {
+        enemyBounce = 8;
+    }
+
+    public boolean isHurtInvincible() {
+        return (isHurtInvincibilityTimeLeft > 0);
+    }
+
     public boolean isBig() {
         return (playerState == PlayerState.BIG);
     }
@@ -199,5 +298,9 @@ public class PlayerController extends Component {
 
     public boolean isDead() {
         return isDead;
+    }
+
+    public boolean isAlive() {
+        return !isDead;
     }
 }

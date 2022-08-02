@@ -103,8 +103,9 @@ public class Physics2D {
         if (body == null) return;
 
         Fixture fixture = body.getFixtureList();
-        for (fixture = fixture.getNext(); fixture != null;) {
+        while (fixture != null) {
             fixture.m_isSensor = true;
+            fixture = fixture.getNext();
         }
     }
 
@@ -113,8 +114,9 @@ public class Physics2D {
         if (body == null) return;
 
         Fixture fixture = body.getFixtureList();
-        for (fixture = fixture.getNext(); fixture != null;) {
+        while (fixture != null) {
             fixture.m_isSensor = false;
+            fixture = fixture.getNext();
         }
     }
 
