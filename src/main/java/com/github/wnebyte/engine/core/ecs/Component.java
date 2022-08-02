@@ -1,5 +1,6 @@
 package com.github.wnebyte.engine.core.ecs;
 
+import java.util.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import org.joml.Vector2f;
@@ -30,6 +31,22 @@ public abstract class Component {
         return -1;
     }
 
+    public static Collection<Field> getAllFields(Class<?> cls) {
+        List<Field> c = new ArrayList<>();
+
+        while (cls != null && cls != Component.class) {
+            for (Field f : cls.getDeclaredFields()) {
+                int mod = f.getModifiers();
+                if (!Modifier.isTransient(mod) && !Modifier.isStatic(mod)) {
+                    c.add(f);
+                }
+            }
+            cls = cls.getSuperclass();
+        }
+
+        return c;
+    }
+
     private static int ID_COUNTER = 0;
 
     private int id = -1;
@@ -44,14 +61,10 @@ public abstract class Component {
 
     public void imGui() {
         try {
-            Field[] fields = this.getClass().getDeclaredFields();
+            Collection<Field> fields = getAllFields(this.getClass());
             for (Field field: fields) {
-                boolean isTransient = Modifier.isTransient(field.getModifiers());
-                if (isTransient) {
-                    continue;
-                }
-                boolean isPrivate = Modifier.isPrivate(field.getModifiers());
-                if (isPrivate) {
+                boolean accessible = field.isAccessible();
+                if (!accessible) {
                     field.setAccessible(true);
                 }
 
@@ -96,7 +109,7 @@ public abstract class Component {
                     }
                 }
 
-                if (isPrivate) {
+                if (!accessible) {
                     field.setAccessible(false);
                 }
             }
