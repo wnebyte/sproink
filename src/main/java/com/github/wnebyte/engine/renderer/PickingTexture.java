@@ -58,11 +58,11 @@ public class PickingTexture {
         return true;
     }
 
-    public void enableWriting() {
+    public void bind() {
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
     }
 
-    public void disableWriting() {
+    public void unbind() {
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
     }
 
@@ -72,7 +72,6 @@ public class PickingTexture {
 
         float[] pixels = new float[3];
         glReadPixels(x, y, 1, 1, GL_RGB, GL_FLOAT, pixels);
-
         return (int)pixels[0] - 1;
     }
 
@@ -85,7 +84,6 @@ public class PickingTexture {
         float[] pixels = new float[3 * numPixels];
         glReadPixels(start.x, start.y, size.x, size.y, GL_RGB, GL_FLOAT, pixels);
         JMath.sub(pixels, 1);
-
         return pixels;
     }
 }

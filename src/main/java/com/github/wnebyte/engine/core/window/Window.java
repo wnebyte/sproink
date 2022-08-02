@@ -203,15 +203,14 @@ public class Window implements Observer {
 
             // Render pass 1. Render to picking texture.
             glDisable(GL_BLEND);
-            pickingTexture.enableWriting();
+            pickingTexture.bind();
             glViewport(0, 0, width, height);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             Renderer.bindShader(pickingShader);
             scene.render();
-
-            pickingTexture.disableWriting();
+            pickingTexture.unbind();
             glEnable(GL_BLEND);
 
             // Render pass 2. Render actual game.
@@ -231,7 +230,6 @@ public class Window implements Observer {
                 DebugDraw.draw();
             }
             frameBuffer.unbind();
-
             imGuiLayer.update(dt, scene);
             MouseListener.endFrame();
             KeyListener.endFrame();
