@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #51 - Powerups
+Coding a 2D Game Engine #52 - Goomba AI
  */
 public class Main {
 

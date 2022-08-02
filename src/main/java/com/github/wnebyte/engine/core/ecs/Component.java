@@ -106,25 +106,15 @@ public abstract class Component {
     }
 
 
-    public void beginCollision(GameObject collidingGo, Contact contact, Vector2f hitNormal) {
+    public void beginCollision(GameObject collidingGo, Contact contact, Vector2f hitNormal) {}
 
-    }
+    public void endCollision(GameObject collidingGo, Contact contact, Vector2f hitNormal) {}
 
-    public void endCollision(GameObject collidingGo, Contact contact, Vector2f hitNormal) {
+    public void preSolve(GameObject collidingGo, Contact contact, Vector2f hitNormal) {}
 
-    }
+    public void postSolve(GameObject collidingGo, Contact contact, Vector2f hitNormal) {}
 
-    public void preSolve(GameObject collidingGo, Contact contact, Vector2f hitNormal) {
-
-    }
-
-    public void postSolve(GameObject collidingGo, Contact contact, Vector2f hitNormal) {
-
-    }
-
-    public void destroy() {
-
-    }
+    public void destroy() {}
 
     public void generateId() {
         if (this.id == -1) {
