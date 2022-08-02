@@ -2,6 +2,7 @@ package com.github.wnebyte.engine.core.window;
 
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
@@ -28,6 +29,16 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 @SuppressWarnings("resource")
 public class Window implements Observer {
+
+    public static class Resolution {
+
+        public final int width, height;
+
+        public Resolution(int width, int height) {
+            this.width = width;
+            this.height = height;
+        }
+    }
 
     public static final int DEFAULT_WIDTH = 1920;
 
@@ -64,8 +75,6 @@ public class Window implements Observer {
     private float a = 1.0f;
 
     private Window() {
-        this.width = DEFAULT_WIDTH;
-        this.height = DEFAULT_HEIGHT;
         this.title = "Engine";
         EventSystem.addObserver(this);
     }
@@ -122,8 +131,16 @@ public class Window implements Observer {
             );
         }
 
+        Resolution resolution = getMonitorResolution();
+        width = resolution.width;
+        height = resolution.height;
+
         // Configure GLFW
         glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+        /*
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
@@ -131,9 +148,10 @@ public class Window implements Observer {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+         */
 
         // Create the window
-        glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
+        glfwWindow = glfwCreateWindow(width, height, title, NULL, NULL);
         if (glfwWindow == NULL) {
             throw new IllegalStateException(
                     "Failed to create GLFW window."
@@ -147,7 +165,7 @@ public class Window implements Observer {
         glfwSetWindowSizeCallback(glfwWindow, (w, newWidth, newHeight) -> {
             Window.setWidth(newWidth);
             Window.setHeight(newHeight);
-            glViewport(0, 0, newWidth, newHeight);
+           // glViewport(0, 0, newWidth, newHeight);
         });
 
         // Make OpenGL context current
@@ -161,12 +179,14 @@ public class Window implements Observer {
         // Initialize audio device
         String defaultDeviceName = alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER);
         audioDevice = alcOpenDevice(defaultDeviceName);
+
         int[] attributes = {0};
         audioContext = alcCreateContext(audioDevice, attributes);
         alcMakeContextCurrent(audioContext);
 
         ALCCapabilities alcCapabilities = ALC.createCapabilities(audioDevice);
         ALCapabilities alCapabilities = AL.createCapabilities(alcCapabilities);
+
         assert alCapabilities.OpenAL10 : "Audio library not supported";
 
         // This line is critical for LWJGL's interoperation with GLFW's
@@ -179,7 +199,7 @@ public class Window implements Observer {
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-        frameBuffer = new FrameBuffer(width, height); // same di as pickingTexture
+        frameBuffer = new FrameBuffer(width, height);
         pickingTexture = new PickingTexture(width, height);
         glViewport(0, 0, width, height);
 
@@ -274,6 +294,32 @@ public class Window implements Observer {
 
     public static Physics2D getPhysics2d() {
         return window.scene.getPhysics2d();
+    }
+
+    public static Resolution getMonitorResolution() {
+        int width = 0;
+        int height = 0;
+        int size = width * height;
+        int index = -1;
+
+        int i = 0;
+        GLFWVidMode.Buffer buffer = glfwGetVideoModes(glfwGetPrimaryMonitor());
+        for (GLFWVidMode mode : buffer) {
+            int tmpWidth = mode.width();
+            int tmpHeight = mode.height();
+            int tmpSize = tmpWidth * tmpHeight;
+            if (tmpSize > size) {
+                width = tmpWidth;
+                height = tmpHeight;
+                size = tmpSize;
+                index = i;
+            }
+            i++;
+        }
+
+        return (index == -1) ?
+                new Resolution(DEFAULT_WIDTH, DEFAULT_HEIGHT) :
+                new Resolution(width, height);
     }
 
     @Override

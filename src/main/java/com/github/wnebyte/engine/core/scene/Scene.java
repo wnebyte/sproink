@@ -16,6 +16,7 @@ import com.github.wnebyte.engine.renderer.Renderer;
 import com.github.wnebyte.engine.physics2d.Physics2D;
 
 public class Scene {
+
     private Camera camera;
 
     private boolean isRunning;
@@ -24,7 +25,7 @@ public class Scene {
 
     private final List<GameObject> gameObjects;
 
-    private final List<GameObject> pendingGameObject;
+    private final List<GameObject> pendingGameObjects;
 
     private final Physics2D physics2d;
 
@@ -35,7 +36,7 @@ public class Scene {
         this.physics2d = new Physics2D();
         this.renderer = new Renderer();
         this.gameObjects = new ArrayList<>();
-        this.pendingGameObject = new ArrayList<>();
+        this.pendingGameObjects = new ArrayList<>();
         this.isRunning = false;
     }
 
@@ -70,14 +71,14 @@ public class Scene {
             }
         }
 
-        for (GameObject go : pendingGameObject) {
+        for (GameObject go : pendingGameObjects) {
             gameObjects.add(go);
             go.start();
             renderer.add(go);
             physics2d.add(go);
         }
 
-        pendingGameObject.clear();
+        pendingGameObjects.clear();
     }
 
     public void update(float dt) {
@@ -96,14 +97,14 @@ public class Scene {
             }
         }
 
-        for (GameObject go : pendingGameObject) {
+        for (GameObject go : pendingGameObjects) {
             gameObjects.add(go);
             go.start();
             renderer.add(go);
             physics2d.add(go);
         }
 
-        pendingGameObject.clear();
+        pendingGameObjects.clear();
     }
 
     public void imGui() {
@@ -124,7 +125,7 @@ public class Scene {
         if (!isRunning) {
             gameObjects.add(go);
         } else {
-            pendingGameObject.add(go);
+            pendingGameObjects.add(go);
         }
     }
 

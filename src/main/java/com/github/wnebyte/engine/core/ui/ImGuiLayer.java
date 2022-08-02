@@ -59,9 +59,9 @@ public class ImGuiLayer {
         // Initialize ImGuiIO config
         final ImGuiIO io = ImGui.getIO();
 
-        io.setIniFilename("imgui.ini"); // We don't want to save .ini file
+        io.setIniFilename("imgui.ini");
         io.setConfigFlags(ImGuiConfigFlags.DockingEnable);
-        /* enables viewports
+        /*
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
         io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
          */
