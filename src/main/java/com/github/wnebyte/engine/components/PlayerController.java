@@ -59,9 +59,9 @@ public class PlayerController extends Component {
 
     private transient boolean isDead = false;
 
-    private transient float isHurtInvincibilityTimeLeft = 0;
+    private transient float hurtInvincibilityTimeLeft = 0;
 
-    private transient float isHurtInvincibilityTime = 1.4f;
+    private transient float hurtInvincibilityTime = 1.4f;
 
     private transient float deadMaxHeight = 0;
 
@@ -101,8 +101,8 @@ public class PlayerController extends Component {
             return;
         }
 
-        if (isHurtInvincibilityTimeLeft > 0) {
-            isHurtInvincibilityTimeLeft -= dt;
+        if (hurtInvincibilityTimeLeft > 0) {
+            hurtInvincibilityTimeLeft -= dt;
             blinkTime -= dt;
 
             if (blinkTime <= 0) {
@@ -263,11 +263,11 @@ public class PlayerController extends Component {
                 walkSpeed /= bigJumpBoostFactor;
                 pbc.setHeight(0.31f);
             }
-            isHurtInvincibilityTimeLeft = isHurtInvincibilityTime;
+            hurtInvincibilityTimeLeft = hurtInvincibilityTime;
             ResourceFlyWeight.getSound("/sounds/pipe.ogg").play();
         } else if (isFire()) {
             playerState = PlayerState.BIG;
-            isHurtInvincibilityTimeLeft = isHurtInvincibilityTime;
+            hurtInvincibilityTimeLeft = hurtInvincibilityTime;
             ResourceFlyWeight.getSound("/sounds/pipe.ogg").play();
         }
     }
@@ -277,7 +277,7 @@ public class PlayerController extends Component {
     }
 
     public boolean isHurtInvincible() {
-        return (isHurtInvincibilityTimeLeft > 0);
+        return (hurtInvincibilityTimeLeft > 0);
     }
 
     public boolean isBig() {

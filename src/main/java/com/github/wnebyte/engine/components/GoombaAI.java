@@ -85,7 +85,7 @@ public class GoombaAI extends Component {
                     contactNormal.y > 0.58f) { // player jumped on top of the goomba's head
                pc.enemyBounce();
                stomp();
-            } else if (pc.isAlive() && !pc.isInvincible()) {
+            } else if (pc.isAlive() && !pc.isInvincible() && !pc.isHurtInvincible()) {
                pc.die();
                if (pc.isAlive()) {
                    contact.setEnabled(false);
