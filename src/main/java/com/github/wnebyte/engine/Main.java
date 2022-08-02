@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #50 - Variable Length Jumps
+Coding a 2D Game Engine #51 - Powerups
  */
 public class Main {
 

@@ -1,17 +1,15 @@
 package com.github.wnebyte.engine.physics2d;
 
-import com.github.wnebyte.engine.components.Ground;
-import com.github.wnebyte.engine.core.window.Window;
-import com.github.wnebyte.engine.physics2d.components.*;
-import com.github.wnebyte.engine.renderer.DebugDraw;
-import org.jbox2d.collision.shapes.CircleShape;
 import org.joml.Vector2f;
 import org.jbox2d.dynamics.*;
 import org.jbox2d.common.Vec2;
+import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import com.github.wnebyte.engine.core.Transform;
 import com.github.wnebyte.engine.core.ecs.GameObject;
-import org.joml.Vector3f;
+import com.github.wnebyte.engine.components.Ground;
+import com.github.wnebyte.engine.core.window.Window;
+import com.github.wnebyte.engine.physics2d.components.*;
 
 public class Physics2D {
 
@@ -241,9 +239,6 @@ public class Physics2D {
         Vector2f raycast2Begin = new Vector2f(raycastBegin).add(innerPlayerWidth, 0.0f);
         Vector2f raycast2End = new Vector2f(raycastEnd).add(innerPlayerWidth, 0.0f);
         RaycastInfo info2 = Window.getPhysics2d().raycast(gameObject, raycast2Begin, raycast2End);
-
-       // DebugDraw.addLine2D(raycastBegin, raycastEnd, new Vector3f(1, 0, 0));
-       // DebugDraw.addLine2D(raycast2Begin, raycast2End, new Vector3f(1, 0, 0));
 
         return (info.hit && info.getHitGo() != null && info.getHitGo().getComponent(Ground.class) != null) ||
                 (info2.hit && info2.getHitGo() != null && info2.getHitGo().getComponent(Ground.class) != null);

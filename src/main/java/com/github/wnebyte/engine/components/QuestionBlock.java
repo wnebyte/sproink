@@ -43,7 +43,25 @@ public class QuestionBlock extends Block {
     }
 
     private void doPowerup(PlayerController playerController) {
-        // Todo: impl
+        if (playerController.isSmall()) {
+            spawnMushroom();
+        } else if (playerController.isBig()) {
+            spawnFlower();
+        }
+    }
+
+    private void spawnMushroom() {
+        GameObject go = Prefabs.generateMushroom();
+        go.transform.position.set(gameObject.transform.position);
+        go.transform.position.y += 0.25f;
+        Window.getScene().addGameObjectToScene(go);
+    }
+
+    private void spawnFlower() {
+        GameObject go = Prefabs.generateFlower();
+        go.transform.position.set(gameObject.transform.position);
+        go.transform.position.y += 0.25f;
+        Window.getScene().addGameObjectToScene(go);
     }
 
     private void doInvincibility(PlayerController playerController) {

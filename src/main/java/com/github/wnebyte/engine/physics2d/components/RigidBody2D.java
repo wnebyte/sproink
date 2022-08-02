@@ -167,7 +167,7 @@ public class RigidBody2D extends Component {
     public void setNotSensor() {
         this.isSensor = false;
         if (rawBody != null) {
-            Window.getPhysics2d().setIsSensor(this);
+            Window.getPhysics2d().setNotSensor(this);
         }
     }
 }

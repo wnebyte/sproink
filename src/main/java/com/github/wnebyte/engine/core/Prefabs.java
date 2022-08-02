@@ -6,10 +6,11 @@ import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.animation.AnimationState;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
+import com.github.wnebyte.engine.physics2d.enums.BodyType;
+import com.github.wnebyte.engine.physics2d.components.RigidBody2D;
 import com.github.wnebyte.engine.physics2d.components.Box2DCollider;
 import com.github.wnebyte.engine.physics2d.components.PillboxCollider;
-import com.github.wnebyte.engine.physics2d.components.RigidBody2D;
-import com.github.wnebyte.engine.physics2d.enums.BodyType;
+import com.github.wnebyte.engine.physics2d.components.CircleCollider;
 
 public class Prefabs {
 
@@ -263,6 +264,42 @@ public class Prefabs {
         coin.addComponent(new BlockCoin());
 
         return coin;
+    }
+
+    public static GameObject generateMushroom() {
+        Spritesheet items = ResourceFlyWeight.getSpritesheet("/images/items.png");
+        GameObject mushroom = generateSpriteObject(items.getSprite(10), 0.25f, 0.25f);
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.DYNAMIC);
+        rb.setFixedRotation(true);
+        rb.setContinuousCollision(false);
+        mushroom.addComponent(rb);
+
+        CircleCollider circleCollider = new CircleCollider();
+        circleCollider.setRadius(0.14f);
+        mushroom.addComponent(circleCollider);
+        mushroom.addComponent(new MushroomAI());
+
+        return mushroom;
+    }
+
+    public static GameObject generateFlower() {
+        Spritesheet items = ResourceFlyWeight.getSpritesheet("/images/items.png");
+        GameObject flower = generateSpriteObject(items.getSprite(20), 0.25f, 0.25f);
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.STATIC);
+        rb.setFixedRotation(true);
+        rb.setContinuousCollision(false);
+        flower.addComponent(rb);
+
+        CircleCollider circleCollider = new CircleCollider();
+        circleCollider.setRadius(0.14f);
+        flower.addComponent(circleCollider);
+        flower.addComponent(new Flower());
+
+        return flower;
     }
 
 }

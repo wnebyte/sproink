@@ -12,10 +12,6 @@ public class KeyListener {
 
     private final boolean[] keyBeginPress = new boolean[350];
 
-    private KeyListener() {
-
-    }
-
     public static KeyListener get() {
         if (instance == null) {
             instance = new KeyListener();

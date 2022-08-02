@@ -14,18 +14,26 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class KeyControls extends Component {
 
+    private float debounce = 0.0f;
+
+    private float debounceTime = 0.2f;
+
     @Override
     public void editorUpdate(float dt) {
+        debounce -= dt;
         PropertiesWindow props = Window.getImGuiLayer().getPropertiesWindow();
         GameObject activeGameObject = props.getActiveGameObject();
         List<GameObject> activeGameObjects = props.getActiveGameObjects();
 
         if (isKeyPressed(GLFW_KEY_LEFT_CONTROL) && keyBeginPress(GLFW_KEY_D) &&
                 activeGameObject != null) {
-            GameObject newObject = activeGameObject.copy();
-            Window.getScene().addGameObjectToScene(newObject);
-            newObject.transform.position.add(new Vector2f(Settings.GRID_WIDTH, 0.0f));
-            props.setActiveGameObject(newObject);
+            GameObject copy = activeGameObject.copy();
+            Window.getScene().addGameObjectToScene(copy);
+            copy.transform.position.add(new Vector2f(Settings.GRID_WIDTH, 0.0f));
+            props.setActiveGameObject(copy);
+            if (copy.getComponent(StateMachine.class) != null) {
+                copy.getComponent(StateMachine.class).refreshTextures();
+            }
             System.out.println("(Debug): Copy");
         }
         else if (isKeyPressed(GLFW_KEY_LEFT_CONTROL) && keyBeginPress(GLFW_KEY_D) &&
@@ -36,6 +44,9 @@ public class KeyControls extends Component {
                 GameObject copy = go.copy();
                 Window.getScene().addGameObjectToScene(copy);
                 props.addActiveGameObject(copy);
+                if (copy.getComponent(StateMachine.class) != null) {
+                    copy.getComponent(StateMachine.class).refreshTextures();
+                }
             }
         }
         else if (keyBeginPress(GLFW_KEY_DELETE)) {

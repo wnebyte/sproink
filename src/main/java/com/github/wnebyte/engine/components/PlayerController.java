@@ -1,15 +1,13 @@
 package com.github.wnebyte.engine.components;
 
 import org.joml.Vector2f;
-import org.joml.Vector3f;
 import org.jbox2d.dynamics.contacts.Contact;
 import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.core.ecs.Component;
-import com.github.wnebyte.engine.renderer.DebugDraw;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
-import com.github.wnebyte.engine.physics2d.RaycastInfo;
 import com.github.wnebyte.engine.physics2d.components.RigidBody2D;
+import com.github.wnebyte.engine.physics2d.components.PillboxCollider;
 import static com.github.wnebyte.engine.core.event.KeyListener.isKeyPressed;
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -44,7 +42,7 @@ public class PlayerController extends Component {
 
     private transient StateMachine stateMachine;
 
-    private transient float bigJumpFactor = 1.05f;
+    private transient float bigJumpBoostFactor = 1.05f;
 
     private transient float playerWidth = 0.25f;
 
@@ -89,7 +87,7 @@ public class PlayerController extends Component {
             }
         } else {
             acceleration.x = 0.0f;
-            if (velocity.x > 0){
+            if (velocity.x > 0) {
                 velocity.x = Math.max(0, velocity.x - slowDownForce);
             } else if (velocity.x < 0) {
                 velocity.x = Math.min(0, velocity.x + slowDownForce);
@@ -98,8 +96,8 @@ public class PlayerController extends Component {
             }
         }
 
-        onGround = Window.getPhysics2d()
-                .checkOnGround(gameObject, playerWidth * 0.6f, -0.14f);
+        checkOnGround();
+
         if (isKeyPressed(GLFW_KEY_SPACE) &&
                 (jumpTime > 0 || onGround || groundDebounce > 0)) {
             if ((onGround || groundDebounce > 0) && jumpTime == 0) {
@@ -141,6 +139,12 @@ public class PlayerController extends Component {
         }
     }
 
+    public void checkOnGround() {
+        float innerPlayerWidth = playerWidth * 0.6f;
+        float yVal = isSmall() ? -0.14f : -0.24f;
+        onGround = Window.getPhysics2d().checkOnGround(gameObject, innerPlayerWidth, yVal);
+    }
+
     @Override
     public void beginCollision(GameObject collidingGo, Contact contact, Vector2f contactNormal) {
         if (isDead) return;
@@ -156,6 +160,25 @@ public class PlayerController extends Component {
                 jumpTime = 0;
             }
         }
+    }
+
+    public void powerup() {
+        if (isSmall()) {
+            playerState = PlayerState.BIG;
+            ResourceFlyWeight.getSound("/sounds/powerup.ogg").play();
+            gameObject.transform.scale.y = 0.42f;
+            PillboxCollider pbc = gameObject.getComponent(PillboxCollider.class);
+            if (pbc != null) {
+                jumpBoost *= bigJumpBoostFactor;
+                walkSpeed *= bigJumpBoostFactor;
+                pbc.setHeight(0.63f);
+            }
+        } else if (isBig()) {
+            playerState = PlayerState.FIRE;
+            ResourceFlyWeight.getSound("/sounds/powerup.ogg").play();
+        }
+
+        stateMachine.trigger("powerup");
     }
 
     public boolean isBig() {
