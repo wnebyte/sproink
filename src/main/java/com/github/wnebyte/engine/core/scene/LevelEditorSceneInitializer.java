@@ -264,6 +264,40 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
                 ImGui.popID();
                 ImGui.sameLine();
 
+                // flagtop
+                sprites = ResourceFlyWeight.getSpritesheet("/images/items.png");
+                sprite = sprites.getSprite(6);
+                spriteWidth = sprite.getWidth() * scaleFactor;
+                spriteHeight = sprite.getHeight() * scaleFactor;
+                id = sprite.getTexId();
+                texCoords = sprite.getTexCoords();
+
+                ImGui.pushID(1001);
+                if (ImGui.imageButton(id, spriteWidth, spriteHeight,
+                        texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) {
+                    GameObject go = Prefabs.generateFlagtop();
+                    levelEditorStuff.getComponent(MouseControls.class).drag(go);
+                }
+                ImGui.popID();
+                ImGui.sameLine();
+
+                // flagpole
+                sprites = ResourceFlyWeight.getSpritesheet("/images/items.png");
+                sprite = sprites.getSprite(33);
+                spriteWidth = sprite.getWidth() * scaleFactor;
+                spriteHeight = sprite.getHeight() * scaleFactor;
+                id = sprite.getTexId();
+                texCoords = sprite.getTexCoords();
+
+                ImGui.pushID(1002);
+                if (ImGui.imageButton(id, spriteWidth, spriteHeight,
+                        texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) {
+                    GameObject go = Prefabs.generateFlagpole();
+                    levelEditorStuff.getComponent(MouseControls.class).drag(go);
+                }
+                ImGui.popID();
+                ImGui.sameLine();
+
                 // pipes
                 sprites = ResourceFlyWeight.getSpritesheet("/images/spritesheets/pipes.png");
                 sprite = sprites.getSprite(0);

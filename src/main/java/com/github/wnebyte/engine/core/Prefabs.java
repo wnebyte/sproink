@@ -369,12 +369,50 @@ public class Prefabs {
         rb.setFixedRotation(true);
         turtle.addComponent(rb);
         CircleCollider cc = new CircleCollider();
-        cc.setRadius(0.13f);
+        cc.setRadius(0.12f);
         cc.setOffset(new Vector2f(0, -0.5f));
         turtle.addComponent(cc);
         turtle.addComponent(new TurtleAI());
 
         return turtle;
+    }
+
+    public static GameObject generateFlagtop() {
+        Spritesheet items = ResourceFlyWeight.getSpritesheet("/images/items.png");
+        GameObject flagtop = generateSpriteObject(items.getSprite(6), 0.25f, 0.25f);
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.DYNAMIC);
+        rb.setFixedRotation(true);
+        rb.setContinuousCollision(false);
+        flagtop.addComponent(rb);
+
+        Box2DCollider bc = new Box2DCollider();
+        bc.setHalfSize(new Vector2f(0.1f, 0.25f));
+        bc.setOffset(new Vector2f(-0.075f, 0.0f));
+        flagtop.addComponent(bc);
+        flagtop.addComponent(new Flagpole(true));
+
+        return flagtop;
+    }
+
+    public static GameObject generateFlagpole() {
+        Spritesheet items = ResourceFlyWeight.getSpritesheet("/images/items.png");
+        GameObject flagtop = generateSpriteObject(items.getSprite(33), 0.25f, 0.25f);
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.DYNAMIC);
+        rb.setFixedRotation(true);
+        rb.setContinuousCollision(false);
+        flagtop.addComponent(rb);
+
+        Box2DCollider bc = new Box2DCollider();
+        bc.setHalfSize(new Vector2f(0.1f, 0.25f));
+        bc.setOffset(new Vector2f(-0.075f, 0.0f));
+        flagtop.addComponent(bc);
+        flagtop.addComponent(new Flagpole(false));
+
+        return flagtop;
     }
 
     public static GameObject generatePipe(Direction direction) {

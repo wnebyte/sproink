@@ -1,12 +1,13 @@
 package com.github.wnebyte.engine.components;
 
-import com.github.wnebyte.engine.core.scene.LevelSceneInitializer;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.jbox2d.dynamics.contacts.Contact;
 import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.core.ecs.Component;
+import com.github.wnebyte.engine.core.audio.Sound;
+import com.github.wnebyte.engine.core.scene.LevelSceneInitializer;
 import com.github.wnebyte.engine.core.scene.LevelEditorSceneInitializer;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
 import com.github.wnebyte.engine.physics2d.enums.BodyType;
@@ -74,6 +75,12 @@ public class PlayerController extends Component {
 
     private transient int enemyBounce = 0;
 
+    private transient boolean playWinAnimation = false;
+
+    private transient float timeToCastle = 4.5f;
+
+    private transient float walkTime = 2.2f;
+
     @Override
     public void start() {
         this.spr = gameObject.getComponent(SpriteRenderer.class);
@@ -84,6 +91,34 @@ public class PlayerController extends Component {
 
     @Override
     public void update(float dt) {
+        if (playWinAnimation) {
+            checkOnGround();
+            if (!onGround) {
+                gameObject.transform.scale.x = -0.25f;
+                gameObject.transform.position.y -= dt;
+                stateMachine.trigger("stopRunning");
+                stateMachine.trigger("stopJumping");
+            } else {
+                if (walkTime > 0) {
+                    gameObject.transform.scale.x = 0.25f;
+                    gameObject.transform.position.x += dt;
+                    stateMachine.trigger("startRunning");
+                }
+                Sound sound = ResourceFlyWeight.getSound("/sounds/stage_clear.ogg");
+                if (!sound.isPlaying()) {
+                    sound.play();
+                }
+
+                timeToCastle -= dt;
+                walkTime -= dt;
+
+                if (timeToCastle <= 0) {
+                    Window.setScene(new LevelEditorSceneInitializer());
+                }
+            }
+            return;
+        }
+
         if (isDead) {
             if (gameObject.transform.position.y < deadMaxHeight && deadGoingUp) {
                 gameObject.transform.position.y += dt * walkSpeed / 2.0f;
@@ -273,6 +308,19 @@ public class PlayerController extends Component {
         }
     }
 
+    public void playWinAnimation(GameObject go) {
+        if (!playWinAnimation) {
+            playWinAnimation = true;
+            velocity.set(0.0f, 0.0f);
+            acceleration.set(0.0f, 0.0f);
+            rb.setVelocity(velocity);
+            rb.setIsSensor();
+            rb.setBodyType(BodyType.STATIC);
+            gameObject.transform.position.x = go.transform.position.x;
+            ResourceFlyWeight.getSound("/sounds/flagpole.ogg").play();
+        }
+    }
+
     public void setPosition(Vector2f pos) {
         gameObject.transform.position.set(pos);
         rb.setPosition(pos);
@@ -283,7 +331,7 @@ public class PlayerController extends Component {
     }
 
     public boolean isHurtInvincible() {
-        return (hurtInvincibilityTimeLeft > 0);
+        return (hurtInvincibilityTimeLeft > 0 || playWinAnimation);
     }
 
     public boolean isBig() {
@@ -299,7 +347,7 @@ public class PlayerController extends Component {
     }
 
     public boolean isInvincible() {
-        return (playerState == PlayerState.INVINCIBLE);
+        return (playerState == PlayerState.INVINCIBLE || hurtInvincibilityTimeLeft > 0 || playWinAnimation);
     }
 
     public boolean isDead() {
