@@ -151,6 +151,13 @@ public class Scene {
                 .orElse(null);
     }
 
+    public GameObject getGameObject(String name) {
+        return gameObjects.stream()
+                .filter(go -> go.getName().equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+
     public Camera getCamera() {
         return camera;
     }

@@ -48,6 +48,12 @@ public class RigidBody2D extends Component {
         }
     }
 
+    public void setPosition(Vector2f pos) {
+        if (rawBody != null) {
+            rawBody.setTransform(new Vec2(pos.x, pos.y), gameObject.transform.rotation);
+        }
+    }
+
     public Vector2f getVelocity() {
         return velocity;
     }

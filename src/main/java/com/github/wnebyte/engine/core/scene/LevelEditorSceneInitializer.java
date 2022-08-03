@@ -2,19 +2,19 @@ package com.github.wnebyte.engine.core.scene;
 
 import java.io.File;
 import java.util.Collection;
-
-import com.github.wnebyte.engine.physics2d.components.Box2DCollider;
-import com.github.wnebyte.engine.physics2d.components.RigidBody2D;
-import com.github.wnebyte.engine.physics2d.enums.BodyType;
 import imgui.ImGui;
 import imgui.ImVec2;
 import org.joml.Vector2f;
+import com.github.wnebyte.engine.core.Direction;
 import com.github.wnebyte.engine.core.Prefabs;
 import com.github.wnebyte.engine.core.ecs.*;
 import com.github.wnebyte.engine.core.audio.Sound;
 import com.github.wnebyte.engine.renderer.Texture;
 import com.github.wnebyte.engine.components.*;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
+import com.github.wnebyte.engine.physics2d.enums.BodyType;
+import com.github.wnebyte.engine.physics2d.components.RigidBody2D;
+import com.github.wnebyte.engine.physics2d.components.Box2DCollider;
 
 public class LevelEditorSceneInitializer implements SceneInitializer {
 
@@ -235,16 +235,83 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
                 sprite = sprites.getSprite(14);
                 spriteWidth = sprite.getWidth() * scaleFactor;
                 spriteHeight = sprite.getHeight() * scaleFactor;
-                id = 1250;
+                id = sprite.getTexId();
                 texCoords = sprite.getTexCoords();
 
-                ImGui.pushID(id);
+                ImGui.pushID(1000);
                 if (ImGui.imageButton(id, spriteWidth, spriteHeight,
                         texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) {
                     GameObject go = Prefabs.generateGoomba();
                     levelEditorStuff.getComponent(MouseControls.class).drag(go);
                 }
                 ImGui.popID();
+                ImGui.sameLine();
+
+                // pipes
+                sprites = ResourceFlyWeight.getSpritesheet("/images/spritesheets/pipes.png");
+                sprite = sprites.getSprite(0);
+                spriteWidth = sprite.getWidth() * scaleFactor;
+                spriteHeight = sprite.getHeight() * scaleFactor;
+                id = sprite.getTexId();
+                texCoords = sprite.getTexCoords();
+
+                ImGui.pushID(id);
+                if (ImGui.imageButton(id, spriteWidth, spriteHeight,
+                        texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) {
+                    GameObject go = Prefabs.generatePipe(Direction.DOWN);
+                    levelEditorStuff.getComponent(MouseControls.class).drag(go);
+                }
+                ImGui.popID();
+                ImGui.sameLine();
+
+                // pipes
+                sprites = ResourceFlyWeight.getSpritesheet("/images/spritesheets/pipes.png");
+                sprite = sprites.getSprite(1);
+                spriteWidth = sprite.getWidth() * scaleFactor;
+                spriteHeight = sprite.getHeight() * scaleFactor;
+                id = sprite.getTexId();
+                texCoords = sprite.getTexCoords();
+
+                ImGui.pushID(1001);
+                if (ImGui.imageButton(id, spriteWidth, spriteHeight,
+                        texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) {
+                    GameObject go = Prefabs.generatePipe(Direction.UP);
+                    levelEditorStuff.getComponent(MouseControls.class).drag(go);
+                }
+                ImGui.popID();
+                ImGui.sameLine();
+
+                // pipes
+                sprite = sprites.getSprite(2);
+                spriteWidth = sprite.getWidth() * scaleFactor;
+                spriteHeight = sprite.getHeight() * scaleFactor;
+                id = sprite.getTexId();
+                texCoords = sprite.getTexCoords();
+
+                ImGui.pushID(1002);
+                if (ImGui.imageButton(id, spriteWidth, spriteHeight,
+                        texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) {
+                    GameObject go = Prefabs.generatePipe(Direction.RIGHT);
+                    levelEditorStuff.getComponent(MouseControls.class).drag(go);
+                }
+                ImGui.popID();
+                ImGui.sameLine();
+
+                // pipes
+                sprite = sprites.getSprite(3);
+                spriteWidth = sprite.getWidth() * scaleFactor;
+                spriteHeight = sprite.getHeight() * scaleFactor;
+                id = sprite.getTexId();
+                texCoords = sprite.getTexCoords();
+
+                ImGui.pushID(1003);
+                if (ImGui.imageButton(id, spriteWidth, spriteHeight,
+                        texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) {
+                    GameObject go = Prefabs.generatePipe(Direction.LEFT);
+                    levelEditorStuff.getComponent(MouseControls.class).drag(go);
+                }
+                ImGui.popID();
+
                 ImGui.endTabItem();
             }
             if (ImGui.beginTabItem("Sounds")) {

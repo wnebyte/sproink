@@ -21,9 +21,11 @@ public class KeyControls extends Component {
     @Override
     public void editorUpdate(float dt) {
         debounce -= dt;
+
         PropertiesWindow props = Window.getImGuiLayer().getPropertiesWindow();
         GameObject activeGameObject = props.getActiveGameObject();
         List<GameObject> activeGameObjects = props.getActiveGameObjects();
+        float multiplier = isKeyPressed(GLFW_KEY_LEFT_SHIFT) ? 0.1f : 1.0f;
 
         if (isKeyPressed(GLFW_KEY_LEFT_CONTROL) && keyBeginPress(GLFW_KEY_D) &&
                 activeGameObject != null) {
@@ -54,6 +56,36 @@ public class KeyControls extends Component {
                 go.destroy();
             }
             props.clearSelected();
+        } else if (isKeyPressed(GLFW_KEY_PAGE_DOWN) && debounce < 0) {
+            debounce = debounceTime;
+            for (GameObject go : activeGameObjects) {
+                go.transform.zIndex--;
+            }
+        } else if (isKeyPressed(GLFW_KEY_PAGE_UP) && debounce < 0) {
+            debounce = debounceTime;
+            for (GameObject go : activeGameObjects) {
+                go.transform.zIndex++;
+            }
+        } else if (isKeyPressed(GLFW_KEY_UP) && debounce < 0) {
+            debounce = debounceTime;
+            for (GameObject go : activeGameObjects) {
+                go.transform.position.y += Settings.GRID_HEIGHT * multiplier;
+            }
+        } else if (isKeyPressed(GLFW_KEY_DOWN) && debounce < 0) {
+            debounce = debounceTime;
+            for (GameObject go : activeGameObjects) {
+                go.transform.position.y -= Settings.GRID_HEIGHT * multiplier;
+            }
+        } else if (isKeyPressed(GLFW_KEY_LEFT) && debounce < 0) {
+            debounce = debounceTime;
+            for (GameObject go : activeGameObjects) {
+                go.transform.position.x -= Settings.GRID_HEIGHT * multiplier;
+            }
+        } else if (isKeyPressed(GLFW_KEY_RIGHT) && debounce < 0) {
+            debounce = debounceTime;
+            for (GameObject go : activeGameObjects) {
+                go.transform.position.x += Settings.GRID_HEIGHT * multiplier;
+            }
         }
     }
 }

@@ -37,7 +37,7 @@ public abstract class Component {
         while (cls != null && cls != Component.class) {
             for (Field f : cls.getDeclaredFields()) {
                 int mod = f.getModifiers();
-                if (!Modifier.isTransient(mod) && !Modifier.isStatic(mod)) {
+                if (!Modifier.isTransient(mod) && !Modifier.isStatic(mod) && !Modifier.isFinal(mod)) {
                     c.add(f);
                 }
             }
@@ -107,6 +107,8 @@ public abstract class Component {
                     if (ImGui.combo(field.getName(), index, enumValues, enumValues.length)) {
                         field.set(this, type.getEnumConstants()[index.get()]);
                     }
+                } else if (type == String.class) {
+                    field.set(this, JImGui.inputText(field.getName(), (String)value));
                 }
 
                 if (!accessible) {

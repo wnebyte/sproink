@@ -340,4 +340,24 @@ public class Prefabs {
         return goomba;
     }
 
+    public static GameObject generatePipe(Direction direction) {
+        Spritesheet pipes = ResourceFlyWeight.getSpritesheet("/images/spritesheets/pipes.png");
+        int index = direction.ordinal();
+        GameObject pipe = generateSpriteObject(pipes.getSprite(index), 0.5f, 0.5f);
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.STATIC);
+        rb.setFixedRotation(true);
+        rb.setContinuousCollision(false);
+        pipe.addComponent(rb);
+
+        Box2DCollider bc = new Box2DCollider();
+        bc.setHalfSize(new Vector2f(0.5f, 0.5f));
+        pipe.addComponent(bc);
+        pipe.addComponent(new Pipe(direction));
+        pipe.addComponent(new Ground());
+
+        return pipe;
+    }
+
 }
