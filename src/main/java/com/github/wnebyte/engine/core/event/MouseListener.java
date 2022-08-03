@@ -187,18 +187,18 @@ public class MouseListener {
     }
 
     public static Vector2f getGameViewportPos() {
-        return instance.gameViewportPos;
+        return get().gameViewportPos;
     }
 
     public static void setGameViewportPos(Vector2f gameViewportPos) {
-        instance.gameViewportPos.set(gameViewportPos);
+        get().gameViewportPos.set(gameViewportPos);
     }
 
     public static Vector2f getGameViewportSize() {
-        return instance.gameViewportSize;
+        return get().gameViewportSize;
     }
 
     public static void setGameViewportSize(Vector2f gameViewportSize) {
-        instance.gameViewportSize.set(gameViewportSize);
+        get().gameViewportSize.set(gameViewportSize);
     }
 }

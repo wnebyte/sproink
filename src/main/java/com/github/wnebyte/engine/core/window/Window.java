@@ -1,18 +1,20 @@
 package com.github.wnebyte.engine.core.window;
 
 import org.lwjgl.Version;
-import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALCapabilities;
-import org.lwjgl.opengl.GL;
+import org.joml.Vector4f;
 import com.github.wnebyte.engine.core.event.KeyListener;
 import com.github.wnebyte.engine.core.event.MouseListener;
-import com.github.wnebyte.engine.core.scene.LevelEditorSceneInitializer;
-import com.github.wnebyte.engine.core.scene.SceneInitializer;
 import com.github.wnebyte.engine.core.scene.Scene;
+import com.github.wnebyte.engine.core.scene.SceneInitializer;
+import com.github.wnebyte.engine.core.scene.LevelSceneInitializer;
+import com.github.wnebyte.engine.core.scene.LevelEditorSceneInitializer;
 import com.github.wnebyte.engine.core.ui.ImGuiLayer;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.observer.EventSystem;
@@ -65,14 +67,6 @@ public class Window implements Observer {
     private long audioContext;
 
     private long audioDevice;
-
-    private float r = 1.0f;
-
-    private float g = 1.0f;
-
-    private float b = 1.0f;
-
-    private float a = 1.0f;
 
     private Window() {
         this.title = "Engine";
@@ -140,15 +134,6 @@ public class Window implements Observer {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
         glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
-        /*
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-         */
 
         // Create the window
         glfwWindow = glfwCreateWindow(width, height, title, NULL, NULL);
@@ -165,7 +150,6 @@ public class Window implements Observer {
         glfwSetWindowSizeCallback(glfwWindow, (w, newWidth, newHeight) -> {
             Window.setWidth(newWidth);
             Window.setHeight(newHeight);
-           // glViewport(0, 0, newWidth, newHeight);
         });
 
         // Make OpenGL context current
@@ -225,7 +209,7 @@ public class Window implements Observer {
             glDisable(GL_BLEND);
             pickingTexture.bind();
             glViewport(0, 0, width, height);
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             Renderer.bindShader(pickingShader);
@@ -236,7 +220,8 @@ public class Window implements Observer {
             // Render pass 2. Render actual game.
             DebugDraw.beginFrame();
             frameBuffer.bind();
-            glClearColor(r, g, b, a);
+            Vector4f color = scene.getCamera().getClearColor();
+            glClearColor(color.x, color.y, color.z, color.w);
             glClear(GL_COLOR_BUFFER_BIT);
 
             if (dt >= 0) {
@@ -327,7 +312,7 @@ public class Window implements Observer {
         if (event instanceof GameEngineStartPlayEvent) {
             runtimePlaying = true;
             scene.save();
-            setScene(new LevelEditorSceneInitializer());
+            setScene(new LevelSceneInitializer());
             System.out.println("(Debug): Start Play");
         } else if (event instanceof GameEngineStopPlayEvent) {
             runtimePlaying = false;

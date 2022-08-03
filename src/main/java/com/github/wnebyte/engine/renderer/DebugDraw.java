@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import com.github.wnebyte.engine.core.window.Window;
+import com.github.wnebyte.engine.core.camera.Camera;
 import com.github.wnebyte.engine.util.JMath;
 import com.github.wnebyte.engine.util.ResourceFlyWeight;
 import static org.lwjgl.opengl.GL15.*;
@@ -15,7 +16,7 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class DebugDraw {
 
-    private static final int MAX_LINES = 500;
+    private static final int MAX_LINES = 3000;
 
     private static final List<Line2D> lines = new ArrayList<>();
 
@@ -122,8 +123,21 @@ public class DebugDraw {
     }
 
     public static void addLine2D(Vector2f start, Vector2f end, Vector3f color, int ftl) {
-        if (lines.size() >= MAX_LINES)
+        Camera camera = Window.getScene().getCamera();
+        Vector2f cameraLeft = new Vector2f(camera.getPosition())
+                .add(new Vector2f(-2.0f, -2.0f));
+        Vector2f cameraRight = new Vector2f(camera.getPosition())
+                .add(new Vector2f(camera.getProjectionSize())
+                .mul(camera.getZoom()))
+                .add(new Vector2f(4.0f, 4.0f));
+        boolean lineInView =
+                ((start.x >= cameraLeft.x && start.x <= cameraRight.x) &&
+                        (start.y >= cameraLeft.y && start.y <= cameraRight.y)) ||
+                ((end.x >= cameraLeft.x && end.x <= cameraRight.x) &&
+                        (end.y >= cameraLeft.y && end.y <= cameraRight.y));
+        if (lines.size() >= MAX_LINES || !lineInView) {
             return;
+        }
         lines.add(new Line2D(start, end, color, ftl));
     }
 

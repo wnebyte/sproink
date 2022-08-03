@@ -7,13 +7,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import org.joml.Vector2f;
-import com.github.wnebyte.engine.util.Settings;
 import com.github.wnebyte.engine.core.Transform;
 import com.github.wnebyte.engine.core.ecs.Component;
 import com.github.wnebyte.engine.core.camera.Camera;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.renderer.Renderer;
 import com.github.wnebyte.engine.physics2d.Physics2D;
+import com.github.wnebyte.engine.util.Settings;
 
 public class Scene {
 
@@ -154,6 +154,13 @@ public class Scene {
     public GameObject getGameObject(String name) {
         return gameObjects.stream()
                 .filter(go -> go.getName().equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public <T extends Component> GameObject getGameObject(Class<T> componentClass) {
+        return gameObjects.stream()
+                .filter(go -> go.getComponent(componentClass) != null)
                 .findFirst()
                 .orElse(null);
     }

@@ -79,12 +79,12 @@ public class KeyControls extends Component {
         } else if (isKeyPressed(GLFW_KEY_LEFT) && debounce < 0) {
             debounce = debounceTime;
             for (GameObject go : activeGameObjects) {
-                go.transform.position.x -= Settings.GRID_HEIGHT * multiplier;
+                go.transform.position.x -= Settings.GRID_WIDTH * multiplier;
             }
         } else if (isKeyPressed(GLFW_KEY_RIGHT) && debounce < 0) {
             debounce = debounceTime;
             for (GameObject go : activeGameObjects) {
-                go.transform.position.x += Settings.GRID_HEIGHT * multiplier;
+                go.transform.position.x += Settings.GRID_WIDTH * multiplier;
             }
         }
     }

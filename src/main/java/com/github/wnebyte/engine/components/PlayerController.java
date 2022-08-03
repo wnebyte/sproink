@@ -1,5 +1,6 @@
 package com.github.wnebyte.engine.components;
 
+import com.github.wnebyte.engine.core.scene.LevelSceneInitializer;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.jbox2d.dynamics.contacts.Contact;
@@ -96,7 +97,7 @@ public class PlayerController extends Component {
                 rb.setVelocity(velocity);
                 rb.setAngularVelocity(0.0f);
             } else if (!deadGoingUp && gameObject.transform.position.y <= deadMinHeight) {
-                Window.setScene(new LevelEditorSceneInitializer());
+                Window.setScene(new LevelSceneInitializer());
             }
             return;
         }
@@ -307,5 +308,9 @@ public class PlayerController extends Component {
 
     public boolean isAlive() {
         return !isDead;
+    }
+
+    public boolean hasWon() {
+        return false;
     }
 }

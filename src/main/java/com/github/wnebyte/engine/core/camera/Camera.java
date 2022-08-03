@@ -3,6 +3,7 @@ package com.github.wnebyte.engine.core.camera;
 import java.util.Objects;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.joml.Matrix4f;
 
 public class Camera {
@@ -22,6 +23,8 @@ public class Camera {
     private Matrix4f inverseView;
 
     private final Vector2f projectionSize = new Vector2f(PROJECTION_WIDTH, PROJECTION_HEIGHT);
+
+    private final Vector4f clearColor = new Vector4f(1, 1, 1, 1);
 
     private float zoom = 1.0f;
 
@@ -70,6 +73,14 @@ public class Camera {
 
     public Vector2f getPosition() {
         return position;
+    }
+
+    public Vector4f getClearColor() {
+        return clearColor;
+    }
+
+    public void setClearColor(Vector4f color) {
+        clearColor.set(color);
     }
 
     public float getZoom() {
