@@ -3,7 +3,7 @@ package com.github.wnebyte.engine;
 import com.github.wnebyte.engine.core.window.Window;
 
 /*
-Coding a 2D Game Engine #54 - Game Camera & Grid Lines
+Coding a 2D Game Engine #55 - Mario Turtle AI
  */
 public class Main {
 

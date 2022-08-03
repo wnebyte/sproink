@@ -340,6 +340,43 @@ public class Prefabs {
         return goomba;
     }
 
+    public static GameObject generateTurtle() {
+        Spritesheet sprites = ResourceFlyWeight.getSpritesheet("/images/turtle.png");
+        GameObject turtle = generateSpriteObject(sprites.getSprite(0), 0.25f, 0.35f);
+
+        AnimationState walk = new AnimationState();
+        walk.title = "Walk";
+        float defaultFrameTime = 0.23f;
+        walk.addFrame(sprites.getSprite(0), defaultFrameTime);
+        walk.addFrame(sprites.getSprite(1), defaultFrameTime);
+        walk.setLoop(true);
+
+        AnimationState squashed = new AnimationState();
+        squashed.title = "TurtleShellSpin";
+        squashed.addFrame(sprites.getSprite(2), 0.1f);
+        squashed.setLoop(false);
+
+        StateMachine stateMachine = new StateMachine();
+        stateMachine.addState(walk);
+        stateMachine.addState(squashed);
+        stateMachine.setDefaultState(walk.title);
+        stateMachine.addStateTrigger(walk.title, squashed.title, "squashMe");
+        turtle.addComponent(stateMachine);
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.DYNAMIC);
+        rb.setMass(0.1f);
+        rb.setFixedRotation(true);
+        turtle.addComponent(rb);
+        CircleCollider cc = new CircleCollider();
+        cc.setRadius(0.13f);
+        cc.setOffset(new Vector2f(0, -0.5f));
+        turtle.addComponent(cc);
+        turtle.addComponent(new TurtleAI());
+
+        return turtle;
+    }
+
     public static GameObject generatePipe(Direction direction) {
         Spritesheet pipes = ResourceFlyWeight.getSpritesheet("/images/spritesheets/pipes.png");
         int index = direction.ordinal();

@@ -247,11 +247,28 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
                 ImGui.popID();
                 ImGui.sameLine();
 
+                // turtle
+                sprites = ResourceFlyWeight.getSpritesheet("/images/turtle.png");
+                sprite = sprites.getSprite(0);
+                spriteWidth = sprite.getWidth() * scaleFactor;
+                spriteHeight = sprite.getHeight() * 2;
+                id = sprite.getTexId();
+                texCoords = sprite.getTexCoords();
+
+                ImGui.pushID(1000);
+                if (ImGui.imageButton(id, spriteWidth, spriteHeight,
+                        texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) {
+                    GameObject go = Prefabs.generateTurtle();
+                    levelEditorStuff.getComponent(MouseControls.class).drag(go);
+                }
+                ImGui.popID();
+                ImGui.sameLine();
+
                 // pipes
                 sprites = ResourceFlyWeight.getSpritesheet("/images/spritesheets/pipes.png");
                 sprite = sprites.getSprite(0);
-                spriteWidth = sprite.getWidth() * scaleFactor;
-                spriteHeight = sprite.getHeight() * scaleFactor;
+                spriteWidth = sprite.getWidth() * 1.5f;
+                spriteHeight = sprite.getHeight() * 1.5f;
                 id = sprite.getTexId();
                 texCoords = sprite.getTexCoords();
 
@@ -267,8 +284,8 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
                 // pipes
                 sprites = ResourceFlyWeight.getSpritesheet("/images/spritesheets/pipes.png");
                 sprite = sprites.getSprite(1);
-                spriteWidth = sprite.getWidth() * scaleFactor;
-                spriteHeight = sprite.getHeight() * scaleFactor;
+                spriteWidth = sprite.getWidth() * 1.5f;
+                spriteHeight = sprite.getHeight() * 1.5f;
                 id = sprite.getTexId();
                 texCoords = sprite.getTexCoords();
 
@@ -283,8 +300,8 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
 
                 // pipes
                 sprite = sprites.getSprite(2);
-                spriteWidth = sprite.getWidth() * scaleFactor;
-                spriteHeight = sprite.getHeight() * scaleFactor;
+                spriteWidth = sprite.getWidth() * 1.5f;
+                spriteHeight = sprite.getHeight() * 1.5f;
                 id = sprite.getTexId();
                 texCoords = sprite.getTexCoords();
 
@@ -299,8 +316,8 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
 
                 // pipes
                 sprite = sprites.getSprite(3);
-                spriteWidth = sprite.getWidth() * scaleFactor;
-                spriteHeight = sprite.getHeight() * scaleFactor;
+                spriteWidth = sprite.getWidth() * 1.5f;
+                spriteHeight = sprite.getHeight() * 1.5f;
                 id = sprite.getTexId();
                 texCoords = sprite.getTexCoords();
 
