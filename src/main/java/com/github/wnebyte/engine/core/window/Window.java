@@ -277,7 +277,7 @@ public class Window implements Observer {
         return window.imGuiLayer;
     }
 
-    public static Physics2D getPhysics2d() {
+    public static Physics2D getPhysics() {
         return window.scene.getPhysics2d();
     }
 

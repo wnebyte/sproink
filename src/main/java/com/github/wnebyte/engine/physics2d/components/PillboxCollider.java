@@ -6,11 +6,9 @@ import com.github.wnebyte.engine.physics2d.Physics2D;
 
 public class PillboxCollider extends Collider {
 
-    private transient CircleCollider topCircleCollider = new CircleCollider();
+    private transient CircleCollider bottomCircle = new CircleCollider();
 
-    private transient CircleCollider bottomCircleCollider = new CircleCollider();
-
-    private transient Box2DCollider boxCollider = new Box2DCollider();
+    private transient Box2DCollider box = new Box2DCollider();
 
     private transient boolean resetFixtureNextFrame = false;
 
@@ -20,10 +18,9 @@ public class PillboxCollider extends Collider {
 
     @Override
     public void start() {
-        topCircleCollider.gameObject = this.gameObject;
-        bottomCircleCollider.gameObject = this.gameObject;
-        boxCollider.gameObject = this.gameObject;
-        calcColliders();
+        bottomCircle.gameObject = this.gameObject;
+        box.gameObject = this.gameObject;
+        recalculateColliders();
     }
 
     @Override
@@ -35,28 +32,45 @@ public class PillboxCollider extends Collider {
 
     @Override
     public void editorUpdate(float dt) {
-        topCircleCollider.editorUpdate(dt);
-        bottomCircleCollider.editorUpdate(dt);
-        boxCollider.editorUpdate(dt);
+        bottomCircle.editorUpdate(dt);
+        box.editorUpdate(dt);
 
         if (resetFixtureNextFrame) {
             resetFixture();
         }
     }
 
-    public void calcColliders() {
-        float circleRadius = width / 4.0f;
-        float boxHeight = height - 2 * circleRadius;
-        topCircleCollider.setRadius(circleRadius);
-        bottomCircleCollider.setRadius(circleRadius);
-        topCircleCollider.setOffset(new Vector2f(offset).add(0, boxHeight / 4.0f));
-        bottomCircleCollider.setOffset(new Vector2f(offset).sub(0, boxHeight / 4.0f));
-        boxCollider.setHalfSize(new Vector2f(width / 2.0f, boxHeight / 2.0f));
-        boxCollider.setOffset(new Vector2f(offset));
+    public void setWidth(float width) {
+        this.width = width;
+        recalculateColliders();
+        resetFixture();
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+        recalculateColliders();
+        resetFixture();
+    }
+
+    public CircleCollider getBottomCircle() {
+        return bottomCircle;
+    }
+
+    public Box2DCollider getBox() {
+        return box;
+    }
+
+    public void recalculateColliders() {
+        float circleRadius = width / 2.0f;
+        float boxHeight = height - circleRadius;
+        bottomCircle.setRadius(circleRadius);
+        bottomCircle.setOffset(new Vector2f(offset).sub(0, (height - circleRadius * 2.0f) / 2.0f));
+        box.setHalfSize(new Vector2f(width - 0.01f, boxHeight));
+        box.setOffset(new Vector2f(offset).add(0, (height - boxHeight) / 2.0f));
     }
 
     public void resetFixture() {
-        Physics2D physics = Window.getPhysics2d();
+        Physics2D physics = Window.getPhysics();
 
         if (physics.isLocked()) {
             resetFixtureNextFrame = true;
@@ -70,29 +84,5 @@ public class PillboxCollider extends Collider {
                 physics.resetPillboxCollider(rb, this);
             }
         }
-    }
-
-    public void setWidth(float width) {
-        this.width = width;
-        calcColliders();
-        resetFixture();
-    }
-
-    public void setHeight(float height) {
-        this.height = height;
-        calcColliders();
-        resetFixture();
-    }
-
-    public CircleCollider getTopCircleCollider() {
-        return topCircleCollider;
-    }
-
-    public CircleCollider getBottomCircleCollider() {
-        return bottomCircleCollider;
-    }
-
-    public Box2DCollider getBoxCollider() {
-        return boxCollider;
     }
 }

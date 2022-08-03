@@ -1,6 +1,5 @@
 package com.github.wnebyte.engine.physics2d;
 
-import com.github.wnebyte.engine.renderer.DebugDraw;
 import org.joml.Vector2f;
 import org.jbox2d.dynamics.*;
 import org.jbox2d.common.Vec2;
@@ -9,9 +8,7 @@ import org.jbox2d.collision.shapes.PolygonShape;
 import com.github.wnebyte.engine.core.Transform;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.components.Ground;
-import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.physics2d.components.*;
-import org.joml.Vector3f;
 
 public class Physics2D {
 
@@ -215,9 +212,8 @@ public class Physics2D {
         Body body = rb.getRawBody();
         assert (body != null) : "Raw body must not be null";
 
-        addBox2DCollider(rb, collider.getBoxCollider());
-        addCircleCollider(rb, collider.getTopCircleCollider());
-        addCircleCollider(rb, collider.getBottomCircleCollider());
+        addBox2DCollider(rb, collider.getBox());
+        addCircleCollider(rb, collider.getBottomCircle());
     }
 
     private int fixtureListSize(Body body) {

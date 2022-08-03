@@ -7,7 +7,6 @@ import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.core.ecs.Component;
 import com.github.wnebyte.engine.core.Prefabs;
-import com.github.wnebyte.engine.core.event.KeyListener;
 import com.github.wnebyte.engine.core.audio.Sound;
 import com.github.wnebyte.engine.core.scene.LevelSceneInitializer;
 import com.github.wnebyte.engine.core.scene.LevelEditorSceneInitializer;
@@ -129,7 +128,7 @@ public class PlayerController extends Component {
                 deadGoingUp = false;
             }  else if (!deadGoingUp && gameObject.transform.position.y > deadMinHeight) {
                 rb.setBodyType(BodyType.KINEMATIC);
-                acceleration.y = Window.getPhysics2d().getGravity().y * 0.7f;
+                acceleration.y = Window.getPhysics().getGravity().y * 0.7f;
                 velocity.y += acceleration.y * dt;
                 velocity.y = Math.max(Math.min(velocity.y, terminalVelocity.y), -terminalVelocity.y);
                 rb.setVelocity(velocity);
@@ -226,7 +225,7 @@ public class PlayerController extends Component {
                 jumpTime = 0;
             }
             groundDebounce -= dt;
-            acceleration.y = Window.getPhysics2d().getGravity().y * 0.7f;
+            acceleration.y = Window.getPhysics().getGravity().y * 0.7f;
         } else {
             // on ground
             velocity.y = 0;
@@ -251,7 +250,7 @@ public class PlayerController extends Component {
     public void checkOnGround() {
         float innerPlayerWidth = playerWidth * 0.6f;
         float yVal = isSmall() ? -0.14f : -0.24f;
-        onGround = Window.getPhysics2d().checkOnGround(gameObject, innerPlayerWidth, yVal);
+        onGround = Window.getPhysics().checkOnGround(gameObject, innerPlayerWidth, yVal);
     }
 
     @Override
@@ -280,7 +279,7 @@ public class PlayerController extends Component {
             if (pbc != null) {
                 jumpBoost *= bigJumpBoostFactor;
                 walkSpeed *= bigJumpBoostFactor;
-                pbc.setHeight(0.63f);
+                pbc.setHeight(0.42f);
             }
         } else if (isBig()) {
             playerState = PlayerState.FIRE;

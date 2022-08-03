@@ -34,7 +34,7 @@ public class Fireball extends Component {
     @Override
     public void start() {
         this.rb = gameObject.getComponent(RigidBody2D.class);
-        acceleration.y = Window.getPhysics2d().getGravity().y * 0.7f;
+        acceleration.y = Window.getPhysics().getGravity().y * 0.7f;
         count++;
     }
 
@@ -57,7 +57,7 @@ public class Fireball extends Component {
             acceleration.y = 1.5f;
             velocity.y = 2.f;
         } else {
-            acceleration.y = Window.getPhysics2d().getGravity().y * 0.7f;
+            acceleration.y = Window.getPhysics().getGravity().y * 0.7f;
         }
 
         velocity.y += acceleration.y * dt;
@@ -92,6 +92,6 @@ public class Fireball extends Component {
     public void checkOnGround() {
         float innerWidth = 0.25f * 0.7f;
         float yVal = -0.09f;
-        onGround = Window.getPhysics2d().checkOnGround(gameObject, innerWidth, yVal);
+        onGround = Window.getPhysics().checkOnGround(gameObject, innerWidth, yVal);
     }
 }

@@ -37,7 +37,7 @@ public class TurtleAI extends Component {
     public void start() {
         this.stateMachine = gameObject.getComponent(StateMachine.class);
         this.rb = gameObject.getComponent(RigidBody2D.class);
-        this.acceleration.y = Window.getPhysics2d().getGravity().y * 0.7f;
+        this.acceleration.y = Window.getPhysics().getGravity().y * 0.7f;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class TurtleAI extends Component {
             acceleration.y = 0;
             velocity.y = 0;
         } else {
-            acceleration.y = Window.getPhysics2d().getGravity().y * 0.7f;
+            acceleration.y = Window.getPhysics().getGravity().y * 0.7f;
         }
 
         velocity.y += acceleration.y * dt;
@@ -142,6 +142,6 @@ public class TurtleAI extends Component {
     public void checkOnGround() {
         float innerWidth = 0.25f * 0.7f;
         float yVal = -0.2f;
-        onGround = Window.getPhysics2d().checkOnGround(gameObject, innerWidth, yVal);
+        onGround = Window.getPhysics().checkOnGround(gameObject, innerWidth, yVal);
     }
 }
