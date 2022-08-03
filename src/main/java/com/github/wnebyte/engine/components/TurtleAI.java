@@ -120,6 +120,12 @@ public class TurtleAI extends Component {
                 ResourceFlyWeight.getSound("/sounds/bump.ogg").play();
             }
         }
+
+        Fireball fireball = go.getComponent(Fireball.class);
+        if (fireball != null) {
+            stomp();
+            fireball.expire();
+        }
     }
 
     public void stomp() {

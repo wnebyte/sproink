@@ -7,7 +7,7 @@ import com.github.wnebyte.engine.core.ecs.GameObject;
 
 public class Flagpole extends Component {
 
-    private boolean isTop = false;
+    private final boolean isTop;
 
     public Flagpole(boolean isTop) {
         this.isTop = isTop;

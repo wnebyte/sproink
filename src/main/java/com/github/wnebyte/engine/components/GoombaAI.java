@@ -96,6 +96,12 @@ public class GoombaAI extends Component {
         } else if (Math.abs(contactNormal.y) < 0.1f) { // hit something on the side
             goingRight = (contactNormal.x < 0);
         }
+
+        Fireball fireball = go.getComponent(Fireball.class);
+        if (fireball != null) {
+            stomp();
+            fireball.expire();
+        }
     }
 
     public void stomp() {

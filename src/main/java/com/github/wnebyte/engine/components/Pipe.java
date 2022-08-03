@@ -20,7 +20,7 @@ public class Pipe extends Component {
 
     private transient GameObject connectingPipe = null;
 
-    private transient float entranceVectorThreshold = 0.15f; // 0.6f,
+    private transient float entranceVectorThreshold = 0.6f; // 0.6f,
 
     private transient PlayerController collidingPlayer = null;
 
@@ -38,31 +38,35 @@ public class Pipe extends Component {
         if (connectingPipe == null) return;
 
         if (collidingPlayer != null) {
-            boolean entering = false;
+            boolean playerEntering = false;
             switch (direction) {
                 case UP:
-                    if ((KeyListener.isKeyPressed(GLFW_KEY_DOWN) || KeyListener.isKeyPressed(GLFW_KEY_S)) && isEntrance) {
-                        entering = true;
+                    if ((KeyListener.isKeyPressed(GLFW_KEY_DOWN) || KeyListener.isKeyPressed(GLFW_KEY_S)) &&
+                            isEntrance && playerAtEntrance()) {
+                        playerEntering = true;
                     }
                     break;
                 case DOWN:
-                    if ((KeyListener.isKeyPressed(GLFW_KEY_UP) || KeyListener.isKeyPressed(GLFW_KEY_W)) && isEntrance) {
-                        entering = true;
+                    if ((KeyListener.isKeyPressed(GLFW_KEY_UP) || KeyListener.isKeyPressed(GLFW_KEY_W)) &&
+                            isEntrance && playerAtEntrance()) {
+                        playerEntering = true;
                     }
                     break;
                 case LEFT:
-                    if ((KeyListener.isKeyPressed(GLFW_KEY_RIGHT) || KeyListener.isKeyPressed(GLFW_KEY_D)) && isEntrance) {
-                        entering = true;
+                    if ((KeyListener.isKeyPressed(GLFW_KEY_RIGHT) || KeyListener.isKeyPressed(GLFW_KEY_D)) &&
+                            isEntrance && playerAtEntrance()) {
+                        playerEntering = true;
                     }
                     break;
                 case RIGHT:
-                    if ((KeyListener.isKeyPressed(GLFW_KEY_LEFT) || KeyListener.isKeyPressed(GLFW_KEY_A)) && isEntrance) {
-                        entering = true;
+                    if ((KeyListener.isKeyPressed(GLFW_KEY_LEFT) || KeyListener.isKeyPressed(GLFW_KEY_A)) &&
+                            isEntrance && playerAtEntrance()) {
+                        playerEntering = true;
                     }
                     break;
             }
 
-            if (entering) {
+            if (playerEntering) {
                 Vector2f pos = getPlayerPosition(connectingPipe);
                 collidingPlayer.setPosition(pos);
                 ResourceFlyWeight.getSound("/sounds/pipe.ogg").play();
@@ -70,34 +74,50 @@ public class Pipe extends Component {
         }
     }
 
+    private boolean playerAtEntrance() {
+        if (collidingPlayer == null) {
+            return false;
+        }
+
+        Vector2f min = new Vector2f(gameObject.transform.position)
+                .sub(new Vector2f(gameObject.transform.scale)
+                        .mul(0.5f));
+        Vector2f max = new Vector2f(gameObject.transform.position)
+                .add(new Vector2f(gameObject.transform.scale)
+                        .mul(0.5f));
+        Vector2f playerMin = new Vector2f(collidingPlayer.gameObject.transform.position)
+                .sub(new Vector2f(collidingPlayer.gameObject.transform.scale)
+                        .mul(0.5f));
+        Vector2f playerMax = new Vector2f(collidingPlayer.gameObject.transform.position)
+                .add(new Vector2f(collidingPlayer.gameObject.transform.scale)
+                        .mul(0.5f));
+
+        switch (direction) {
+            case UP:
+                return playerMin.y >= max.y &&
+                        playerMax.x > min.x &&
+                        playerMin.x < max.x;
+            case DOWN:
+                return playerMax.y <= min.y &&
+                        playerMax.x > min.x &&
+                        playerMin.x < max.x;
+            case RIGHT:
+                return playerMin.x >= max.x &&
+                        playerMax.y > min.y &&
+                        playerMin.y < max.y;
+            case LEFT:
+                return playerMin.x <= min.x &&
+                        playerMax.y > min.y &&
+                        playerMin.y < max.y;
+        }
+
+        return false;
+    }
+
     @Override
     public void beginCollision(GameObject go, Contact contact, Vector2f contactNormal) {
         PlayerController pc = go.getComponent(PlayerController.class);
         if (pc != null) {
-            switch (direction) {
-                case UP:
-                    // player is pushing up
-                    if (contactNormal.y < entranceVectorThreshold) {
-                        return;
-                    }
-                    break;
-                case DOWN:
-                    if (contactNormal.y > -entranceVectorThreshold) {
-                        return;
-                    }
-                    break;
-                case LEFT:
-                    if (contactNormal.x > -entranceVectorThreshold) {
-                        return;
-                    }
-                    break;
-                case RIGHT:
-                    if (contactNormal.x < entranceVectorThreshold) {
-                        return;
-                    }
-                    break;
-            }
-
             collidingPlayer = pc;
         }
     }

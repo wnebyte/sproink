@@ -6,6 +6,8 @@ import org.jbox2d.dynamics.contacts.Contact;
 import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.core.ecs.Component;
+import com.github.wnebyte.engine.core.Prefabs;
+import com.github.wnebyte.engine.core.event.KeyListener;
 import com.github.wnebyte.engine.core.audio.Sound;
 import com.github.wnebyte.engine.core.scene.LevelSceneInitializer;
 import com.github.wnebyte.engine.core.scene.LevelEditorSceneInitializer;
@@ -14,6 +16,7 @@ import com.github.wnebyte.engine.physics2d.enums.BodyType;
 import com.github.wnebyte.engine.physics2d.components.RigidBody2D;
 import com.github.wnebyte.engine.physics2d.components.PillboxCollider;
 import static com.github.wnebyte.engine.core.event.KeyListener.isKeyPressed;
+import static com.github.wnebyte.engine.core.event.KeyListener.keyBeginPress;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class PlayerController extends Component {
@@ -184,6 +187,18 @@ public class PlayerController extends Component {
             } else {
                 stateMachine.trigger("stopRunning");
             }
+        }
+
+        if (keyBeginPress(GLFW_KEY_E) && isFire() && Fireball.canSpawn()) {
+            Vector2f pos = new Vector2f(gameObject.transform.position);
+            if (gameObject.transform.scale.x > 0) { // mario is facing to the right
+                pos.add(new Vector2f(0.26f, 0.0f));
+            } else {
+                pos.add(new Vector2f(-0.26f, 0.0f));
+            }
+            GameObject fireball = Prefabs.generateFireball(pos);
+            fireball.getComponent(Fireball.class).goingRight = gameObject.transform.scale.x > 0;
+            Window.getScene().addGameObjectToScene(fireball);
         }
 
         checkOnGround();

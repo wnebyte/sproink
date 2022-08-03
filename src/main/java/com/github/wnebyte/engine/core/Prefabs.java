@@ -415,6 +415,25 @@ public class Prefabs {
         return flagtop;
     }
 
+    public static GameObject generateFireball(Vector2f pos) {
+        Spritesheet items = ResourceFlyWeight.getSpritesheet("/images/items.png");
+        GameObject fireball = generateSpriteObject(items.getSprite(32), 0.18f, 0.18f);
+        fireball.transform.position.set(pos);
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.DYNAMIC);
+        rb.setFixedRotation(true);
+        rb.setContinuousCollision(false);
+        fireball.addComponent(rb);
+
+        CircleCollider cc = new CircleCollider();
+        cc.setRadius(0.08f);
+        fireball.addComponent(cc);
+        fireball.addComponent(new Fireball());
+
+        return fireball;
+    }
+
     public static GameObject generatePipe(Direction direction) {
         Spritesheet pipes = ResourceFlyWeight.getSpritesheet("/images/spritesheets/pipes.png");
         int index = direction.ordinal();
