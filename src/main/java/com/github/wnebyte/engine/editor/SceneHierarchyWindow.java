@@ -3,15 +3,19 @@ package com.github.wnebyte.engine.editor;
 import java.util.List;
 import imgui.ImGui;
 import imgui.flag.ImGuiTreeNodeFlags;
-import com.github.wnebyte.engine.core.ecs.GameObject;
 import com.github.wnebyte.engine.core.window.Window;
+import com.github.wnebyte.engine.core.ui.ImGuiWindow;
+import com.github.wnebyte.engine.core.ecs.GameObject;
 
-public class SceneHierarchyWindow {
+public class SceneHierarchyWindow extends ImGuiWindow {
 
     private static final String PAYLOAD_DRAG_DROP_TYPE = "SceneHierarchy";
 
+    @Override
     public void imGui() {
-        ImGui.begin("Scene Hierarchy");
+        if (!isVisible()) return;
+
+        ImGui.begin("Scene Hierarchy", visible);
 
         List<GameObject> gameObjects = Window.getScene().getGameObjects();
         int index = 0;

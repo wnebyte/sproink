@@ -6,18 +6,22 @@ import imgui.ImVec2;
 import imgui.flag.ImGuiWindowFlags;
 import com.github.wnebyte.engine.core.event.MouseListener;
 import com.github.wnebyte.engine.core.window.Window;
+import com.github.wnebyte.engine.core.ui.ImGuiWindow;
 import com.github.wnebyte.engine.observer.EventSystem;
 import com.github.wnebyte.engine.observer.event.GameEngineStopPlayEvent;
 import com.github.wnebyte.engine.observer.event.GameEngineStartPlayEvent;
 
-public class GameViewWindow {
+public class GameViewWindow extends ImGuiWindow {
 
     private float leftX, rightX, topY, bottomY;
 
     private boolean isPlaying = false;
 
+    @Override
     public void imGui() {
-        ImGui.begin("Game Viewport",
+        if (!isVisible()) return;
+
+        ImGui.begin("Game Viewport", visible,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.MenuBar);
 
         ImGui.beginMenuBar();

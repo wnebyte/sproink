@@ -107,7 +107,8 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
         levelEditorStuff.imGui();
         ImGui.end();
 
-        ImGui.begin("Objects");
+        // Todo: consider moving this to a separate editor window/panel
+        ImGui.begin("Assets");
         if (ImGui.beginTabBar("WindowTabBar")) {
             float scaleFactor = 3.0f;
 

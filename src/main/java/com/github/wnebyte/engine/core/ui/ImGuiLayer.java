@@ -1,5 +1,6 @@
 package com.github.wnebyte.engine.core.ui;
 
+import java.util.List;
 import imgui.*;
 import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
@@ -7,16 +8,14 @@ import imgui.flag.*;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
-import com.github.wnebyte.engine.core.event.KeyListener;
-import com.github.wnebyte.engine.core.event.MouseListener;
 import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.core.scene.Scene;
+import com.github.wnebyte.engine.core.event.KeyListener;
+import com.github.wnebyte.engine.core.event.MouseListener;
 import com.github.wnebyte.engine.renderer.PickingTexture;
+import com.github.wnebyte.engine.editor.*;
 import com.github.wnebyte.engine.util.ResourceUtil;
-import com.github.wnebyte.engine.editor.GameViewWindow;
-import com.github.wnebyte.engine.editor.PropertiesWindow;
-import com.github.wnebyte.engine.editor.MenuBar;
-import com.github.wnebyte.engine.editor.SceneHierarchyWindow;
+import com.github.wnebyte.engine.util.WindowRegistry;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glBindFramebuffer;
@@ -32,22 +31,23 @@ public class ImGuiLayer {
 
     private final ImGuiImplGlfw imGuiGlfw;
 
-    private final GameViewWindow gameViewWindow;
-
-    private final PropertiesWindow propertiesWindow;
-
     private final MenuBar menuBar;
 
-    private final SceneHierarchyWindow sceneHierarchyWindow;
+    private final WindowRegistry windows;
 
     public ImGuiLayer(long glfwWindow, PickingTexture pickingTexture) {
         this.glfwWindow = glfwWindow;
         this.imGuiGl3 = new ImGuiImplGl3();
         this.imGuiGlfw = new ImGuiImplGlfw();
-        this.gameViewWindow = new GameViewWindow();
-        this.propertiesWindow = new PropertiesWindow(pickingTexture);
         this.menuBar = new MenuBar();
-        this.sceneHierarchyWindow = new SceneHierarchyWindow();
+        this.windows = new WindowRegistry();
+        this.windows.addWindow(new GameViewWindow());
+        this.windows.addWindow(new ConsoleWindow());
+        this.windows.addWindow(new PropertiesWindow(pickingTexture));
+        this.windows.addWindow(new SceneHierarchyWindow());
+        ImGuiWindow w = new NewProjectWindow();
+        w.hide();
+        this.windows.addWindow(w);
     }
 
     public void init() {
@@ -108,7 +108,7 @@ public class ImGuiLayer {
                 ImGui.setWindowFocus(null);
             }
 
-            if (!io.getWantCaptureMouse() || gameViewWindow.getWantCaptureMouse()) {
+            if (!io.getWantCaptureMouse() || getWindow(GameViewWindow.class).getWantCaptureMouse()) {
                 MouseListener.mouseButtonCallback(w, button, action, mods);
             }
         });
@@ -116,7 +116,7 @@ public class ImGuiLayer {
         glfwSetScrollCallback(glfwWindow, (w, xOffset, yOffset) -> {
             io.setMouseWheelH(io.getMouseWheelH() + (float) xOffset);
             io.setMouseWheel(io.getMouseWheel() + (float) yOffset);
-            if (!io.getWantCaptureMouse() || gameViewWindow.getWantCaptureMouse()) {
+            if (!io.getWantCaptureMouse() || getWindow(GameViewWindow.class).getWantCaptureMouse()) {
                 MouseListener.mouseScrollCallback(w, xOffset, yOffset);
             } else {
                 MouseListener.clear();
@@ -167,16 +167,14 @@ public class ImGuiLayer {
     }
 
     public void update(float dt, Scene scene) {
-        startFrame(dt);
+        startFrame();
         setupDockSpace();
         scene.imGui();
-        gameViewWindow.imGui();
-        propertiesWindow.imGui();
-        sceneHierarchyWindow.imGui();
+        getAllWindows().forEach(ImGuiWindow::imGui);
         endFrame();
     }
 
-    private void startFrame(float deltaTime) {
+    private void startFrame() {
         imGuiGlfw.newFrame();
         ImGui.newFrame();
     }
@@ -206,8 +204,6 @@ public class ImGuiLayer {
     }
 
     private void setupDockSpace() {
-        int windowFlags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking;
-
         /*
         ImGuiViewport mainViewport = ImGui.getMainViewport();
         ImGui.setNextWindowPos(mainViewport.getWorkPosX(), mainViewport.getWorkPosY());
@@ -219,30 +215,41 @@ public class ImGuiLayer {
         ImGui.setNextWindowSize(Window.getWidth(), Window.getHeight());
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
-        windowFlags |= ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse |
-                ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove |
-                ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus;
+        int windowFlags = ImGuiWindowFlags.MenuBar |
+                ImGuiWindowFlags.NoDocking |
+                ImGuiWindowFlags.NoTitleBar |
+                ImGuiWindowFlags.NoCollapse |
+                ImGuiWindowFlags.NoResize |
+                ImGuiWindowFlags.NoMove |
+                ImGuiWindowFlags.NoBringToFrontOnFocus |
+                ImGuiWindowFlags.NoNavFocus ;
 
         ImGui.begin("Dockspace Demo", new ImBoolean(true), windowFlags);
         ImGui.popStyleVar(2);
 
         // Dockspace
         ImGui.dockSpace(ImGui.getID("Dockspace"));
-
         menuBar.imGui();
-
         ImGui.end();
-    }
-
-    public PropertiesWindow getPropertiesWindow() {
-        return propertiesWindow;
-    }
-
-    public GameViewWindow getGameViewWindow() {
-        return gameViewWindow;
     }
 
     public MenuBar getMenuBar() {
         return menuBar;
+    }
+
+    public <T extends ImGuiWindow> T getWindow(Class<T> windowClass) {
+        return windows.getWindow(windowClass);
+    }
+
+    public <T extends ImGuiWindow>  void addWindow(T window) {
+        windows.addWindow(window);
+    }
+
+    public <T extends ImGuiWindow> void removeWindow(Class<T> windowClass) {
+        windows.removeWindow(windowClass);
+    }
+
+    public List<ImGuiWindow> getAllWindows() {
+        return windows.getAllWindows();
     }
 }

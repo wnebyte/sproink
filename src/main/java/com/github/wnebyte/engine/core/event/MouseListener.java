@@ -1,13 +1,12 @@
 package com.github.wnebyte.engine.core.event;
 
+import java.util.Arrays;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.joml.Matrix4f;
 import com.github.wnebyte.engine.core.window.Window;
 import com.github.wnebyte.engine.core.camera.Camera;
-
-import java.util.Arrays;
-
+import com.github.wnebyte.engine.editor.GameViewWindow;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
@@ -46,7 +45,7 @@ public class MouseListener {
     }
 
     public static void mousePosCallback(long window, double xPos, double yPos) {
-        if (!Window.getImGuiLayer().getGameViewWindow().getWantCaptureMouse()) {
+        if (!Window.getImGuiLayer().getWindow(GameViewWindow.class).getWantCaptureMouse()) {
             clear();
         }
         if (get().mouseButtonDown > 0) {

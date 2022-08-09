@@ -3,6 +3,8 @@ package com.github.wnebyte.engine.components;
 import com.github.wnebyte.engine.core.ecs.Component;
 import com.github.wnebyte.engine.core.event.KeyListener;
 import com.github.wnebyte.engine.core.window.Window;
+import com.github.wnebyte.engine.editor.PropertiesWindow;
+
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_R;
 
@@ -19,9 +21,9 @@ public class GizmoSystem extends Component {
     @Override
     public void start() {
         gameObject.addComponent(new TranslateGizmo(gizmos.getSprite(1),
-                Window.getImGuiLayer().getPropertiesWindow()));
+                Window.getImGuiLayer().getWindow(PropertiesWindow.class)));
         gameObject.addComponent(new ScaleGizmo(gizmos.getSprite(2),
-                Window.getImGuiLayer().getPropertiesWindow()));
+                Window.getImGuiLayer().getWindow(PropertiesWindow.class)));
     }
 
     @Override

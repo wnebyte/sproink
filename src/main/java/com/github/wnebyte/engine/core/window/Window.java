@@ -1,5 +1,9 @@
 package com.github.wnebyte.engine.core.window;
 
+import com.github.wnebyte.engine.core.ui.ImGuiWindow;
+import com.github.wnebyte.engine.editor.FileDialogWindow;
+import com.github.wnebyte.engine.editor.GameViewWindow;
+import com.github.wnebyte.engine.editor.PropertiesWindow;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -88,7 +92,7 @@ public class Window implements Observer {
         if (window.scene != null) {
             window.scene.destroy();
         }
-        getImGuiLayer().getPropertiesWindow().setActiveGameObject(null);
+        getImGuiLayer().getWindow(PropertiesWindow.class).setActiveGameObject(null);
         window.scene = new Scene(sceneInitializer);
         window.scene.load();
         window.scene.init();
@@ -312,11 +316,17 @@ public class Window implements Observer {
         if (event instanceof GameEngineStartPlayEvent) {
             runtimePlaying = true;
             scene.save();
+            for (ImGuiWindow win : getImGuiLayer().getAllWindows()) {
+                if (!(win instanceof GameViewWindow)) {
+                    win.hide();
+                }
+            }
             setScene(new LevelSceneInitializer());
             System.out.println("(Debug): Start Play");
         } else if (event instanceof GameEngineStopPlayEvent) {
             runtimePlaying = false;
             setScene(new LevelEditorSceneInitializer());
+            getImGuiLayer().getAllWindows().forEach(ImGuiWindow::show);
             System.out.println("(Debug): Stop Play");
         } else if (event instanceof LoadLevelEvent) {
             setScene(new LevelEditorSceneInitializer());

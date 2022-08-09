@@ -62,7 +62,7 @@ public class MouseControls extends Component {
     @Override
     public void editorUpdate(float dt) {
         debounce -= dt;
-        PropertiesWindow props = Window.getImGuiLayer().getPropertiesWindow();
+        PropertiesWindow props = Window.getImGuiLayer().getWindow(PropertiesWindow.class);
         Scene scene = Window.getScene();
         
         if (draggable != null) {
@@ -158,7 +158,7 @@ public class MouseControls extends Component {
     }
 
     private boolean blockInSquare(float x, float y) {
-        PropertiesWindow props = Window.getImGuiLayer().getPropertiesWindow();
+        PropertiesWindow props = Window.getImGuiLayer().getWindow(PropertiesWindow.class);
         Vector2f start = new Vector2f(x, y);
         Vector2f end = new Vector2f(start).add(new Vector2f(Settings.GRID_WIDTH, Settings.GRID_HEIGHT));
         Vector2f startScreenf = MouseListener.world2Screen(start);

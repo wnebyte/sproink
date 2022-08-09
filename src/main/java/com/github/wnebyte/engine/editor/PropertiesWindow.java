@@ -2,22 +2,22 @@ package com.github.wnebyte.engine.editor;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.lang.reflect.Constructor;
 import imgui.ImGui;
 import org.joml.Vector4f;
 import com.github.wnebyte.engine.core.ecs.GameObject;
+import com.github.wnebyte.engine.core.ecs.Component;
+import com.github.wnebyte.engine.core.ui.ImGuiWindow;
 import com.github.wnebyte.engine.renderer.PickingTexture;
 import com.github.wnebyte.engine.components.SpriteRenderer;
-import com.github.wnebyte.engine.physics2d.components.Box2DCollider;
-import com.github.wnebyte.engine.physics2d.components.CircleCollider;
-import com.github.wnebyte.engine.physics2d.components.RigidBody2D;
+import com.github.wnebyte.engine.util.ReflectionUtil;
+import com.github.wnebyte.engine.util.Runtime;
 
-public class PropertiesWindow {
+public class PropertiesWindow extends ImGuiWindow {
 
     private final List<GameObject> activeGameObjects;
 
     private final List<Vector4f> activeGameObjectsOgColor;
-
-    private GameObject activeGameObject;
 
     private final PickingTexture pickingTexture;
 
@@ -27,29 +27,35 @@ public class PropertiesWindow {
         this.activeGameObjectsOgColor = new ArrayList<>();
     }
 
+    @Override
     public void imGui() {
+        if (!isVisible()) return;
+
         if (activeGameObjects.size() == 1 && activeGameObjects.get(0) != null) {
-            activeGameObject = activeGameObjects.get(0);
-            ImGui.begin("Properties");
+            GameObject activeGameObject = activeGameObjects.get(0);
+            ImGui.begin("Properties", visible);
 
             if (ImGui.beginPopupContextWindow("ComponentAdder")) {
-                if (ImGui.menuItem("Add Rigid Body")) {
-                    if (activeGameObject.getComponent(RigidBody2D.class) == null) {
-                        activeGameObject.addComponent(new RigidBody2D());
-                    }
-                }
-
-                if (ImGui.menuItem("Add Box Collider")) {
-                    if (activeGameObject.getComponent(Box2DCollider.class) == null &&
-                            activeGameObject.getComponent(CircleCollider.class) == null) {
-                        activeGameObject.addComponent(new Box2DCollider());
-                    }
-                }
-
-                if (ImGui.menuItem("Add Circle Collider")) {
-                    if (activeGameObject.getComponent(CircleCollider.class) == null &&
-                            activeGameObject.getComponent(Box2DCollider.class) == null) {
-                        activeGameObject.addComponent(new CircleCollider());
+                for (Class<? extends Component> cls : Runtime.getComponentClasses()) {
+                    if (ImGui.menuItem("Add " + cls.getSimpleName())) {
+                        if (activeGameObject.getComponent(cls) == null) {
+                            try {
+                                Constructor<?> constructor = ReflectionUtil.getDefaultConstructor(cls);
+                                if (constructor != null) {
+                                    boolean accessible = constructor.isAccessible();
+                                    if (!accessible) {
+                                        constructor.setAccessible(true);
+                                    }
+                                    Object c = constructor.newInstance();
+                                    activeGameObject.addComponent((Component)c);
+                                    if (!accessible) {
+                                        constructor.setAccessible(false);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                System.err.println("Could  not instantiate Component class: " + cls);
+                            }
+                        }
                     }
                 }
 

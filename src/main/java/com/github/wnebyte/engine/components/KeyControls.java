@@ -2,6 +2,8 @@ package com.github.wnebyte.engine.components;
 
 import java.util.List;
 import java.util.ArrayList;
+
+import com.github.wnebyte.engine.editor.FileDialogWindow;
 import org.joml.Vector2f;
 import com.github.wnebyte.engine.core.ecs.Component;
 import com.github.wnebyte.engine.core.ecs.GameObject;
@@ -22,7 +24,7 @@ public class KeyControls extends Component {
     public void editorUpdate(float dt) {
         debounce -= dt;
 
-        PropertiesWindow props = Window.getImGuiLayer().getPropertiesWindow();
+        PropertiesWindow props = Window.getImGuiLayer().getWindow(PropertiesWindow.class);
         GameObject activeGameObject = props.getActiveGameObject();
         List<GameObject> activeGameObjects = props.getActiveGameObjects();
         float multiplier = isKeyPressed(GLFW_KEY_LEFT_SHIFT) ? 0.1f : 1.0f;
