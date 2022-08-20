@@ -1,0 +1,32 @@
+def projectName = 'editor'
+group 'com.github.wnebyte'
+version '1.0-SNAPSHOT'
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src/main/java"]
+        }
+        resources {
+            srcDirs = ["src/main/resources"]
+            includes = ["**/*.glsl", "**/*.png", "**/*.ttf", "**/*.ogg", "**/*.gradle", "**/*.java", "**/*.xml", "**/*.jar"]
+        }
+    }
+    test {
+        java {
+            srcDirs = ["src/test/java"]
+        }
+        resources {
+            srcDirs = ["src/test/resources"]
+            includes = ["**/*.glsl", "**/*.png", "**/*.ttf", "**/*.ogg", "**/*.gradle", "**/*.java", "**/*.xml", "**/*.jar"]
+        }
+    }
+}
+
+dependencies {
+    implementation group: 'org.reflections', name: 'reflections', version: '0.9.11'
+    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+    implementation group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0'
+    implementation group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.0'
+    implementation project(':sproink')
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project out-dir="build/classes/java/main">
+    <editor>
+        <assets>
+            <tab name="Blocks">
+                <spritesheet src="image.png" start="0" end="10" prefab="com.github.wnebyte.sproink.core.Prefab" />
+                <spritesheet src="image1.png" start="0" end="10" prefab="com.github.wnebyte.sproink.core.Prefab" />
+            </tab>
+            <tab>
+                <spritesheet src="image2.png" start="0" end="10" prefab="com.github.wnebyte.sproink.core.Prefab" />
+            </tab>
+        </assets>
+    </editor>
+</project>

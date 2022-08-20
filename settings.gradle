@@ -1,2 +1,5 @@
 rootProject.name = 'Engine'
+include 'sproink'
+include 'editor'
+include 'test'
 
