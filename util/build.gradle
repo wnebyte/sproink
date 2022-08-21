@@ -1,0 +1,3 @@
+def projectName = 'editor'
+group 'com.github.wnebyte'
+version '1.0-SNAPSHOT'

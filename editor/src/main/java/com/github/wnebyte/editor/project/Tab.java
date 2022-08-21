@@ -11,11 +11,11 @@ public final class Tab {
     private String name;
 
     @XmlElement(name = "spritesheet")
-    private List<Spritesheet> spritesheets;
+    private List<SpritesheetAsset> spritesheets;
 
     public Tab() {}
 
-    public Tab(String name, List<Spritesheet> spritesheets) {
+    public Tab(String name, List<SpritesheetAsset> spritesheets) {
         this.name = name;
         this.spritesheets = spritesheets;
     }
@@ -28,15 +28,15 @@ public final class Tab {
         return name;
     }
 
-    public void setSpritesheets(List<Spritesheet> spritesheets) {
+    public void setSpritesheets(List<SpritesheetAsset> spritesheets) {
         this.spritesheets = spritesheets;
     }
 
-    public List<Spritesheet> getSpritesheets() {
+    public List<SpritesheetAsset> getSpritesheets() {
         return spritesheets;
     }
 
-    public void addSpritesheet(Spritesheet spritesheet) {
+    public void addSpritesheet(SpritesheetAsset spritesheet) {
         spritesheets.add(spritesheet);
     }
 }

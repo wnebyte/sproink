@@ -13,7 +13,7 @@ import com.github.wnebyte.editor.observer.event.NewProjectEvent;
 import com.github.wnebyte.editor.observer.event.OpenProjectEvent;
 import com.github.wnebyte.editor.observer.event.SaveLevelEvent;
 import com.github.wnebyte.sproink.observer.event.WindowInitializedEvent;
-import com.github.wnebyte.editor.project.ProjectContext;
+import com.github.wnebyte.editor.project.Context;
 import com.github.wnebyte.editor.scene.LevelEditorSceneInitializer;
 import com.github.wnebyte.sproink.core.scene.LevelSceneInitializer;
 import com.github.wnebyte.sproink.observer.event.GameEngineStartPlayEvent;
@@ -61,13 +61,13 @@ public class WindowObserver implements Observer {
     }
 
     private void handleNewProjectEvent(NewProjectEvent event) {
-        ProjectContext context = ProjectContext.newInstance(event.getName(), event.getPath());
+        Context context = Context.newInstance(event.getName(), event.getPath());
         Window.setTitle(context.getProject().getName());
         writeSymLink(context.getProject().getPath());
     }
 
     private void handleOpenProjectEvent(OpenProjectEvent event) {
-        ProjectContext context = ProjectContext.open(event.getPath());
+        Context context = Context.open(event.getPath());
         Window.setTitle(context.getProject().getName());
         writeSymLink(context.getProject().getPath());
     }

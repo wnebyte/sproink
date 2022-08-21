@@ -2,12 +2,15 @@ package com.github.wnebyte.editor.project;
 
 import javax.xml.bind.annotation.*;
 
-@XmlType
+@XmlType(name = "spritesheet")
 @XmlAccessorType(XmlAccessType.FIELD)
-public final class Spritesheet {
+public final class SpritesheetAsset {
 
     @XmlAttribute
     private String src;
+
+    @XmlAttribute
+    private int size;
 
     @XmlAttribute
     private int width;
@@ -24,18 +27,28 @@ public final class Spritesheet {
     @XmlAttribute
     private int to;
 
+    @XmlAttribute(name = "scale-x")
+    private float scaleX;
+
+    @XmlAttribute(name = "scale-y")
+    private float scaleY;
+
     @XmlAttribute
     private String prefab;
 
-    public Spritesheet() {}
+    public SpritesheetAsset() {}
 
-    public Spritesheet(String src, int width, int height, int spacing, int from, int to, String prefab) {
+    public SpritesheetAsset(String src, int size, int width, int height, int spacing, int from, int to,
+                            float scaleX, float scaleY, String prefab) {
         this.src = src;
+        this.size = size;
         this.width = width;
         this.height = height;
         this.spacing = spacing;
         this.from = from;
         this.to = to;
+        this.scaleX = scaleX;
+        this.scaleX = scaleX;
         this.prefab = prefab;
     }
 
@@ -45,6 +58,14 @@ public final class Spritesheet {
 
     public void setSrc(String src) {
         this.src = src;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     public int getWidth() {
@@ -85,6 +106,30 @@ public final class Spritesheet {
 
     public void setTo(int to) {
         this.to = to;
+    }
+
+    public float getScaleX() {
+        return scaleX;
+    }
+
+    public void setScaleX(float scaleX) {
+        this.scaleX = scaleX;
+    }
+
+    public float getScaleXOrDefaultValue(float defaultValue) {
+        return (scaleX == 0) ? defaultValue : scaleX;
+    }
+
+    public float getScaleY() {
+        return scaleY;
+    }
+
+    public float getScaleYOrDefaultValue(float defaultValue) {
+        return (scaleY == 0) ? defaultValue : scaleY;
+    }
+
+    public void setScaleY(float scaleY) {
+        this.scaleY = scaleY;
     }
 
     public String getPrefab() {

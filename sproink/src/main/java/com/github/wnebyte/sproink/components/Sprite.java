@@ -1,9 +1,8 @@
 package com.github.wnebyte.sproink.components;
 
+import java.util.Arrays;
 import org.joml.Vector2f;
 import com.github.wnebyte.sproink.renderer.Texture;
-
-import java.util.Arrays;
 
 public class Sprite {
 
@@ -17,6 +16,8 @@ public class Sprite {
             new Vector2f(0, 0),
             new Vector2f(0, 1)
     };
+
+    public Sprite() {}
 
     public Texture getTexture() {
         return texture;

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.lang.reflect.Constructor;
 import imgui.ImGui;
 import org.joml.Vector4f;
-import com.github.wnebyte.editor.project.ProjectContext;
+import com.github.wnebyte.editor.project.Context;
 import com.github.wnebyte.sproink.components.SpriteRenderer;
 import com.github.wnebyte.sproink.renderer.PickingTexture;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
@@ -36,7 +36,7 @@ public class PropertiesWindow extends ImGuiWindow {
             ImGui.begin("Properties", visible);
 
             if (ImGui.beginPopupContextWindow("ComponentAdder")) {
-                for (Class<? extends Component> cls : ProjectContext.get().getComponentSubTypes()) {
+                for (Class<? extends Component> cls : Context.get().getComponents()) {
                     if (ImGui.menuItem("Add " + cls.getSimpleName())) {
                         if (activeGameObject.getComponent(cls) == null) {
                             try {

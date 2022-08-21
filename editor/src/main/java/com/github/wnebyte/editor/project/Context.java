@@ -10,38 +10,40 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+
+import com.github.wnebyte.sproink.core.Prefab;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import com.github.wnebyte.sproink.core.ecs.Component;
 
-public class ProjectContext {
+public class Context {
 
-    public static ProjectContext newInstance(String name, String path) {
+    public static Context newInstance(String name, String path) {
         File root = new File(path + File.separator + name);
         ProjectInitializer init = new ProjectInitializer(root);
         init.mkdirs();
         init.copy();
         File file = new File(root.getAbsolutePath() + File.separator + "project.xml");
-        context = new ProjectContext(file);
-        context.load();
+        context = new Context(file);
+        context.loadProject();
         context.getProject().setName(name);
         context.getProject().setPath(root.getAbsolutePath());
-        context.sync();
+        context.syncProject();
         context.schedule();
         return context;
     }
 
-    public static ProjectContext open(String path) {
+    public static Context open(String path) {
         File file = new File(path + File.separator + "project.xml");
-        context = new ProjectContext(file);
-        context.load();
+        context = new Context(file);
+        context.loadProject();
         context.schedule();
         return context;
     }
 
-    public static ProjectContext get() {
+    public static Context get() {
         return context;
     }
 
@@ -66,7 +68,7 @@ public class ProjectContext {
 
     private static final Marshaller marshaller;
 
-    private static ProjectContext context;
+    private static Context context;
 
     static {
         try {
@@ -82,11 +84,13 @@ public class ProjectContext {
 
     private Project project;
 
-    private Set<Class<? extends Component>> componentSubTypes;
+    private Set<Class<? extends Prefab>> prefabs;
+
+    private Set<Class<? extends Component>> components;
 
     private final ScheduledExecutorService executor;
 
-    private ProjectContext(File file) {
+    private Context(File file) {
         this.file = file;
         this.executor = Executors.newScheduledThreadPool(1);
     }
@@ -95,32 +99,60 @@ public class ProjectContext {
         return project;
     }
 
-    public void schedule() {
-        executor.scheduleAtFixedRate(this::loadComponents, 0, 60, TimeUnit.SECONDS);
+    private void schedule() {
+        executor.scheduleAtFixedRate(() -> {
+            loadPrefabs();
+            loadComponents();
+        }, 0, 60, TimeUnit.SECONDS);
     }
 
-    public void save() {
-        marshall(project, file);
+    public void saveProject() {
+        Context.marshall(project, file);
     }
 
-    public void load() {
-        project = unmarshall(file);
+    public void loadProject() {
+        project = Context.unmarshall(file);
+    }
+
+    public void loadPrefabs() {
+        prefabs = fetchPrefabs();
     }
 
     public void loadComponents() {
-        componentSubTypes = fetchComponentSubTypes();
+        components = fetchComponents();
     }
 
-    public void sync() {
-        save();
-        load();
+    public void syncProject() {
+        saveProject();
+        loadProject();
     }
 
-    public Set<Class<? extends Component>> getComponentSubTypes() {
-        return componentSubTypes;
+    public Class<? extends Prefab> getPrefab(String className) {
+        return null;
     }
 
-    private Set<Class<? extends Component>> fetchComponentSubTypes() {
+    public Class<? extends Component> getComponent(String className) {
+        return components.stream().filter(cls -> cls.getName().equals(className))
+                .findFirst().orElse(null);
+    }
+
+    public Set<Class<? extends Prefab>> getPrefabs() {
+        return prefabs;
+    }
+
+    public Set<Class<? extends Component>> getComponents() {
+        return components;
+    }
+
+    private Set<Class<? extends Prefab>> fetchPrefabs() {
+        return fetchSubTypesOf(Prefab.class);
+    }
+
+    private Set<Class<? extends Component>> fetchComponents() {
+        return fetchSubTypesOf(Component.class);
+    }
+
+    private <T> Set<Class<? extends T>> fetchSubTypesOf(Class<T> cls) {
         File file = new File(project.getPath() + File.separator + project.getOutDir());
         try (URLClassLoader child = new URLClassLoader(
                 new URL[] { file.toURI().toURL() },
@@ -130,12 +162,13 @@ public class ProjectContext {
             conf.setClassLoaders(new ClassLoader[]{child});
             conf.setUrls(ClasspathHelper.forClassLoader(child));
             conf.setScanners(new SubTypesScanner());
-            Set<Class<? extends Component>> c = new Reflections(conf)
-                    .getSubTypesOf(Component.class);
-            return c;
+            Set<Class<? extends T>> set = new Reflections(conf)
+                    .getSubTypesOf(cls);
+            return set;
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
     }
 }

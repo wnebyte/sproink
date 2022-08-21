@@ -10,26 +10,10 @@ import imgui.ImGui;
 import imgui.type.ImInt;
 import org.jbox2d.dynamics.contacts.Contact;
 import com.github.wnebyte.sproink.core.ui.JImGui;
+import com.github.wnebyte.util.Arrays;
+import static com.github.wnebyte.util.Reflections.getEnumValues;
 
 public abstract class Component {
-
-    private static <T extends Enum<T>> String[] getEnumValues(Class<T> enumType) {
-        String[] enumValues = new String[enumType.getEnumConstants().length];
-        int i = 0;
-        for (T ordinal : enumType.getEnumConstants()) {
-            enumValues[i++] = ordinal.name();
-        }
-        return enumValues;
-    }
-
-    private static int indexOf(String s, String[] array) {
-        for (int i = 0; i < array.length; i++) {
-            if (s.equals(array[i])) {
-                return i;
-            }
-        }
-        return -1;
-    }
 
     public static Collection<Field> getAllFields(Class<?> cls) {
         List<Field> c = new ArrayList<>();
@@ -47,11 +31,15 @@ public abstract class Component {
         return c;
     }
 
+    public static void init(int maxId) {
+        ID_COUNTER = maxId;
+    }
+
     private static int ID_COUNTER = 0;
 
     private int id = -1;
 
-    public transient GameObject gameObject = null;
+    public transient GameObject gameObject;
 
     public void start() { }
 
@@ -103,7 +91,7 @@ public abstract class Component {
                     @SuppressWarnings("unchecked")
                     String[] enumValues = getEnumValues(type);
                     String enumType = ((Enum<?>)value).name();
-                    ImInt index = new ImInt(indexOf(enumType, enumValues));
+                    ImInt index = new ImInt(Arrays.indexOf(enumValues, enumType));
                     if (ImGui.combo(field.getName(), index, enumValues, enumValues.length)) {
                         field.set(this, type.getEnumConstants()[index.get()]);
                     }
@@ -138,10 +126,6 @@ public abstract class Component {
 
     public int getId() {
         return id;
-    }
-
-    public static void init(int maxId) {
-        ID_COUNTER = maxId;
     }
 
     @Override

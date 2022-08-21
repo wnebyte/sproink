@@ -15,6 +15,7 @@ public class WindowInitializedObserver implements Observer {
     public void notify(GameObject go, Event event) {
         if (event instanceof WindowInitializedEvent) {
             Window.getImGuiLayer().addWindow(new GameViewWindow());
+            Window.getImGuiLayer().addWindow(new AssetsWindow());
             Window.getImGuiLayer().addWindow(new PropertiesWindow(Window.getPickingTexture()));
             Window.getImGuiLayer().addWindow(new SceneHierarchyWindow());
             Window.getImGuiLayer().addWindow(new ConsoleWindow());
