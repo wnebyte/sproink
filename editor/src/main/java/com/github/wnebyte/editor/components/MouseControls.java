@@ -1,7 +1,6 @@
 package com.github.wnebyte.editor.components;
 
 import java.util.Set;
-import java.util.HashSet;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import com.github.wnebyte.sproink.core.scene.Scene;
@@ -13,8 +12,9 @@ import com.github.wnebyte.sproink.renderer.DebugDraw;
 import com.github.wnebyte.sproink.components.NonPickable;
 import com.github.wnebyte.sproink.components.SpriteRenderer;
 import com.github.wnebyte.sproink.components.StateMachine;
-import com.github.wnebyte.sproink.util.Settings;
 import com.github.wnebyte.editor.ui.PropertiesWindow;
+import com.github.wnebyte.editor.util.Settings;
+import com.github.wnebyte.util.Sets;
 import static com.github.wnebyte.sproink.core.event.MouseListener.isDragging;
 import static com.github.wnebyte.sproink.core.event.MouseListener.isMouseButtonDown;
 import static com.github.wnebyte.sproink.core.event.KeyListener.isKeyPressed;
@@ -137,13 +137,9 @@ public class MouseControls extends Component {
                 screenEndY = tmp;
             }
 
-            float[] ids = props.getPickingTexture().readPixels(
-                    new Vector2i(screenStartX, screenStartY),
-                    new Vector2i(screenEndX, screenEndY));
-            Set<Integer> uniqueIds = new HashSet<>();
-            for (float id : ids) {
-                uniqueIds.add((int)id);
-            }
+            float[] ids = props.getPickingTexture()
+                    .readPixels(new Vector2i(screenStartX, screenStartY), new Vector2i(screenEndX, screenEndY));
+            Set<Integer> uniqueIds = Sets.of(ids);
 
             for (Integer id : uniqueIds) {
                 GameObject pickedGo = Window.getScene().getGameObject(id);

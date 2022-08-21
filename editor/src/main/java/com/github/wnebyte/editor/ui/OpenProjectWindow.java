@@ -2,23 +2,21 @@ package com.github.wnebyte.editor.ui;
 
 import java.util.Map;
 import java.util.Arrays;
-
-import com.github.wnebyte.editor.observer.event.OpenProjectEvent;
-import com.github.wnebyte.sproink.observer.EventSystem;
 import imgui.ImGui;
 import imgui.flag.ImGuiCond;
 import imgui.extension.imguifiledialog.ImGuiFileDialog;
 import imgui.extension.imguifiledialog.flag.ImGuiFileDialogFlags;
+import com.github.wnebyte.editor.observer.event.OpenProjectEvent;
+import com.github.wnebyte.sproink.observer.EventSystem;
 import com.github.wnebyte.sproink.core.ui.ImGuiWindow;
 
 public class OpenProjectWindow extends ImGuiWindow {
 
-    private static final int IMGUI_FLAGS =
-            ImGuiFileDialogFlags.DisableCreateDirectoryButton |
-                    ImGuiFileDialogFlags.DontShowHiddenFiles |
-                    ImGuiFileDialogFlags.HideColumnDate |
-                    ImGuiFileDialogFlags.HideColumnSize |
-                    ImGuiFileDialogFlags.HideColumnType;
+    private static final int IMGUI_FLAGS = ImGuiFileDialogFlags.DisableCreateDirectoryButton |
+            ImGuiFileDialogFlags.DontShowHiddenFiles |
+            ImGuiFileDialogFlags.HideColumnDate |
+            ImGuiFileDialogFlags.HideColumnSize |
+            ImGuiFileDialogFlags.HideColumnType;
 
     private Map<String, String> selection;
 

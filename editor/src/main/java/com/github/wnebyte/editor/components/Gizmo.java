@@ -13,6 +13,10 @@ import com.github.wnebyte.sproink.components.Sprite;
 import com.github.wnebyte.sproink.components.SpriteRenderer;
 import com.github.wnebyte.editor.ui.PropertiesWindow;
 
+import static com.github.wnebyte.sproink.core.event.KeyListener.isKeyPressed;
+import static com.github.wnebyte.sproink.core.event.KeyListener.keyBeginPress;
+import static com.github.wnebyte.sproink.core.event.MouseListener.isDragging;
+import static com.github.wnebyte.sproink.core.event.MouseListener.isMouseButtonDown;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Gizmo extends Component {
@@ -78,8 +82,8 @@ public class Gizmo extends Component {
         if (using) {
             setInactive();
         }
-        xAxisObject.getComponent(SpriteRenderer.class).setColor(new Vector4f(0, 0, 0, 0));
-        yAxisObject.getComponent(SpriteRenderer.class).setColor(new Vector4f(0, 0, 0, 0));
+        xAxisSprite.setColor(new Vector4f(0, 0, 0, 0));
+        yAxisSprite.setColor(new Vector4f(0, 0, 0, 0));
     }
 
     @Override
@@ -91,15 +95,15 @@ public class Gizmo extends Component {
             setActive();
 
             // Todo: move this into it's own keyEditorBinding component
-            if (KeyListener.isKeyPressed(GLFW_KEY_LEFT_CONTROL) &&
-                    KeyListener.keyBeginPress(GLFW_KEY_D)) {
+            if (isKeyPressed(GLFW_KEY_LEFT_CONTROL) &&
+                    keyBeginPress(GLFW_KEY_D)) {
                 GameObject newObject = activeGameObject.copy();
                 Window.getScene().addGameObjectToScene(newObject);
                 newObject.transform.position.add(new Vector2f(0.1f, 0.1f));
                 propertiesWindow.setActiveGameObject(newObject);
                 System.out.println("(Debug): Copy");
                 return;
-            } else if (KeyListener.keyBeginPress(GLFW_KEY_DELETE)) {
+            } else if (keyBeginPress(GLFW_KEY_DELETE)) {
                 activeGameObject.destroy();
                 setInactive();
                 propertiesWindow.setActiveGameObject(null);
@@ -113,10 +117,10 @@ public class Gizmo extends Component {
         boolean xAxisHot = checkXHoverState();
         boolean yAxisHot = checkYHoverState();
 
-        if ((xAxisHot || xAxisActive) && MouseListener.isDragging() && MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+        if ((xAxisHot || xAxisActive) && isDragging() && isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
             xAxisActive = true;
             yAxisActive = false;
-        } else if ((yAxisHot || yAxisActive) && MouseListener.isDragging() && MouseListener.isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+        } else if ((yAxisHot || yAxisActive) && isDragging() && isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
             yAxisActive = true;
             xAxisActive = false;
         } else {

@@ -12,9 +12,13 @@ import java.nio.file.StandardOpenOption;
 import com.github.wnebyte.editor.observer.event.NewProjectEvent;
 import com.github.wnebyte.editor.observer.event.OpenProjectEvent;
 import com.github.wnebyte.editor.observer.event.SaveLevelEvent;
-import com.github.wnebyte.sproink.observer.event.WindowInitializedEvent;
+import com.github.wnebyte.editor.ui.LogWindow;
+import com.github.wnebyte.editor.ui.NewProjectWindow;
+import com.github.wnebyte.editor.ui.OpenProjectWindow;
 import com.github.wnebyte.editor.project.Context;
 import com.github.wnebyte.editor.scene.LevelEditorSceneInitializer;
+import com.github.wnebyte.sproink.core.ui.GameViewWindow;
+import com.github.wnebyte.sproink.observer.event.WindowInitializedEvent;
 import com.github.wnebyte.sproink.core.scene.LevelSceneInitializer;
 import com.github.wnebyte.sproink.observer.event.GameEngineStartPlayEvent;
 import com.github.wnebyte.sproink.observer.event.GameEngineStopPlayEvent;
@@ -29,18 +33,16 @@ public class WindowObserver implements Observer {
     private static final Path PATH
             = Paths.get(System.getProperty("java.io.tmpdir") + File.separator + "sproink_editor_tmp_sym_link");
 
+    private static final String TAG = "WindowObserver";
+
     @Override
     public void notify(GameObject go, Event event) {
         if (event instanceof GameEngineStartPlayEvent) {
-            Window.setRuntimePlaying(true);
-            Window.getScene().save();
-            Window.setScene(new LevelSceneInitializer());
-            System.out.println("(Debug): Start Play");
+            GameEngineStartPlayEvent e = (GameEngineStartPlayEvent) event;
+            handleGameEngineStartPlayEvent(e);
         } else if (event instanceof GameEngineStopPlayEvent) {
-            Window.setRuntimePlaying(false);
-            Window.setScene(new LevelEditorSceneInitializer());
-            Window.getImGuiLayer().getAllWindows().forEach(ImGuiWindow::show);
-            System.out.println("(Debug): Stop Play");
+            GameEngineStopPlayEvent e = (GameEngineStopPlayEvent) event;
+            handleGameEngineStopPlayEvent(e);
         } else if (event instanceof LoadLevelEvent) {
             Window.setScene(new LevelEditorSceneInitializer());
         } else if (event instanceof SaveLevelEvent) {
@@ -58,6 +60,35 @@ public class WindowObserver implements Observer {
             Window window = Window.get();
             window.destroy();
         }
+    }
+
+    private void handleGameEngineStartPlayEvent(GameEngineStartPlayEvent ignoredEvent) {
+        Window.setRuntimePlaying(true);
+        Window.getScene().save();
+        Window.setScene(new LevelSceneInitializer());
+        for (ImGuiWindow window : Window.getImGuiLayer().getAllWindows()) {
+            if (window instanceof GameViewWindow) {
+                window.show();
+            } else {
+                window.hide();
+            }
+        }
+        LogWindow logWindow = Window.getImGuiLayer().getWindow(LogWindow.class);
+        logWindow.log(TAG, "Start Play");
+    }
+
+    private void handleGameEngineStopPlayEvent(GameEngineStopPlayEvent ignoredEvent) {
+        Window.setRuntimePlaying(false);
+        Window.setScene(new LevelEditorSceneInitializer());
+        for (ImGuiWindow window : Window.getImGuiLayer().getAllWindows()) {
+            if (window instanceof NewProjectWindow || window instanceof OpenProjectWindow) {
+                window.hide();
+            } else {
+                window.show();
+            }
+        }
+        LogWindow logWindow = Window.getImGuiLayer().getWindow(LogWindow.class);
+        logWindow.log(TAG, "Stop Play");
     }
 
     private void handleNewProjectEvent(NewProjectEvent event) {

@@ -1,5 +1,6 @@
 package com.github.wnebyte.sproink.core.ui;
 
+import java.util.List;
 import imgui.*;
 import imgui.callback.ImStrConsumer;
 import imgui.callback.ImStrSupplier;
@@ -11,12 +12,8 @@ import com.github.wnebyte.sproink.core.event.KeyListener;
 import com.github.wnebyte.sproink.core.event.MouseListener;
 import com.github.wnebyte.sproink.core.window.Window;
 import com.github.wnebyte.sproink.core.scene.Scene;
-import com.github.wnebyte.sproink.renderer.PickingTexture;
 import com.github.wnebyte.sproink.util.ResourceUtil;
 import com.github.wnebyte.sproink.util.WindowRegistry;
-
-import java.util.List;
-
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glBindFramebuffer;

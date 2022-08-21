@@ -5,51 +5,51 @@
             <tab name="Blocks">
                 <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheets/decorationsAndBlocks.png"
                              width="16" height="16" size="81" spacing="0" from="0" to="33" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             prefab="com.github.wnebyte.editor.util.SpritePrefab" />
                 <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheets/decorationsAndBlocks.png"
                              width="16" height="16" size="81" spacing="0" from="35" to="37" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             prefab="com.github.wnebyte.editor.util.SpritePrefab" />
                 <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheets/decorationsAndBlocks.png"
                              width="16" height="16" size="81" spacing="0" from="61" to="81" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             prefab="com.github.wnebyte.editor.util.SpritePrefab" />
             </tab>
             <tab name="Decoration Blocks">
                 <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheets/decorationsAndBlocks.png"
                              width="16" height="16" size="81" spacing="0" from="38" to="41" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             prefab="com.github.wnebyte.editor.util.SpritePrefab" />
                 <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheets/decorationsAndBlocks.png"
                              width="16" height="16" size="81" spacing="0" from="45" to="61" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             prefab="com.github.wnebyte.editor.util.SpritePrefab" />
             </tab>
             <tab name="Prefabs">
                 <!-- mario -->
                 <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheet.png"
                              width="16" height="16" size="26" spacing="0" from="0" to="1" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             prefab="com.github.wnebyte.editor.util.SpritePrefab" />
                 <!-- question block -->
                 <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/items.png"
                              width="16" height="16" size="43" spacing="0" from="0" to="1" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             prefab="com.github.wnebyte.editor.util.SpritePrefab" />
                 <!-- goomba -->
                 <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheet.png"
                              width="16" height="16" size="26" spacing="0" from="14" to="15" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             prefab="com.github.wnebyte.editor.util.SpritePrefab" />
                 <!-- turtle -->
                 <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/turtle.png"
                              width="16" height="24" size="4" spacing="0" from="0" to="1" scale-x="2.0" scale-y="1.33"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             prefab="com.github.wnebyte.editor.util.SpritePrefab" />
                 <!-- flagtop -->
                 <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/items.png"
                              width="16" height="16" size="43" spacing="0" from="6" to="7" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             prefab="com.github.wnebyte.editor.util.SpritePrefab" />
                 <!-- flagpole -->
                 <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/items.png"
                              width="16" height="16" size="43" spacing="0" from="33" to="34" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             prefab="com.github.wnebyte.editor.util.SpritePrefab" />
                 <!-- pipes -->
                 <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheets/pipes.png"
                              width="32" height="32" size="4" spacing="0" from="0" to="4"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             prefab="com.github.wnebyte.editor.util.SpritePrefab" />
             </tab>
         </assets>
     </editor>

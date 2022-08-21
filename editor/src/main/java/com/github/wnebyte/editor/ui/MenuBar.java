@@ -16,10 +16,10 @@ public class MenuBar extends ImGuiWindow {
         ImGui.beginMainMenuBar();
 
         if (ImGui.beginMenu("File")) {
-            if (ImGui.menuItem("New Project")) {
+            if (ImGui.menuItem("New Project", "CTRL+N")) {
                 Window.getImGuiLayer().getWindow(NewProjectWindow.class).show();
             }
-            if (ImGui.menuItem("Open Project")) {
+            if (ImGui.menuItem("Open Project", "CTRL+O")) {
                 Window.getImGuiLayer().getWindow(OpenProjectWindow.class).show();
             }
             if (ImGui.menuItem("Close Project")) {
@@ -41,12 +41,12 @@ public class MenuBar extends ImGuiWindow {
         }
 
         ImGui.sameLine(ImGui.getWindowContentRegionMaxX() - 250);
-        search();
+        inputSearch();
 
         ImGui.endMainMenuBar();
     }
 
-    public boolean search() {
+    public boolean inputSearch() {
         ImString imString = new ImString();
         if (ImGui.inputText("##txt", imString, ImGuiInputTextFlags.EnterReturnsTrue)) {
             String val = imString.get().toLowerCase();

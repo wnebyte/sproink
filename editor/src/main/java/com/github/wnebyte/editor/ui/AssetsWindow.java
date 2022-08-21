@@ -1,12 +1,9 @@
 package com.github.wnebyte.editor.ui;
 
 import java.lang.reflect.Constructor;
-
-import com.github.wnebyte.sproink.util.AssetFlyWeight;
 import org.joml.Vector2f;
 import imgui.ImGui;
 import imgui.ImVec2;
-import com.github.wnebyte.editor.components.MouseControls;
 import com.github.wnebyte.sproink.core.window.Window;
 import com.github.wnebyte.sproink.core.ui.ImGuiWindow;
 import com.github.wnebyte.sproink.renderer.Texture;
@@ -14,7 +11,9 @@ import com.github.wnebyte.sproink.components.Spritesheet;
 import com.github.wnebyte.sproink.core.Prefab;
 import com.github.wnebyte.sproink.components.Sprite;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
-import com.github.wnebyte.sproink.core.DefaultPrefab;
+import com.github.wnebyte.sproink.util.AssetFlyWeight;
+import com.github.wnebyte.editor.util.SpritePrefab;
+import com.github.wnebyte.editor.components.MouseControls;
 import com.github.wnebyte.editor.project.SpritesheetAsset;
 import com.github.wnebyte.editor.project.Context;
 import com.github.wnebyte.editor.project.Assets;
@@ -61,7 +60,7 @@ public class AssetsWindow extends ImGuiWindow {
                                 asset.getSize(), asset.getSpacing());
                         Class<? extends Prefab> cls =
                                 Objects.requireNonNullElseGet(context.getPrefab(asset.getPrefab()),
-                                        () -> DefaultPrefab.class);
+                                        () -> SpritePrefab.class);
                         Constructor<?> cons = getDefaultConstructor(cls);
                         Prefab prefab;
                         if (cons == null) continue;

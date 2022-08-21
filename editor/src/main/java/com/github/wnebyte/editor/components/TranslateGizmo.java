@@ -2,6 +2,7 @@ package com.github.wnebyte.editor.components;
 
 import com.github.wnebyte.sproink.components.Sprite;
 import com.github.wnebyte.editor.ui.PropertiesWindow;
+import com.github.wnebyte.sproink.core.event.MouseListener;
 
 public class TranslateGizmo extends Gizmo {
 
@@ -13,9 +14,9 @@ public class TranslateGizmo extends Gizmo {
     public void editorUpdate(float dt) {
         if (activeGameObject != null) {
             if (xAxisActive && !yAxisActive) {
-                activeGameObject.transform.position.x -= 0;
+                activeGameObject.transform.position.x -= MouseListener.getWorldDx();
             } else if (yAxisActive) {
-                activeGameObject.transform.position.y -= 0;
+                activeGameObject.transform.position.y -= MouseListener.getWorldDy();
             }
         }
 

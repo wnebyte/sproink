@@ -1,6 +1,8 @@
 package com.github.wnebyte.sproink.core.event;
 
 import java.util.Arrays;
+
+import com.github.wnebyte.sproink.core.ui.GameViewWindow;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.joml.Matrix4f;
@@ -15,7 +17,7 @@ public class MouseListener {
 
     private double scrollX, scrollY;
 
-    private double xPos, yPos, lastX, lastY;
+    private double xPos, yPos, lastX, lastY, worldX, worldY, lastWorldX, lastWorldY;
 
     private final boolean[] mouseButtonPressed = new boolean[9];
 
@@ -44,28 +46,33 @@ public class MouseListener {
     }
 
     public static void mousePosCallback(long window, double xPos, double yPos) {
-        /*
         if (!Window.getImGuiLayer().getWindow(GameViewWindow.class).getWantCaptureMouse()) {
             clear();
         }
-         */
         if (get().mouseButtonDown > 0) {
             get().isDragging = true;
         }
         get().lastX = get().xPos;
         get().lastY = get().yPos;
+        get().lastWorldX = get().worldX;
+        get().lastWorldY = get().worldY;
         get().xPos = xPos;
         get().yPos = yPos;
+        Vector2f world = getWorld();
+        get().worldX = world.x;
+        get().worldY = world.y;
     }
 
     public static void mouseButtonCallback(long window, int button, int action, int mods) {
         if (action == GLFW_PRESS) {
             get().mouseButtonDown++;
+
             if (button < get().mouseButtonPressed.length) {
                 get().mouseButtonPressed[button] = true;
             }
         } else if (action == GLFW_RELEASE) {
             get().mouseButtonDown--;
+
             if (button < get().mouseButtonPressed.length) {
                 get().mouseButtonPressed[button] = false;
                 get().isDragging = false;
@@ -90,6 +97,10 @@ public class MouseListener {
         get().yPos = 0.0;
         get().lastX = 0.0;
         get().lastY = 0.0;
+        get().worldX = 0.0;
+        get().worldY = 0.0;
+        get().lastWorldX = 0.0;
+        get().lastWorldY = 0.0;
         get().mouseButtonDown = 0;
         get().isDragging = false;
         Arrays.fill(get().mouseButtonPressed, false);
@@ -172,6 +183,14 @@ public class MouseListener {
 
     public static float getScrollY() {
         return (float) get().scrollY;
+    }
+
+    public static float getWorldDx() {
+        return (float)(get().lastWorldX - get().worldX);
+    }
+
+    public static float getWorldDy() {
+        return (float)(get().lastWorldY - get().worldY);
     }
 
     public static boolean isDragging() {

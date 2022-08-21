@@ -13,9 +13,9 @@ public class ScaleGizmo extends Gizmo {
     public void editorUpdate(float dt) {
         if (activeGameObject != null) {
             if (xAxisActive && !yAxisActive) {
-                activeGameObject.transform.scale.x -= 0;
+                activeGameObject.transform.scale.x -= 5;
             } else if (yAxisActive) {
-                activeGameObject.transform.scale.y -= 0;
+                activeGameObject.transform.scale.y -= 5;
             }
         }
 

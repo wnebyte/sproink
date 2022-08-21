@@ -36,6 +36,7 @@ public class GizmoSystem extends Component {
             gameObject.getComponent(ScaleGizmo.class).setUsing();
         }
 
+        // Todo: consider moving to key controls
         if (KeyListener.isKeyPressed(GLFW_KEY_E)) {
             usingGizmo = 0;
         } else if (KeyListener.isKeyPressed(GLFW_KEY_R)) {
