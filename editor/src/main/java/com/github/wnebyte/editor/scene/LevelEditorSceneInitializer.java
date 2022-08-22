@@ -1,6 +1,5 @@
 package com.github.wnebyte.editor.scene;
 
-import imgui.ImGui;
 import com.github.wnebyte.sproink.core.scene.Scene;
 import com.github.wnebyte.sproink.core.scene.SceneInitializer;
 import com.github.wnebyte.sproink.core.ecs.GameObject;

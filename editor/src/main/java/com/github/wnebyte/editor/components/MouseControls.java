@@ -90,7 +90,9 @@ public class MouseControls extends Component {
                 draggable.destroy();
                 draggable = null;
             }
-        } else if (!isDragging() && isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {
+        }
+        // picking
+        else if (!isDragging() && isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {
             int x = (int)MouseListener.getScreenX();
             int y = (int)MouseListener.getScreenY();
             int id = props.getPickingTexture().readPixel(x, y);
@@ -101,8 +103,10 @@ public class MouseControls extends Component {
             } else if (pickedGo == null && !isDragging()) {
                 props.clearSelected();
             }
-            debounce = 0.2f;
-        } else if (isDragging() && isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+            debounce = debounceTime;
+        }
+        // multi picking
+        else if (isDragging() && isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
             if (!boxSelectSet) {
                 props.clearSelected();
                 boxSelectStart = MouseListener.getScreen();

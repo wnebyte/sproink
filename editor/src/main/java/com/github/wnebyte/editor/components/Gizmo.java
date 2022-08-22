@@ -5,14 +5,12 @@ import org.joml.Vector4f;
 import com.github.wnebyte.sproink.core.Prefabs;
 import com.github.wnebyte.sproink.core.ecs.Component;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
-import com.github.wnebyte.sproink.core.event.KeyListener;
 import com.github.wnebyte.sproink.core.event.MouseListener;
 import com.github.wnebyte.sproink.core.window.Window;
 import com.github.wnebyte.sproink.components.NonPickable;
 import com.github.wnebyte.sproink.components.Sprite;
 import com.github.wnebyte.sproink.components.SpriteRenderer;
 import com.github.wnebyte.editor.ui.PropertiesWindow;
-
 import static com.github.wnebyte.sproink.core.event.KeyListener.isKeyPressed;
 import static com.github.wnebyte.sproink.core.event.KeyListener.keyBeginPress;
 import static com.github.wnebyte.sproink.core.event.MouseListener.isDragging;
@@ -134,6 +132,14 @@ public class Gizmo extends Component {
             xAxisObject.transform.position.add(xAxisOffset);
             yAxisObject.transform.position.add(yAxisOffset);
         }
+    }
+
+    public boolean isxAxisActive() {
+        return xAxisActive;
+    }
+
+    public boolean isyAxisActive() {
+        return yAxisActive;
     }
 
     private boolean checkXHoverState() {

@@ -20,6 +20,7 @@ public class WindowInitializedObserver implements Observer {
             Window.getImGuiLayer().addWindow(new SceneHierarchyWindow());
             Window.getImGuiLayer().addWindow(new ConsoleWindow());
             Window.getImGuiLayer().addWindow(new LogWindow());
+            Window.getImGuiLayer().addWindow(new DirectoryViewWindow());
             Window.getImGuiLayer().addWindow(new NewProjectWindow(false));
             Window.getImGuiLayer().addWindow(new OpenProjectWindow(false));
             Window.getImGuiLayer().addWindow(new MenuBar());
