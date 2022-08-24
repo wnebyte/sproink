@@ -9,7 +9,7 @@ import org.joml.Vector4f;
 import imgui.ImGui;
 import imgui.type.ImInt;
 import org.jbox2d.dynamics.contacts.Contact;
-import com.github.wnebyte.sproink.core.ui.JImGui;
+import com.github.wnebyte.sproink.ui.JImGui;
 import com.github.wnebyte.util.Arrays;
 import static com.github.wnebyte.util.Reflections.getEnumValues;
 

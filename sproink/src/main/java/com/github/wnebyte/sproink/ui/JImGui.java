@@ -1,4 +1,4 @@
-package com.github.wnebyte.sproink.core.ui;
+package com.github.wnebyte.sproink.ui;
 
 import org.joml.Vector2f;
 import org.joml.Vector4f;

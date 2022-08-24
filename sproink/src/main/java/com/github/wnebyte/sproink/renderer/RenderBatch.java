@@ -162,7 +162,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
         }
 
         // Use shader
-        Shader shader = Renderer.getBoundShader();
+        Shader shader = renderer.getShader();
         shader.use();
         shader.uploadMatrix4f(Shader.U_PROJECTION, Window.getScene().getCamera().getProjectionMatrix());
         shader.uploadMatrix4f(Shader.U_VIEW, Window.getScene().getCamera().getViewMatrix());

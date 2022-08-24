@@ -1,13 +1,12 @@
 package com.github.wnebyte.sproink.core.ecs;
 
 import java.util.*;
-
+import imgui.ImGui;
+import com.google.gson.Gson;
 import com.github.wnebyte.sproink.components.SpriteRenderer;
 import com.github.wnebyte.sproink.core.Transform;
 import com.github.wnebyte.sproink.util.ResourceFlyWeight;
 import com.github.wnebyte.sproink.util.Settings;
-import imgui.ImGui;
-import com.google.gson.Gson;
 
 public class GameObject {
 

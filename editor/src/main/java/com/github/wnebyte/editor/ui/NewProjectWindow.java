@@ -11,11 +11,11 @@ import imgui.extension.imguifiledialog.callback.ImGuiFileDialogPaneFun;
 import imgui.extension.imguifiledialog.flag.ImGuiFileDialogFlags;
 import com.github.wnebyte.editor.observer.event.NewProjectEvent;
 import com.github.wnebyte.sproink.observer.EventSystem;
-import com.github.wnebyte.sproink.core.ui.ImGuiWindow;
+import com.github.wnebyte.sproink.ui.ImGuiWindow;
 
 public class NewProjectWindow extends ImGuiWindow {
 
-    private static final int IMGUI_FLAGS =
+    private static final int WINDOW_FLAGS =
             ImGuiFileDialogFlags.DisableCreateDirectoryButton |
             ImGuiFileDialogFlags.DontShowHiddenFiles |
             ImGuiFileDialogFlags.HideColumnDate |
@@ -61,7 +61,7 @@ public class NewProjectWindow extends ImGuiWindow {
 
             if (ImGui.button("Browse Folder")) {
                 ImGuiFileDialog.openDialog("browse-folder-key", "Choose Folder", null, ".", "",
-                        1, 7, IMGUI_FLAGS);
+                        1, 7, WINDOW_FLAGS);
             }
 
             if (ImGuiFileDialog.display("browse-folder-key", ImGuiFileDialogFlags.None, 200, 400, 800, 600)) {
@@ -95,6 +95,11 @@ public class NewProjectWindow extends ImGuiWindow {
 
         userData = 0;
         ImGui.end();
+    }
+
+    @Override
+    public boolean isModal() {
+        return true;
     }
 
     public boolean hasPath() {

@@ -1,4 +1,4 @@
-package com.github.wnebyte.sproink.core.ui;
+package com.github.wnebyte.sproink.ui;
 
 import imgui.type.ImBoolean;
 
@@ -39,6 +39,10 @@ public abstract class ImGuiWindow {
 
     public void unlock() {
         locked = false;
+    }
+
+    public boolean isModal() {
+        return false;
     }
 
     public abstract void imGui();

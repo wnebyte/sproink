@@ -8,7 +8,7 @@ import imgui.type.ImInt;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTreeNodeFlags;
 import com.github.wnebyte.editor.project.Context;
-import com.github.wnebyte.sproink.core.ui.ImGuiWindow;
+import com.github.wnebyte.sproink.ui.ImGuiWindow;
 import com.github.wnebyte.util.Filter;
 
 public class DirectoryViewWindow extends ImGuiWindow {

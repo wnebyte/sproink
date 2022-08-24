@@ -1,3 +1,20 @@
-def projectName = 'editor'
+import java.text.SimpleDateFormat
+
+def projectName = 'sproink-util'
 group 'com.github.wnebyte'
-version '1.0-SNAPSHOT'
+version '1.0'
+
+jar{
+    manifest{
+        attributes(
+                "Name": projectName,
+                "Implementation-Title": projectName,
+                "Implementation-Version": project.version,
+                "Class-Path": configurations.runtimeClasspath.files.collect { it.getName() }.join(' '),
+                'Build-Timestamp': new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date()),
+                'Build-Jdk': "${System.properties['java.version']} (${System.properties['java.vendor']}) " +
+                        "${System.properties['java.vm.version']}"
+        )
+    }
+    archiveBaseName.set(projectName)
+}

@@ -13,11 +13,15 @@ public final class Tab {
     @XmlElement(name = "spritesheet")
     private List<SpritesheetAsset> spritesheets;
 
+    @XmlElement(name = "sound")
+    private List<SoundAsset> sounds;
+
     public Tab() {}
 
-    public Tab(String name, List<SpritesheetAsset> spritesheets) {
+    public Tab(String name, List<SpritesheetAsset> spritesheets, List<SoundAsset> sounds) {
         this.name = name;
         this.spritesheets = spritesheets;
+        this.sounds = sounds;
     }
 
     public void setName(String name) {
@@ -38,5 +42,17 @@ public final class Tab {
 
     public void addSpritesheet(SpritesheetAsset spritesheet) {
         spritesheets.add(spritesheet);
+    }
+
+    public List<SoundAsset> getSounds() {
+        return sounds;
+    }
+
+    public void setSounds(List<SoundAsset> sounds) {
+        this.sounds = sounds;
+    }
+
+    public void addSound(SoundAsset sound) {
+        sounds.add(sound);
     }
 }

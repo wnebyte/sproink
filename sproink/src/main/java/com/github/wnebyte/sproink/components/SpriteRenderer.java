@@ -1,49 +1,48 @@
 package com.github.wnebyte.sproink.components;
 
 import java.util.Objects;
-
-import com.github.wnebyte.sproink.core.Transform;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
+import com.github.wnebyte.sproink.core.Transform;
 import com.github.wnebyte.sproink.core.ecs.Component;
 import com.github.wnebyte.sproink.renderer.Texture;
-import com.github.wnebyte.sproink.core.ui.JImGui;
+import com.github.wnebyte.sproink.ui.JImGui;
 
 public class SpriteRenderer extends Component {
 
-    private Vector4f color = new Vector4f(1, 1, 1, 1);
+    private Vector4f color = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
 
     private Sprite sprite = new Sprite();
 
-    private transient Transform lastTransform;
+    private transient Transform transform;
 
-    private transient boolean isDirty = true;
+    private transient boolean dirty = true;
 
     @Override
     public void start() {
-        this.lastTransform = gameObject.transform.copy();
+        transform = gameObject.transform.copy();
     }
 
     @Override
     public void editorUpdate(float dt) {
-        if (!lastTransform.equals(gameObject.transform)) {
-            gameObject.transform.copy(lastTransform);
-            isDirty = true;
+        if (!transform.equals(gameObject.transform)) {
+            gameObject.transform.copy(transform);
+            dirty = true;
         }
     }
 
     @Override
     public void update(float dt) {
-        if (!lastTransform.equals(gameObject.transform)) {
-            gameObject.transform.copy(lastTransform);
-            isDirty = true;
+        if (!transform.equals(gameObject.transform)) {
+            gameObject.transform.copy(transform);
+            dirty = true;
         }
     }
 
     @Override
     public void imGui() {
         if (JImGui.colorPicker4("Color", color)) {
-            isDirty = true;
+            dirty = true;
         }
     }
 
@@ -60,26 +59,26 @@ public class SpriteRenderer extends Component {
     }
 
     public boolean isDirty() {
-        return isDirty;
+        return dirty;
     }
 
     public void setClean() {
-        isDirty = false;
+        dirty = false;
     }
 
     public void setDirty() {
-        isDirty = true;
+        dirty = true;
     }
 
     public void setSprite(Sprite sprite) {
         this.sprite = sprite;
-        this.isDirty = true;
+        this.dirty = true;
     }
 
     public void setColor(Vector4f color) {
         if (!this.color.equals(color)) {
             this.color.set(color);
-            this.isDirty = true;
+            this.dirty = true;
         }
     }
 

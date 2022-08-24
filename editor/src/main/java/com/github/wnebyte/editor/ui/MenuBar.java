@@ -4,8 +4,8 @@ import imgui.ImGui;
 import imgui.type.ImString;
 import imgui.flag.ImGuiInputTextFlags;
 import com.github.wnebyte.sproink.core.window.Window;
-import com.github.wnebyte.sproink.core.ui.ImGuiWindow;
-import com.github.wnebyte.sproink.core.ui.GameViewWindow;
+import com.github.wnebyte.sproink.ui.ImGuiWindow;
+import com.github.wnebyte.sproink.ui.GameViewWindow;
 import com.github.wnebyte.sproink.observer.EventSystem;
 import com.github.wnebyte.sproink.observer.event.WindowCloseEvent;
 
@@ -31,6 +31,15 @@ public class MenuBar extends ImGuiWindow {
             ImGui.endMenu();
         }
         if (ImGui.beginMenu("Assets")) {
+            ImGui.endMenu();
+        }
+        if (ImGui.beginMenu("Scene")) {
+            if (ImGui.menuItem("New Scene")) {
+
+            }
+            if (ImGui.menuItem("Assets")) {
+
+            }
             ImGui.endMenu();
         }
         if (ImGui.beginMenu("Window")) {

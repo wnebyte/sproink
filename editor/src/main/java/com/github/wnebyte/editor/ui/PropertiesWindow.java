@@ -10,8 +10,8 @@ import com.github.wnebyte.sproink.components.SpriteRenderer;
 import com.github.wnebyte.sproink.renderer.PickingTexture;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
 import com.github.wnebyte.sproink.core.ecs.Component;
-import com.github.wnebyte.sproink.core.ui.ImGuiWindow;
-import com.github.wnebyte.sproink.util.ReflectionUtil;
+import com.github.wnebyte.sproink.ui.ImGuiWindow;
+import static com.github.wnebyte.util.Reflections.getDefaultConstructor;
 
 public class PropertiesWindow extends ImGuiWindow {
 
@@ -22,6 +22,11 @@ public class PropertiesWindow extends ImGuiWindow {
     private final PickingTexture pickingTexture;
 
     public PropertiesWindow(PickingTexture pickingTexture) {
+        this(true, pickingTexture);
+    }
+
+    public PropertiesWindow(boolean visible, PickingTexture pickingTexture) {
+        this.visible.set(visible);
         this.pickingTexture = pickingTexture;
         this.activeGameObjects = new ArrayList<>();
         this.activeGameObjectsOgColor = new ArrayList<>();
@@ -40,7 +45,7 @@ public class PropertiesWindow extends ImGuiWindow {
                     if (ImGui.menuItem("Add " + cls.getSimpleName())) {
                         if (activeGameObject.getComponent(cls) == null) {
                             try {
-                                Constructor<?> constructor = ReflectionUtil.getDefaultConstructor(cls);
+                                Constructor<?> constructor = getDefaultConstructor(cls);
                                 if (constructor != null) {
                                     boolean accessible = constructor.isAccessible();
                                     if (!accessible) {

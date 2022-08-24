@@ -8,7 +8,7 @@ import com.github.wnebyte.sproink.core.window.Window;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
 import com.github.wnebyte.sproink.core.ecs.Component;
 import com.github.wnebyte.sproink.core.audio.Sound;
-import com.github.wnebyte.sproink.core.scene.LevelSceneInitializer;
+import com.github.wnebyte.sproink.scenes.LevelSceneInitializer;
 import com.github.wnebyte.sproink.util.ResourceFlyWeight;
 import com.github.wnebyte.sproink.physics2d.enums.BodyType;
 import com.github.wnebyte.sproink.physics2d.components.RigidBody2D;

@@ -55,7 +55,7 @@ public class ProjectInitializer {
         }
     }
 
-    public void copy() {
+    public void copyTemplates() {
         try {
             for (Map.Entry<String, String> entry : files.entrySet()) {
                 Path src = Paths.get(this.getClass().getResource(entry.getKey()).toURI());

@@ -2,38 +2,42 @@ package com.github.wnebyte.editor.observer;
 
 import java.util.List;
 import java.util.Collections;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import com.github.wnebyte.editor.observer.event.NewProjectEvent;
 import com.github.wnebyte.editor.observer.event.OpenProjectEvent;
 import com.github.wnebyte.editor.observer.event.SaveLevelEvent;
 import com.github.wnebyte.editor.ui.LogWindow;
-import com.github.wnebyte.editor.ui.NewProjectWindow;
-import com.github.wnebyte.editor.ui.OpenProjectWindow;
 import com.github.wnebyte.editor.project.Context;
-import com.github.wnebyte.editor.scene.LevelEditorSceneInitializer;
-import com.github.wnebyte.sproink.core.ui.GameViewWindow;
-import com.github.wnebyte.sproink.observer.event.WindowInitializedEvent;
-import com.github.wnebyte.sproink.core.scene.LevelSceneInitializer;
+import com.github.wnebyte.editor.scenes.LevelEditorSceneInitializer;
+import com.github.wnebyte.editor.ui.SceneChangeEvent;
+import com.github.wnebyte.sproink.ui.GameViewWindow;
+import com.github.wnebyte.sproink.scenes.LevelSceneInitializer;
 import com.github.wnebyte.sproink.observer.event.GameEngineStartPlayEvent;
 import com.github.wnebyte.sproink.observer.event.GameEngineStopPlayEvent;
 import com.github.wnebyte.sproink.observer.Observer;
 import com.github.wnebyte.sproink.observer.event.*;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
-import com.github.wnebyte.sproink.core.ui.ImGuiWindow;
+import com.github.wnebyte.sproink.ui.ImGuiWindow;
 import com.github.wnebyte.sproink.core.window.Window;
+import com.github.wnebyte.util.UriBuilder;
 
-public class WindowObserver implements Observer {
+public class ApplicationObserver implements Observer {
 
-    private static final Path PATH
-            = Paths.get(System.getProperty("java.io.tmpdir") + File.separator + "sproink_editor_tmp_sym_link");
+    private static final String TAG = "ApplicationObserver";
 
-    private static final String TAG = "WindowObserver";
+    private static final Path PROJECT_DIR_PATH = new UriBuilder()
+            .setAuthority(System.getProperty("java.io.tmpdir"))
+            .appendPath("sproink_editor_project_dir")
+            .toPath();
+
+    private static final Path SCENE_PATH = new UriBuilder()
+            .setAuthority(System.getProperty("java.io.tmpdir"))
+            .appendPath("sproink_editor_scene")
+            .toPath();
 
     @Override
     public void notify(GameObject go, Event event) {
@@ -53,9 +57,11 @@ public class WindowObserver implements Observer {
         } else if (event instanceof OpenProjectEvent) {
             OpenProjectEvent e = (OpenProjectEvent) event;
             handleOpenProjectEvent(e);
-        } else if (event instanceof WindowInitializedEvent) {
-            WindowInitializedEvent e = (WindowInitializedEvent) event;
-            handleWindowInitializedEvent(e);
+        } else if (event instanceof SceneChangeEvent) {
+            SceneChangeEvent e = (SceneChangeEvent) event;
+            handleSceneChangeEvent(e);
+        } else if (event instanceof WindowBeginLoopEvent) {
+            handleWindowBeginLoopEvent();
         } else if (event instanceof WindowCloseEvent) {
             Window window = Window.get();
             window.destroy();
@@ -65,7 +71,7 @@ public class WindowObserver implements Observer {
     private void handleGameEngineStartPlayEvent(GameEngineStartPlayEvent ignoredEvent) {
         Window.setRuntimePlaying(true);
         Window.getScene().save();
-        Window.setScene(new LevelSceneInitializer());
+        Window.setScene(Window.getScene().getPath(), new LevelSceneInitializer());
         for (ImGuiWindow window : Window.getImGuiLayer().getAllWindows()) {
             if (window instanceof GameViewWindow) {
                 window.show();
@@ -79,9 +85,9 @@ public class WindowObserver implements Observer {
 
     private void handleGameEngineStopPlayEvent(GameEngineStopPlayEvent ignoredEvent) {
         Window.setRuntimePlaying(false);
-        Window.setScene(new LevelEditorSceneInitializer());
+        Window.setScene(Window.getScene().getPath(), new LevelEditorSceneInitializer());
         for (ImGuiWindow window : Window.getImGuiLayer().getAllWindows()) {
-            if (window instanceof NewProjectWindow || window instanceof OpenProjectWindow) {
+            if (window.isModal()) {
                 window.hide();
             } else {
                 window.show();
@@ -93,40 +99,69 @@ public class WindowObserver implements Observer {
 
     private void handleNewProjectEvent(NewProjectEvent event) {
         Context context = Context.newInstance(event.getName(), event.getPath());
-        Window.setTitle(context.getProject().getName());
-        writeSymLink(context.getProject().getPath());
+        String name = context.getProject().getName();
+        Window.setTitle(name);
+        write(PROJECT_DIR_PATH, context.getProject().getPath());
+        delete(SCENE_PATH);
     }
 
     private void handleOpenProjectEvent(OpenProjectEvent event) {
         Context context = Context.open(event.getPath());
-        Window.setTitle(context.getProject().getName());
-        writeSymLink(context.getProject().getPath());
+        String name = context.getProject().getName();
+        for (ImGuiWindow window : Window.getImGuiLayer().getAllWindows()) {
+            if (!window.isModal()) {
+                window.show();
+            }
+        }
+        Window.setTitle(name);
+        write(PROJECT_DIR_PATH, context.getProject().getPath());
     }
 
-    private void handleWindowInitializedEvent(WindowInitializedEvent event) {
-        if (PATH.toFile().exists()) {
-            String path = readSymLink();
-            handleOpenProjectEvent(new OpenProjectEvent(path));
+    private void handleSceneChangeEvent(SceneChangeEvent event) {
+        Context context = Context.get();
+        if (context != null) {
+            String path = event.getPath();
+            write(SCENE_PATH, path);
+            Window.setScene(path, new LevelEditorSceneInitializer());
         }
     }
 
-    private void writeSymLink(String link) {
+    private void handleWindowBeginLoopEvent() {
+        if (PROJECT_DIR_PATH.toFile().exists()) {
+            String path = read(PROJECT_DIR_PATH);
+            handleOpenProjectEvent(new OpenProjectEvent(path));
+        }
+        if (SCENE_PATH.toFile().exists()) {
+            String path = read(SCENE_PATH);
+            handleSceneChangeEvent(new SceneChangeEvent(path));
+        }
+    }
+
+    private void write(Path path, String text) {
         try {
-            Files.write(PATH, Collections.singleton(link), StandardCharsets.UTF_8,
+            Files.write(path, Collections.singleton(text), StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private String readSymLink() {
+    private String read(Path path) {
         try {
-            List<String> lines = Files.readAllLines(PATH, StandardCharsets.UTF_8);
-            String link = String.join(System.lineSeparator(), lines);
-            return link;
+            List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+            String text = String.join(System.lineSeparator(), lines);
+            return text;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private void delete(Path path) {
+        try {
+            Files.delete(path);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

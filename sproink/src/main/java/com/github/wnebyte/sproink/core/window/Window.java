@@ -1,5 +1,6 @@
 package com.github.wnebyte.sproink.core.window;
 
+import com.github.wnebyte.sproink.observer.event.WindowBeginLoopEvent;
 import org.joml.Vector4f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -13,11 +14,11 @@ import com.github.wnebyte.sproink.core.event.KeyListener;
 import com.github.wnebyte.sproink.core.event.MouseListener;
 import com.github.wnebyte.sproink.core.scene.Scene;
 import com.github.wnebyte.sproink.core.scene.SceneInitializer;
-import com.github.wnebyte.sproink.core.ui.ImGuiLayer;
+import com.github.wnebyte.sproink.ui.ImGuiLayer;
 import com.github.wnebyte.sproink.util.ResourceFlyWeight;
 import com.github.wnebyte.sproink.renderer.*;
 import com.github.wnebyte.sproink.observer.EventSystem;
-import com.github.wnebyte.sproink.observer.event.WindowInitializedEvent;
+import com.github.wnebyte.sproink.observer.event.WindowInitEvent;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.openal.ALC10.*;
@@ -82,8 +83,17 @@ public class Window {
         if (window.scene != null) {
             window.scene.destroy();
         }
-       // getImGuiLayer().getWindow(PropertiesWindow.class).setActiveGameObject(null);
         window.scene = new Scene(sceneInitializer);
+        window.scene.load();
+        window.scene.init();
+        window.scene.start();
+    }
+
+    public static void setScene(String path, SceneInitializer sceneInitializer) {
+        if (window.scene != null) {
+            window.scene.destroy();
+        }
+        window.scene = new Scene(path, sceneInitializer);
         window.scene.load();
         window.scene.init();
         window.scene.start();
@@ -91,22 +101,11 @@ public class Window {
 
     public void run() {
         System.out.println("Hello LWJGL " + Version.getVersion());
-
         init();
-        EventSystem.notify(null, new WindowInitializedEvent());
+        EventSystem.notify(null, new WindowInitEvent());
+        EventSystem.notify(null, new WindowBeginLoopEvent());
         loop();
-
-        // Destroy the audio context
-        alcDestroyContext(audioContext);
-        alcCloseDevice(audioDevice);
-
-        // Free the allocated memory
-        glfwFreeCallbacks(glfwWindow);
-        glfwDestroyWindow(glfwWindow);
-
-        // Terminate GLFW and free the error callback
-        glfwTerminate();
-        glfwSetErrorCallback(null).free();
+        destroy();
     }
 
     public void destroy() {
@@ -212,14 +211,15 @@ public class Window {
             // Poll events
             glfwPollEvents();
 
-            // Render pass 1. Render to picking texture.
+            // Render pass 1: Render to picking texture
             glDisable(GL_BLEND);
             pickingTexture.bind();
             glViewport(0, 0, width, height);
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            Renderer.bindShader(pickingShader);
+            Renderer renderer = scene.getRenderer();
+            renderer.setShader(pickingShader);
             scene.render();
             pickingTexture.unbind();
             glEnable(GL_BLEND);
@@ -232,7 +232,7 @@ public class Window {
             glClear(GL_COLOR_BUFFER_BIT);
 
             if (dt >= 0) {
-                Renderer.bindShader(defaultShader);
+                renderer.setShader(defaultShader);
                 if (runtimePlaying) {
                     scene.update(dt);
                 } else {

@@ -4,12 +4,20 @@ import java.util.List;
 import imgui.ImGui;
 import imgui.flag.ImGuiTreeNodeFlags;
 import com.github.wnebyte.sproink.core.window.Window;
-import com.github.wnebyte.sproink.core.ui.ImGuiWindow;
+import com.github.wnebyte.sproink.ui.ImGuiWindow;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
 
 public class SceneHierarchyWindow extends ImGuiWindow {
 
     private static final String PAYLOAD_DRAG_DROP_TYPE = "SceneHierarchy";
+
+    public SceneHierarchyWindow() {
+        this(true);
+    }
+
+    public SceneHierarchyWindow(boolean visible) {
+        this.visible.set(visible);
+    }
 
     @Override
     public void imGui() {

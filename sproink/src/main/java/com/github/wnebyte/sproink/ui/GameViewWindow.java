@@ -1,4 +1,4 @@
-package com.github.wnebyte.sproink.core.ui;
+package com.github.wnebyte.sproink.ui;
 
 import org.joml.Vector2f;
 import imgui.ImGui;
@@ -12,17 +12,27 @@ import com.github.wnebyte.sproink.observer.event.GameEngineStopPlayEvent;
 
 public class GameViewWindow extends ImGuiWindow {
 
+    private static final int WINDOW_FLAGS = ImGuiWindowFlags.NoScrollbar |
+            ImGuiWindowFlags.NoScrollWithMouse |
+            ImGuiWindowFlags.MenuBar;
+
     private float leftX, rightX, topY, bottomY;
 
     private boolean isPlaying = false;
+
+    public GameViewWindow() {
+        this(true);
+    }
+
+    public GameViewWindow(boolean visible) {
+        this.visible.set(visible);
+    }
 
     @Override
     public void imGui() {
         if (!isVisible()) return;
 
-        ImGui.begin("Game Viewport", visible,
-                ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.MenuBar);
-
+        ImGui.begin("Game Viewport", visible, WINDOW_FLAGS);
         ImGui.beginMenuBar();
         if (ImGui.menuItem("Play", "", isPlaying, !isPlaying)) {
             isPlaying = true;

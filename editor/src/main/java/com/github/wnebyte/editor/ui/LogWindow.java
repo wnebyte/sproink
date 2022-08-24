@@ -9,7 +9,7 @@ import imgui.type.ImBoolean;
 import imgui.flag.ImGuiCol;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
-import com.github.wnebyte.sproink.core.ui.ImGuiWindow;
+import com.github.wnebyte.sproink.ui.ImGuiWindow;
 
 public class LogWindow extends ImGuiWindow {
 

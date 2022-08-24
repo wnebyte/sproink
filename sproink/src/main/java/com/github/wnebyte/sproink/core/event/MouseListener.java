@@ -1,13 +1,12 @@
 package com.github.wnebyte.sproink.core.event;
 
 import java.util.Arrays;
-
-import com.github.wnebyte.sproink.core.ui.GameViewWindow;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.joml.Matrix4f;
 import com.github.wnebyte.sproink.core.camera.Camera;
 import com.github.wnebyte.sproink.core.window.Window;
+import com.github.wnebyte.sproink.ui.GameViewWindow;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 

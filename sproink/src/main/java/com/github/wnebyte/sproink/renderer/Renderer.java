@@ -10,7 +10,7 @@ public class Renderer {
 
     private static final int MAX_BATCH_SIZE = 1000;
 
-    private static Shader shader;
+    private Shader shader;
 
     private final List<RenderBatch> batches;
 
@@ -65,11 +65,11 @@ public class Renderer {
         }
     }
 
-    public static void bindShader(Shader shader) {
-        Renderer.shader = shader;
+    public void setShader(Shader shader) {
+        this.shader = shader;
     }
 
-    public static Shader getBoundShader() {
-        return Renderer.shader;
+    public Shader getShader() {
+        return shader;
     }
 }

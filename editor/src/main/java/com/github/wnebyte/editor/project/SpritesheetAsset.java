@@ -48,7 +48,7 @@ public final class SpritesheetAsset {
         this.from = from;
         this.to = to;
         this.scaleX = scaleX;
-        this.scaleX = scaleX;
+        this.scaleY = scaleY;
         this.prefab = prefab;
     }
 

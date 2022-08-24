@@ -1,5 +1,6 @@
 package com.github.wnebyte.sproink.core.scene;
 
+import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.FileWriter;
@@ -17,6 +18,8 @@ import com.github.wnebyte.sproink.util.Settings;
 
 public class Scene {
 
+    private String path;
+
     private Camera camera;
 
     private boolean isRunning;
@@ -32,12 +35,17 @@ public class Scene {
     private final SceneInitializer sceneInitializer;
 
     public Scene(SceneInitializer sceneInitializer) {
+        this("../assets/scenes/scene.json", sceneInitializer);
+    }
+
+    public Scene(String path, SceneInitializer sceneInitializer) {
         this.sceneInitializer = sceneInitializer;
         this.physics2d = new Physics2D();
         this.renderer = new Renderer();
         this.gameObjects = new ArrayList<>();
         this.pendingGameObjects = new ArrayList<>();
         this.isRunning = false;
+        this.path = path;
     }
 
     public void init() {
@@ -169,9 +177,22 @@ public class Scene {
         return camera;
     }
 
+    public Renderer getRenderer() {
+        return renderer;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getName() {
+        File file = new File(path);
+        return file.getName();
+    }
+
     public void save() {
         try {
-            FileWriter writer = new FileWriter("level.txt");
+            FileWriter writer = new FileWriter(path);
             List<GameObject> out = new ArrayList<>();
             for (GameObject go : gameObjects) {
                 if (go.isSerialize()) {
@@ -186,19 +207,19 @@ public class Scene {
     }
 
     public void load() {
-        String inFile = "";
+        String in = "";
 
         try {
-            inFile = new String(Files.readAllBytes(Paths.get("level.txt")));
+            in = new String(Files.readAllBytes(Paths.get(path)));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error: (Scene) " + e.getMessage());
         }
 
-        if (!inFile.equals("")) {
+        if (!in.equals("")) {
             int maxGoId = -1;
             int maxCompId = -1;
 
-            GameObject[] objs = Settings.GSON.fromJson(inFile, GameObject[].class);
+            GameObject[] objs = Settings.GSON.fromJson(in, GameObject[].class);
             for (GameObject go : objs) {
                 addGameObjectToScene(go);
 
@@ -216,6 +237,5 @@ public class Scene {
             GameObject.init(maxGoId);
             Component.init(maxCompId);
         }
-
     }
 }

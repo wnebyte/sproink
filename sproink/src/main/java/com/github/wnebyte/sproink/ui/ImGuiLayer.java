@@ -1,5 +1,6 @@
-package com.github.wnebyte.sproink.core.ui;
+package com.github.wnebyte.sproink.ui;
 
+import java.io.File;
 import java.util.List;
 import imgui.*;
 import imgui.callback.ImStrConsumer;
@@ -24,7 +25,6 @@ public class ImGuiLayer {
 
     private final long glfwWindow;
 
-    // LWJGL3 renderer (SHOULD be initialized)
     private final ImGuiImplGl3 imGuiGl3;
 
     private final ImGuiImplGlfw imGuiGlfw;
@@ -32,14 +32,10 @@ public class ImGuiLayer {
     private final WindowRegistry windowRegistry;
 
     public ImGuiLayer(long glfwWindow) {
-        this(glfwWindow, new WindowRegistry());
-    }
-
-    public ImGuiLayer(long glfwWindow, WindowRegistry windowRegistry) {
         this.glfwWindow = glfwWindow;
         this.imGuiGl3 = new ImGuiImplGl3();
         this.imGuiGlfw = new ImGuiImplGlfw();
-        this.windowRegistry = windowRegistry;
+        this.windowRegistry = new WindowRegistry();
     }
 
     public void init() {
@@ -51,7 +47,7 @@ public class ImGuiLayer {
         // Initialize ImGuiIO config
         final ImGuiIO io = ImGui.getIO();
 
-        io.setIniFilename("imgui.ini");
+        io.setIniFilename("../imgui.ini");
         io.setConfigFlags(ImGuiConfigFlags.DockingEnable);
         /*
         io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
@@ -145,8 +141,11 @@ public class ImGuiLayer {
         fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesDefault());
 
         fontConfig.setPixelSnapH(true);
-        // segoeui
+        /*
         fontAtlas.addFontFromFileTTF(ResourceUtil.getAbsolutePath("/fonts/segoeui.ttf"),
+                18, fontConfig);
+         */
+        fontAtlas.addFontFromFileTTF(new File("../assets/fonts/segoeui.ttf").getAbsolutePath(),
                 18, fontConfig);
 
         fontConfig.destroy(); // After all fonts were added we don't need this config more

@@ -8,7 +8,7 @@ import imgui.extension.imguifiledialog.ImGuiFileDialog;
 import imgui.extension.imguifiledialog.flag.ImGuiFileDialogFlags;
 import com.github.wnebyte.editor.observer.event.OpenProjectEvent;
 import com.github.wnebyte.sproink.observer.EventSystem;
-import com.github.wnebyte.sproink.core.ui.ImGuiWindow;
+import com.github.wnebyte.sproink.ui.ImGuiWindow;
 
 public class OpenProjectWindow extends ImGuiWindow {
 
@@ -65,6 +65,11 @@ public class OpenProjectWindow extends ImGuiWindow {
         }
 
         ImGui.end();
+    }
+
+    @Override
+    public boolean isModal() {
+        return true;
     }
 
     public boolean hasPath() {

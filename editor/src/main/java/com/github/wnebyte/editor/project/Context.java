@@ -10,7 +10,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-
 import com.github.wnebyte.sproink.core.Prefab;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -21,30 +20,37 @@ import com.github.wnebyte.sproink.core.ecs.Component;
 public class Context {
 
     public static Context newInstance(String name, String path) {
+        File parent = new File(path);
+        assert (parent.exists() && parent.isDirectory()) :
+                String.format("Error (Context): Path: '%s' does not exist/is not a directory", parent.getAbsolutePath());
         File root = new File(path + File.separator + name);
         ProjectInitializer init = new ProjectInitializer(root);
         init.mkdirs();
-        init.copy();
-        File file = new File(root.getAbsolutePath() + File.separator + "project.xml");
-        context = new Context(file);
+        init.copyTemplates();
+        File projectFile = new File(root.getAbsolutePath() + File.separator + "project.xml");
+        Context context = new Context(projectFile);
         context.loadProject();
         context.getProject().setName(name);
         context.getProject().setPath(root.getAbsolutePath());
         context.syncProject();
         context.schedule();
-        return context;
+        Context.instance = context;
+        return get();
     }
 
     public static Context open(String path) {
-        File file = new File(path + File.separator + "project.xml");
-        context = new Context(file);
+        File projectFile = new File(path + File.separator + "project.xml");
+        assert projectFile.exists() :
+                String.format("Error (Context): ProjectFile: '%s' does not exists", projectFile.getAbsolutePath());
+        Context context = new Context(projectFile);
         context.loadProject();
         context.schedule();
-        return context;
+        Context.instance = context;
+        return get();
     }
 
     public static Context get() {
-        return context;
+        return instance;
     }
 
     private static Project unmarshall(File file) {
@@ -68,7 +74,7 @@ public class Context {
 
     private static final Marshaller marshaller;
 
-    private static Context context;
+    private static Context instance;
 
     static {
         try {
@@ -112,6 +118,7 @@ public class Context {
 
     public void loadProject() {
         project = Context.unmarshall(file);
+        project.format();
     }
 
     public void loadPrefabs() {

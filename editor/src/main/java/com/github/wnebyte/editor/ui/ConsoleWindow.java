@@ -8,7 +8,7 @@ import imgui.ImGuiTextFilter;
 import imgui.ImVec4;
 import imgui.flag.*;
 import imgui.type.ImString;
-import com.github.wnebyte.sproink.core.ui.ImGuiWindow;
+import com.github.wnebyte.sproink.ui.ImGuiWindow;
 
 public class ConsoleWindow extends ImGuiWindow {
 
@@ -29,25 +29,30 @@ public class ConsoleWindow extends ImGuiWindow {
     private Consumer<String> callback;
 
     public ConsoleWindow() {
-        items = new ArrayList<>();
-        history = new ArrayList<>();
-        inputBuffer = new ImString();
-        historyPointer = -1;
-        autoScroll = true;
-        scrollToBottom = false;
-        filter = new ImGuiTextFilter();
-        clearLog();
+        this(true);
+    }
+
+    public ConsoleWindow(boolean visible) {
+        this.visible.set(visible);
+        this.items = new ArrayList<>();
+        this.history = new ArrayList<>();
+        this.inputBuffer = new ImString();
+        this.historyPointer = -1;
+        this.autoScroll = true;
+        this.scrollToBottom = false;
+        this.filter = new ImGuiTextFilter();
+        clear();
     }
 
     public void setCallback(Consumer<String> callback) {
         this.callback = callback;
     }
 
-    public void addLog(String value) {
+    public void println(String value) {
         items.add(value);
     }
 
-    public void clearLog() {
+    public void clear() {
         items.clear();
     }
 
@@ -80,7 +85,7 @@ public class ConsoleWindow extends ImGuiWindow {
         ImGui.beginChild("ScrollingRegion", 0, -footerHeightToReserve, false, ImGuiWindowFlags.HorizontalScrollbar);
         if (ImGui.beginPopupContextWindow()) {
             if (ImGui.selectable("Clear")) {
-                clearLog();
+                clear();
             }
             ImGui.endPopup();
         }
@@ -131,9 +136,9 @@ public class ConsoleWindow extends ImGuiWindow {
             reclaimFocus = true;
             String input = inputBuffer.get();
             inputBuffer.clear();
-            addLog(input);
+            println(input);
             if (input.equals("clear") || input.equals("cls")) {
-                clearLog();
+                clear();
             } else if (callback != null) {
                 callback.accept(input);
             }

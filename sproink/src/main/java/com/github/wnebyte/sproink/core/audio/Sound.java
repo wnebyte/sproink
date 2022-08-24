@@ -30,7 +30,7 @@ public class Sound {
         ShortBuffer rawAudioBuffer =
                 stb_vorbis_decode_filename(filepath, channelsBuffer, sampleRateBuffer);
         if (rawAudioBuffer == null) {
-            System.out.printf("(Debug): Failed to load sound: '%s'%n", filepath);
+            System.out.printf("(Sound): Failed to load sound: '%s'%n", filepath);
             stackPop();
             return;
         }

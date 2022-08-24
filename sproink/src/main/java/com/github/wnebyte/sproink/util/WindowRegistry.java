@@ -2,7 +2,7 @@ package com.github.wnebyte.sproink.util;
 
 import java.util.List;
 import java.util.ArrayList;
-import com.github.wnebyte.sproink.core.ui.ImGuiWindow;
+import com.github.wnebyte.sproink.ui.ImGuiWindow;
 
 public class WindowRegistry {
 
