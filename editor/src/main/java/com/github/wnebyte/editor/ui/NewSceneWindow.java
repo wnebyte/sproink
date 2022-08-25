@@ -1,12 +1,13 @@
 package com.github.wnebyte.editor.ui;
 
-import java.io.File;
-import java.io.IOException;
 import imgui.ImGui;
 import imgui.type.ImString;
-import com.github.wnebyte.editor.log.Logger;
+import com.github.wnebyte.editor.observer.event.NewSceneEvent;
+import com.github.wnebyte.sproink.observer.EventSystem;
 import com.github.wnebyte.editor.project.Context;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
+import com.github.wnebyte.sproink.core.scene.SceneInitializer;
+import com.github.wnebyte.sproink.scenes.LevelSceneInitializer;
 
 public class NewSceneWindow extends ImGuiWindow {
 
@@ -14,7 +15,12 @@ public class NewSceneWindow extends ImGuiWindow {
 
     private static final int WINDOW_FLAGS = 0;
 
+    private static final Class<? extends SceneInitializer> DEFAULT_SCENE_INITIALIZER
+            = LevelSceneInitializer.class;
+
     private final ImString name;
+
+    private Class<? extends SceneInitializer> initializer;
 
     public NewSceneWindow() {
         this(true);
@@ -23,6 +29,7 @@ public class NewSceneWindow extends ImGuiWindow {
     public NewSceneWindow(boolean visible) {
         this.visible.set(visible);
         this.name = new ImString();
+        this.initializer = DEFAULT_SCENE_INITIALIZER;
     }
 
     @Override
@@ -38,26 +45,31 @@ public class NewSceneWindow extends ImGuiWindow {
         ImGui.inputText("##sceneName", name);
         ImGui.text("Initializer:");
         ImGui.sameLine();
-        ImGui.inputText("##initializer", new ImString());
-        if (ImGui.button("Create")) {
-            File file = new File(
-                    context.getProject().getAssetsDir() + File.separator + "scenes" + File.separator + name + ".json");
-            if (!file.exists()) {
-                try {
-                    boolean success = file.createNewFile();
-                    if (success) {
-                        name.set("");
-                        Logger.log(TAG, "Scene: '" + file.getName() + "' created successfully");
-                        hide();
-                    } else {
-                        Logger.log(TAG, "Scene: '" + file.getName() + "' could not be created");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+        if (ImGui.beginCombo("##initializer", initializer.getCanonicalName())) {
+            for (Class<? extends SceneInitializer> cls : context.getSceneInitializers()) {
+                boolean isSelected = initializer.equals(cls);
+                if (ImGui.selectable(cls.getCanonicalName(), isSelected)) {
+                    initializer = cls;
                 }
+                if (isSelected) {
+                    ImGui.setItemDefaultFocus();
+                }
+            }
+            ImGui.endCombo();
+        }
+        if (ImGui.button("Create")) {
+            if (hasName()) {
+                EventSystem.notify(null, new NewSceneEvent(name.get(), initializer));
+                name.set("");
+                initializer = DEFAULT_SCENE_INITIALIZER;
+                hide();
             }
         }
         ImGui.end();
+    }
+
+    private boolean hasName() {
+        return !name.get().equals("");
     }
 
     @Override

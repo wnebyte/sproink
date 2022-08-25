@@ -19,6 +19,10 @@ public final class AssetFlyWeight {
 
     private static final Map<String, Sound> sounds = new HashMap<>();
 
+    /**
+     * Lazily initializes (if necessary) and returns the <code>Shader</code> located at
+     * the specified <code>path</code>.
+     */
     public static Shader getShader(String path) {
         File file = new File(path);
         assert file.exists() : String.format("Error: (AssetFlyWeight) Shader: '%s' does not exist",
@@ -27,7 +31,7 @@ public final class AssetFlyWeight {
         if (shaders.containsKey(file.getAbsolutePath())) {
             return shaders.get(file.getAbsolutePath());
         } else {
-            Shader shader = new Shader(file.getPath());
+            Shader shader = new Shader(file.getAbsolutePath());
             shader.compile();
             shaders.put(file.getAbsolutePath(), shader);
             return shader;
@@ -44,8 +48,7 @@ public final class AssetFlyWeight {
                 file.getAbsolutePath());
 
         if (textures.containsKey(file.getAbsolutePath())) {
-            Texture texture = textures.get(file.getAbsolutePath());
-            return texture;
+            return textures.get(file.getAbsolutePath());
         } else {
             Texture texture = new Texture();
             texture.init(file.getAbsolutePath());
@@ -112,7 +115,19 @@ public final class AssetFlyWeight {
         }
     }
 
-    public static Collection<Sound> getAllSounds() {
+    public static Collection<Shader> getShaders() {
+        return shaders.values();
+    }
+
+    public static Collection<Sound> getSounds() {
         return sounds.values();
+    }
+
+    public static Collection<Texture> getTextures() {
+        return textures.values();
+    }
+
+    public static Collection<Spritesheet> getSpritesheets() {
+        return spritesheets.values();
     }
 }

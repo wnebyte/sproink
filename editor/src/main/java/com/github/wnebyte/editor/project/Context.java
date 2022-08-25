@@ -1,6 +1,7 @@
 package com.github.wnebyte.editor.project;
 
 import java.net.*;
+import java.util.HashSet;
 import java.util.Set;
 import java.io.File;
 import java.io.FileReader;
@@ -10,12 +11,13 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import com.github.wnebyte.sproink.core.Prefab;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
+import com.github.wnebyte.sproink.core.Prefab;
 import com.github.wnebyte.sproink.core.ecs.Component;
+import com.github.wnebyte.sproink.core.scene.SceneInitializer;
 
 public class Context {
 
@@ -86,29 +88,31 @@ public class Context {
         }
     }
 
-    private final File file;
-
     private Project project;
 
-    private Set<Class<? extends Prefab>> prefabs;
+    private final File file;
 
-    private Set<Class<? extends Component>> components;
+    private final Set<Class<? extends Prefab>> prefabs;
+
+    private final Set<Class<? extends Component>> components;
+
+    private final Set<Class<? extends SceneInitializer>> sceneInitializers;
 
     private final ScheduledExecutorService executor;
 
     private Context(File file) {
         this.file = file;
+        this.prefabs = new HashSet<>();
+        this.components = new HashSet<>();
+        this.sceneInitializers = new HashSet<>();
         this.executor = Executors.newScheduledThreadPool(1);
-    }
-
-    public Project getProject() {
-        return project;
     }
 
     private void schedule() {
         executor.scheduleAtFixedRate(() -> {
-            loadPrefabs();
-            loadComponents();
+            prefabs.addAll(fetchSubTypesOf(Prefab.class));
+            components.addAll(fetchSubTypesOf(Component.class));
+            sceneInitializers.addAll(fetchSubTypesOf(SceneInitializer.class));
         }, 0, 60, TimeUnit.SECONDS);
     }
 
@@ -121,25 +125,27 @@ public class Context {
         project.format();
     }
 
-    public void loadPrefabs() {
-        prefabs = fetchPrefabs();
-    }
-
-    public void loadComponents() {
-        components = fetchComponents();
-    }
-
     public void syncProject() {
         saveProject();
         loadProject();
     }
 
-    public Class<? extends Prefab> getPrefab(String className) {
-        return null;
+    public Project getProject() {
+        return project;
     }
 
-    public Class<? extends Component> getComponent(String className) {
-        return components.stream().filter(cls -> cls.getName().equals(className))
+    public Class<? extends Prefab> getPrefab(String canonicalName) {
+        return prefabs.stream().filter(cls -> cls.getCanonicalName().equals(canonicalName))
+                .findFirst().orElse(null);
+    }
+
+    public Class<? extends Component> getComponent(String canonicalName) {
+        return components.stream().filter(cls -> cls.getCanonicalName().equals(canonicalName))
+                .findFirst().orElse(null);
+    }
+
+    public Class<? extends SceneInitializer> getSceneInitializer(String canonicalName) {
+        return sceneInitializers.stream().filter(cls -> cls.getCanonicalName().equals(canonicalName))
                 .findFirst().orElse(null);
     }
 
@@ -151,16 +157,12 @@ public class Context {
         return components;
     }
 
-    private Set<Class<? extends Prefab>> fetchPrefabs() {
-        return fetchSubTypesOf(Prefab.class);
-    }
-
-    private Set<Class<? extends Component>> fetchComponents() {
-        return fetchSubTypesOf(Component.class);
+    public Set<Class<? extends SceneInitializer>> getSceneInitializers() {
+        return sceneInitializers;
     }
 
     private <T> Set<Class<? extends T>> fetchSubTypesOf(Class<T> cls) {
-        File file = new File(project.getPath() + File.separator + project.getOutDir());
+        File file = new File(project.getOutDir());
         try (URLClassLoader child = new URLClassLoader(
                 new URL[] { file.toURI().toURL() },
                 this.getClass().getClassLoader()
@@ -169,13 +171,12 @@ public class Context {
             conf.setClassLoaders(new ClassLoader[]{child});
             conf.setUrls(ClasspathHelper.forClassLoader(child));
             conf.setScanners(new SubTypesScanner());
-            Set<Class<? extends T>> set = new Reflections(conf)
-                    .getSubTypesOf(cls);
+            Set<Class<? extends T>> set = new Reflections(conf).getSubTypesOf(cls);
             return set;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return null;
+        return new HashSet<>();
     }
 }

@@ -1,55 +1,65 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<project name="EngineTest" path="C:/Users/Ralle/dev/java/EngineTest" out-dir="build/classes/java/main/">
+<project name="EngineTest" path="C:/Users/Ralle/dev/java/EngineTest" out-dir="$PATH/build/classes/java/main/" assets-dir="$PATH/assets">
     <editor>
         <assets>
             <tab name="Blocks">
-                <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheets/decorationsAndBlocks.png"
+                <spritesheet src="$ASSETSDIR/images/spritesheets/decorationsAndBlocks.png"
                              width="16" height="16" size="81" spacing="0" from="0" to="33" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.SpritePrefab" />
-                <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheets/decorationsAndBlocks.png"
+                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                <spritesheet src="$ASSETSDIR/images/spritesheets/decorationsAndBlocks.png"
                              width="16" height="16" size="81" spacing="0" from="35" to="37" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.SpritePrefab" />
-                <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheets/decorationsAndBlocks.png"
+                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                <spritesheet src="$ASSETSDIR/images/spritesheets/decorationsAndBlocks.png"
                              width="16" height="16" size="81" spacing="0" from="61" to="81" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.SpritePrefab" />
+                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
             </tab>
             <tab name="Decoration Blocks">
-                <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheets/decorationsAndBlocks.png"
+                <spritesheet src="$ASSETSDIR/images/spritesheets/decorationsAndBlocks.png"
                              width="16" height="16" size="81" spacing="0" from="38" to="41" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.SpritePrefab" />
-                <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheets/decorationsAndBlocks.png"
+                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                <spritesheet src="$ASSETSDIR/images/spritesheets/decorationsAndBlocks.png"
                              width="16" height="16" size="81" spacing="0" from="45" to="61" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.SpritePrefab" />
+                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
             </tab>
             <tab name="Prefabs">
-                <!-- mario -->
-                <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheet.png"
+                <spritesheet src="$ASSETSDIR/images/spritesheets/spritesheet.png"
                              width="16" height="16" size="26" spacing="0" from="0" to="1" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.SpritePrefab" />
-                <!-- question block -->
-                <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/items.png"
+                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                <spritesheet src="$ASSETSDIR/images/spritesheets/items.png"
                              width="16" height="16" size="43" spacing="0" from="0" to="1" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.SpritePrefab" />
-                <!-- goomba -->
-                <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheet.png"
+                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                <spritesheet src="$ASSETSDIR/images/spritesheets/spritesheet.png"
                              width="16" height="16" size="26" spacing="0" from="14" to="15" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.SpritePrefab" />
-                <!-- turtle -->
-                <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/turtle.png"
+                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                <spritesheet src="$ASSETSDIR/images/spritesheets/turtle.png"
                              width="16" height="24" size="4" spacing="0" from="0" to="1" scale-x="2.0" scale-y="1.33"
-                             prefab="com.github.wnebyte.sproink.core.SpritePrefab" />
-                <!-- flagtop -->
-                <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/items.png"
+                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                <spritesheet src="$ASSETSDIR/images/spritesheets/items.png"
                              width="16" height="16" size="43" spacing="0" from="6" to="7" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.SpritePrefab" />
-                <!-- flagpole -->
-                <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/items.png"
+                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                <spritesheet src="$ASSETSDIR/images/spritesheets/items.png"
                              width="16" height="16" size="43" spacing="0" from="33" to="34" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.SpritePrefab" />
-                <!-- pipes -->
-                <spritesheet src="C:/Users/Ralle/dev/java/Engine/editor/Build/resources/main/images/spritesheets/pipes.png"
+                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                <spritesheet src="$ASSETSDIR/images/spritesheets/pipes.png"
                              width="32" height="32" size="4" spacing="0" from="0" to="4"
-                             prefab="com.github.wnebyte.sproink.core.SpritePrefab" />
+                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+            </tab>
+            <tab name="Sounds">
+                <sound src="$ASSETSDIR/sounds/main-theme-overworld.ogg" loops="true" />
+                <sound src="$ASSETSDIR/sounds/flagpole.ogg" loops="false" />
+                <sound src="$ASSETSDIR/sounds/break_block.ogg" loops="false" />
+                <sound src="$ASSETSDIR/sounds/bump.ogg" loops="false" />
+                <sound src="$ASSETSDIR/sounds/coin.ogg" loops="false" />
+                <sound src="$ASSETSDIR/sounds/gameover.ogg" loops="false" />
+                <sound src="$ASSETSDIR/sounds/jump-small.ogg" loops="false" />
+                <sound src="$ASSETSDIR/sounds/mario_die.ogg" loops="false" />
+                <sound src="$ASSETSDIR/sounds/pipe.ogg" loops="false" />
+                <sound src="$ASSETSDIR/sounds/powerup.ogg" loops="false" />
+                <sound src="$ASSETSDIR/sounds/powerup_appears.ogg" loops="false" />
+                <sound src="$ASSETSDIR/sounds/stage_clear.ogg" loops="false" />
+                <sound src="$ASSETSDIR/sounds/stomp.ogg" loops="false" />
+                <sound src="$ASSETSDIR/sounds/kick.ogg" loops="false" />
+                <sound src="$ASSETSDIR/sounds/invincible.ogg" loops="false" />
             </tab>
         </assets>
     </editor>

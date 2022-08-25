@@ -42,8 +42,11 @@ dependencies {
     // gson
     implementation "com.google.code.gson:gson:2.8.6"
 
-    // sproink
-    implementation name: 'sproink-1.0'
+    // sproink-api
+    implementation name: 'sproink-api-1.0'
+
+    // sproink-util
+    implementation name: 'sproink-util-1.0'
 
     // box2d
     implementation name: 'jbox2d-library'

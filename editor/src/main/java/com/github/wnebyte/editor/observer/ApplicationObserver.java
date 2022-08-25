@@ -1,5 +1,6 @@
 package com.github.wnebyte.editor.observer;
 
+import java.io.File;
 import java.util.List;
 import java.util.Collections;
 import java.io.IOException;
@@ -7,13 +8,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import com.github.wnebyte.editor.observer.event.NewProjectEvent;
-import com.github.wnebyte.editor.observer.event.OpenProjectEvent;
-import com.github.wnebyte.editor.observer.event.SaveLevelEvent;
+
+import com.github.wnebyte.editor.observer.event.*;
+import com.github.wnebyte.editor.util.Logger;
 import com.github.wnebyte.editor.ui.LogWindow;
 import com.github.wnebyte.editor.project.Context;
 import com.github.wnebyte.editor.scenes.LevelEditorSceneInitializer;
-import com.github.wnebyte.editor.ui.SceneChangeEvent;
 import com.github.wnebyte.sproink.ui.GameViewWindow;
 import com.github.wnebyte.sproink.scenes.LevelSceneInitializer;
 import com.github.wnebyte.sproink.observer.event.GameEngineStartPlayEvent;
@@ -57,9 +57,12 @@ public class ApplicationObserver implements Observer {
         } else if (event instanceof OpenProjectEvent) {
             OpenProjectEvent e = (OpenProjectEvent) event;
             handleOpenProjectEvent(e);
-        } else if (event instanceof SceneChangeEvent) {
-            SceneChangeEvent e = (SceneChangeEvent) event;
-            handleSceneChangeEvent(e);
+        } else if (event instanceof EditSceneEvent) {
+            EditSceneEvent e = (EditSceneEvent) event;
+            handleEditSceneEvent(e);
+        } else if (event instanceof NewSceneEvent) {
+            NewSceneEvent e = (NewSceneEvent) event;
+            handleNewSceneEvent(e);
         } else if (event instanceof WindowBeginLoopEvent) {
             handleWindowBeginLoopEvent();
         } else if (event instanceof WindowCloseEvent) {
@@ -115,14 +118,40 @@ public class ApplicationObserver implements Observer {
         }
         Window.setTitle(name);
         write(PROJECT_DIR_PATH, context.getProject().getPath());
+        log();
     }
 
-    private void handleSceneChangeEvent(SceneChangeEvent event) {
+    private void handleEditSceneEvent(EditSceneEvent event) {
         Context context = Context.get();
         if (context != null) {
             String path = event.getPath();
             write(SCENE_PATH, path);
             Window.setScene(path, new LevelEditorSceneInitializer());
+        }
+    }
+
+    private void handleNewSceneEvent(NewSceneEvent event) {
+        Context context = Context.get();
+        if (context != null) {
+            File scene = new UriBuilder()
+                    .setAuthority(context.getProject().getAssetsDir())
+                    .appendPath("scenes")
+                    .appendPath(event.getSceneName() + ".json")
+                    .toFile();
+            File init = new UriBuilder()
+                    .setAuthority(context.getProject().getAssetsDir())
+                    .appendPath("sceneinitializers")
+                    .appendPath(event.getSceneName() + ".txt")
+                    .toFile();
+            if (!scene.exists() && !init.exists()) {
+                boolean success = create(scene);
+                if (success) {
+                    success = write(init.toPath(), event.getSceneInitializer().getCanonicalName());
+                    if (!success) {
+                        delete(scene.toPath());
+                    }
+                }
+            }
         }
     }
 
@@ -133,16 +162,18 @@ public class ApplicationObserver implements Observer {
         }
         if (SCENE_PATH.toFile().exists()) {
             String path = read(SCENE_PATH);
-            handleSceneChangeEvent(new SceneChangeEvent(path));
+            handleEditSceneEvent(new EditSceneEvent(path));
         }
     }
 
-    private void write(Path path, String text) {
+    private boolean write(Path path, String text) {
         try {
             Files.write(path, Collections.singleton(text), StandardCharsets.UTF_8,
                     StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -162,6 +193,26 @@ public class ApplicationObserver implements Observer {
             Files.delete(path);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private boolean create(File file) {
+        try {
+            return file.createNewFile();
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private void log() {
+        Context context = Context.get();
+        if (context != null) {
+            String path = context.getProject().getPath();
+            String outDir = context.getProject().getOutDir();
+            String assetsDir = context.getProject().getAssetsDir();
+            Logger.log(TAG, "path: " + path);
+            Logger.log(TAG, "outDir: " + outDir);
+            Logger.log(TAG, "assetsDir: " + assetsDir);
         }
     }
 }

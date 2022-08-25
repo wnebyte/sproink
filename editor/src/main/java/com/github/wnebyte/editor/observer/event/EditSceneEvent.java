@@ -1,12 +1,12 @@
-package com.github.wnebyte.editor.ui;
+package com.github.wnebyte.editor.observer.event;
 
 import com.github.wnebyte.sproink.observer.event.Event;
 
-public class SceneChangeEvent extends Event {
+public class EditSceneEvent extends Event {
 
     private final String path;
 
-    public SceneChangeEvent(String path) {
+    public EditSceneEvent(String path) {
         this.path = path;
     }
 

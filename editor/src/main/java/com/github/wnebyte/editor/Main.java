@@ -1,15 +1,13 @@
 package com.github.wnebyte.editor;
 
 import java.util.List;
-import com.github.wnebyte.editor.log.Logger;
 import com.github.wnebyte.editor.ui.*;
-import com.github.wnebyte.editor.project.Context;
 import com.github.wnebyte.editor.observer.ApplicationObserver;
 import com.github.wnebyte.editor.scenes.LevelEditorSceneInitializer;
 import com.github.wnebyte.sproink.Application;
 import com.github.wnebyte.sproink.Configuration;
 import com.github.wnebyte.sproink.core.window.Window;
-import com.github.wnebyte.sproink.observer.EventSystem;
+import com.github.wnebyte.sproink.observer.Observer;
 import com.github.wnebyte.sproink.ui.GameViewWindow;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
 
@@ -18,7 +16,6 @@ public class Main extends Application {
     private static final String TAG = "Main";
 
     public static void main(String[] args) {
-        EventSystem.addObserver(new ApplicationObserver());
         launch(new Main());
     }
 
@@ -44,16 +41,9 @@ public class Main extends Application {
         windows.add(new MenuBar());
     }
 
-    private void log() {
-        Context context = Context.get();
-        if (context != null) {
-            String path = context.getProject().getPath();
-            String outDir = context.getProject().getOutDir();
-            String assetsDir = context.getProject().getAssetsDir();
-            Logger.log(TAG, "path: " + path);
-            Logger.log(TAG, "outDir: " + outDir);
-            Logger.log(TAG, "assetsDir: " + assetsDir);
-        }
+    @Override
+    public void addObservers(final List<Observer> observers) {
+        observers.add(new ApplicationObserver());
     }
 
     /*

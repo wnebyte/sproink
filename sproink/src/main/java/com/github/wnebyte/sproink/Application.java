@@ -16,16 +16,21 @@ public class Application implements Observer {
     public static void launch(Application app) {
         app.conf = new Configuration();
         app.configure(app.conf);
-        EventSystem.addObserver(app);
+        List<Observer> observers = new ArrayList<>();
+        observers.add(app);
+        app.addObservers(observers);
+        observers.forEach(EventSystem::addObserver);
         Window window = Window.get();
         window.run();
     }
 
     private Configuration conf;
 
-    protected void configure(final Configuration conf) {}
+    protected void configure(Configuration conf) {}
 
     protected void addWindows(List<ImGuiWindow> windows) {}
+
+    protected void addObservers(List<Observer> observers) {}
 
     @Override
     public void notify(GameObject go, Event event) {

@@ -1,4 +1,4 @@
-package com.github.wnebyte.editor.log;
+package com.github.wnebyte.editor.util;
 
 import com.github.wnebyte.editor.ui.LogWindow;
 import com.github.wnebyte.sproink.ui.ImGuiLayer;
@@ -10,7 +10,9 @@ public class Logger {
         ImGuiLayer imGuiLayer = Window.getImGuiLayer();
         if (imGuiLayer != null) {
             LogWindow logWindow = imGuiLayer.getWindow(LogWindow.class);
-            logWindow.log(tag, logMessage);
+            if (logWindow != null) {
+                logWindow.log(tag, logMessage);
+            }
         }
     }
 }

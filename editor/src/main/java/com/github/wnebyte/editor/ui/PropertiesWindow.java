@@ -3,6 +3,8 @@ package com.github.wnebyte.editor.ui;
 import java.util.List;
 import java.util.ArrayList;
 import java.lang.reflect.Constructor;
+
+import com.github.wnebyte.editor.util.Logger;
 import imgui.ImGui;
 import org.joml.Vector4f;
 import com.github.wnebyte.editor.project.Context;
@@ -11,9 +13,16 @@ import com.github.wnebyte.sproink.renderer.PickingTexture;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
 import com.github.wnebyte.sproink.core.ecs.Component;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
+import static com.github.wnebyte.util.Reflections.newInstance;
 import static com.github.wnebyte.util.Reflections.getDefaultConstructor;
 
 public class PropertiesWindow extends ImGuiWindow {
+
+    private static final String TAG = "PropertiesWindow";
+
+    private static final int WINDOW_FLAGS = 0;
+
+    private static final String TITLE = "Inspector";
 
     private final List<GameObject> activeGameObjects;
 
@@ -35,30 +44,25 @@ public class PropertiesWindow extends ImGuiWindow {
     @Override
     public void imGui() {
         if (!isVisible()) return;
+        Context context = Context.get();
+        if (context == null) return;
 
         if (activeGameObjects.size() == 1 && activeGameObjects.get(0) != null) {
             GameObject activeGameObject = activeGameObjects.get(0);
-            ImGui.begin("Properties", visible);
+            ImGui.begin(TITLE, visible, WINDOW_FLAGS);
 
             if (ImGui.beginPopupContextWindow("ComponentAdder")) {
-                for (Class<? extends Component> cls : Context.get().getComponents()) {
+                for (Class<? extends Component> cls : context.getComponents()) {
                     if (ImGui.menuItem("Add " + cls.getSimpleName())) {
                         if (activeGameObject.getComponent(cls) == null) {
-                            try {
-                                Constructor<?> constructor = getDefaultConstructor(cls);
-                                if (constructor != null) {
-                                    boolean accessible = constructor.isAccessible();
-                                    if (!accessible) {
-                                        constructor.setAccessible(true);
-                                    }
-                                    Object c = constructor.newInstance();
-                                    activeGameObject.addComponent((Component)c);
-                                    if (!accessible) {
-                                        constructor.setAccessible(false);
-                                    }
+                            Constructor<?> cons = getDefaultConstructor(cls);
+                            if (cons != null) {
+                                Object obj = newInstance(cons);
+                                if (obj != null) {
+                                    activeGameObject.addComponent((Component) obj);
+                                } else {
+                                    Logger.log(TAG, "Could not instantiate component: '" + cls + "'");
                                 }
-                            } catch (Exception e) {
-                                System.err.println("Could  not instantiate Component class: " + cls);
                             }
                         }
                     }

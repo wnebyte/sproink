@@ -1,13 +1,13 @@
 package com.github.wnebyte.editor.ui;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
 
-import com.github.wnebyte.editor.project.*;
-import com.github.wnebyte.sproink.core.audio.Sound;
+import com.github.wnebyte.editor.util.PrefabFlyWeight;
 import org.joml.Vector2f;
 import imgui.ImGui;
 import imgui.ImVec2;
+import com.github.wnebyte.editor.project.*;
+import com.github.wnebyte.editor.components.MouseControls;
 import com.github.wnebyte.sproink.core.window.Window;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
 import com.github.wnebyte.sproink.renderer.Texture;
@@ -17,12 +17,16 @@ import com.github.wnebyte.sproink.components.Sprite;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
 import com.github.wnebyte.sproink.util.AssetFlyWeight;
 import com.github.wnebyte.sproink.core.SpritePrefab;
-import com.github.wnebyte.editor.components.MouseControls;
+import com.github.wnebyte.sproink.core.audio.Sound;
 import com.github.wnebyte.util.Objects;
-import static com.github.wnebyte.util.Reflections.newInstance;
-import static com.github.wnebyte.util.Reflections.getDefaultConstructor;
 
 public class AssetsWindow extends ImGuiWindow {
+
+    private static final String TAG = "AssetsWindow";
+
+    private static final String TITLE = "Assets";
+
+    private static final int WINDOW_FLAGS = 0;
 
     public AssetsWindow() {
         this(true);
@@ -35,12 +39,12 @@ public class AssetsWindow extends ImGuiWindow {
     @Override
     public void imGui() {
         if (!isVisible()) return;
+        Context context = Context.get();
+        if (context == null) return;
 
-        ImGui.begin("Assets");
+        ImGui.begin(TITLE, visible, WINDOW_FLAGS);
         int idCounter = 5000;
         if (ImGui.beginTabBar("AssetsTabBar")) {
-            Context context = Context.get();
-            if (context == null) return;
             Assets assets = context.getProject().getEditor().getAssets();
             ImVec2 windowPos = new ImVec2();
             ImGui.getWindowPos(windowPos);
@@ -67,14 +71,8 @@ public class AssetsWindow extends ImGuiWindow {
                             Class<? extends Prefab> cls =
                                     Objects.requireNonNullElseGet(context.getPrefab(asset.getPrefab()),
                                             () -> SpritePrefab.class);
-                            Constructor<?> cons = getDefaultConstructor(cls);
-                            Prefab prefab;
-                            if (cons == null) continue;
-                            try {
-                                prefab = (Prefab) newInstance(cons);
-                            } catch (Exception e) {
-                                continue;
-                            }
+                            Prefab prefab = PrefabFlyWeight.getPrefab(cls);
+
                             int from = asset.getFrom();
                             int to = asset.getTo();
                             float scaleX = asset.getScaleXOrDefaultValue(1.0f);
