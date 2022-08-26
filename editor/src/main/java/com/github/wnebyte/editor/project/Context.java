@@ -11,6 +11,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+
+import com.github.wnebyte.editor.scenes.LevelEditorSceneInitializer;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
@@ -159,6 +161,10 @@ public class Context {
 
     public Set<Class<? extends SceneInitializer>> getSceneInitializers() {
         return sceneInitializers;
+    }
+
+    public URLClassLoader getURLClassLoader() {
+        return null;
     }
 
     private <T> Set<Class<? extends T>> fetchSubTypesOf(Class<T> cls) {

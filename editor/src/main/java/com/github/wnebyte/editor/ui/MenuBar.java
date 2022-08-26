@@ -1,5 +1,6 @@
 package com.github.wnebyte.editor.ui;
 
+import com.github.wnebyte.editor.observer.event.SaveSceneEvent;
 import imgui.ImGui;
 import imgui.type.ImString;
 import imgui.flag.ImGuiInputTextFlags;
@@ -35,10 +36,10 @@ public class MenuBar extends ImGuiWindow {
         }
         if (ImGui.beginMenu("Scene")) {
             if (ImGui.menuItem("New Scene")) {
-
+                Window.getImGuiLayer().getWindow(NewSceneWindow.class).show();
             }
-            if (ImGui.menuItem("Assets")) {
-
+            if (ImGui.menuItem("Save Scene")) {
+                EventSystem.notify(null, new SaveSceneEvent());
             }
             ImGui.endMenu();
         }

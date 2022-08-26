@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import com.google.gson.Gson;
 import org.joml.Vector2f;
 import com.github.wnebyte.sproink.core.Transform;
 import com.github.wnebyte.sproink.core.camera.Camera;
@@ -14,9 +15,29 @@ import com.github.wnebyte.sproink.core.ecs.Component;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
 import com.github.wnebyte.sproink.physics2d.Physics2D;
 import com.github.wnebyte.sproink.renderer.Renderer;
-import com.github.wnebyte.sproink.util.Settings;
+import com.github.wnebyte.sproink.components.Sprite;
+import com.github.wnebyte.sproink.components.SpriteRenderer;
 
 public class Scene {
+
+    public static GameObject createGameObject(String name) {
+        GameObject go = new GameObject(name);
+        go.addComponent(new Transform());
+        go.transform = go.getComponent(Transform.class);
+        return go;
+    }
+
+    public static GameObject createGameObject(Sprite sprite, String name, float width, float height) {
+        GameObject go = new GameObject(name);
+        go.addComponent(new Transform());
+        go.transform = go.getComponent(Transform.class);
+        go.transform.scale.x = width;
+        go.transform.scale.y = height;
+        SpriteRenderer spr = new SpriteRenderer();
+        spr.setSprite(sprite);
+        go.addComponent(spr);
+        return go;
+    }
 
     private String path;
 
@@ -137,13 +158,6 @@ public class Scene {
         }
     }
 
-    public GameObject createGameObject(String name) {
-        GameObject go = new GameObject(name);
-        go.addComponent(new Transform());
-        go.transform = go.getComponent(Transform.class);
-        return go;
-    }
-
     public List<GameObject> getGameObjects() {
         return gameObjects;
     }
@@ -190,7 +204,7 @@ public class Scene {
         return file.getName();
     }
 
-    public void save() {
+    public void save(Gson gson) {
         try {
             FileWriter writer = new FileWriter(path);
             List<GameObject> out = new ArrayList<>();
@@ -199,14 +213,14 @@ public class Scene {
                     out.add(go);
                 }
             }
-            writer.write(Settings.GSON.toJson(out));
+            writer.write(gson.toJson(out));
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void load() {
+    public void load(Gson gson) {
         String in = "";
 
         try {
@@ -219,7 +233,7 @@ public class Scene {
             int maxGoId = -1;
             int maxCompId = -1;
 
-            GameObject[] objs = Settings.GSON.fromJson(in, GameObject[].class);
+            GameObject[] objs = gson.fromJson(in, GameObject[].class);
             for (GameObject go : objs) {
                 addGameObjectToScene(go);
 

@@ -1,11 +1,10 @@
 package com.github.wnebyte.editor.ui;
 
 import java.io.File;
-
-import com.github.wnebyte.editor.observer.event.EditSceneEvent;
 import imgui.ImGui;
-import com.github.wnebyte.editor.util.Logger;
 import com.github.wnebyte.editor.project.Context;
+import com.github.wnebyte.editor.observer.event.EditSceneEvent;
+import com.github.wnebyte.editor.observer.event.DeleteSceneEvent;
 import com.github.wnebyte.sproink.core.window.Window;
 import com.github.wnebyte.sproink.observer.EventSystem;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
@@ -44,12 +43,8 @@ public class SceneViewWindow extends ImGuiWindow {
                 }
                 ImGui.sameLine();
                 if (ImGui.button("Delete")) {
-                    boolean success = file.delete();
-                    if (success) {
-                        Logger.log(TAG, "Scene: '" + file.getName() + "' deleted successfully");
-                    } else {
-                        Logger.log(TAG, "Scene: '" + file.getName() + "' could not be deleted");
-                    }
+                    String name = file.getName().split("[.](txt|json)")[0];
+                    EventSystem.notify(null, new DeleteSceneEvent(name));
                 }
             }
         }
@@ -61,5 +56,4 @@ public class SceneViewWindow extends ImGuiWindow {
         }
         ImGui.end();
     }
-
 }

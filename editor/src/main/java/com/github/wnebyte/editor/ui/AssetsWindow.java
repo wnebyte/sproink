@@ -1,13 +1,12 @@
 package com.github.wnebyte.editor.ui;
 
 import java.io.File;
-
-import com.github.wnebyte.editor.util.PrefabFlyWeight;
 import org.joml.Vector2f;
 import imgui.ImGui;
 import imgui.ImVec2;
 import com.github.wnebyte.editor.project.*;
 import com.github.wnebyte.editor.components.MouseControls;
+import com.github.wnebyte.editor.util.ObjectFlyWeight;
 import com.github.wnebyte.sproink.core.window.Window;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
 import com.github.wnebyte.sproink.renderer.Texture;
@@ -15,7 +14,7 @@ import com.github.wnebyte.sproink.components.Spritesheet;
 import com.github.wnebyte.sproink.core.Prefab;
 import com.github.wnebyte.sproink.components.Sprite;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
-import com.github.wnebyte.sproink.util.AssetFlyWeight;
+import com.github.wnebyte.sproink.util.Assets;
 import com.github.wnebyte.sproink.core.SpritePrefab;
 import com.github.wnebyte.sproink.core.audio.Sound;
 import com.github.wnebyte.util.Objects;
@@ -45,7 +44,7 @@ public class AssetsWindow extends ImGuiWindow {
         ImGui.begin(TITLE, visible, WINDOW_FLAGS);
         int idCounter = 5000;
         if (ImGui.beginTabBar("AssetsTabBar")) {
-            Assets assets = context.getProject().getEditor().getAssets();
+            com.github.wnebyte.editor.project.Assets assets = context.getProject().getEditor().getAssets();
             ImVec2 windowPos = new ImVec2();
             ImGui.getWindowPos(windowPos);
             ImVec2 windowSize = new ImVec2();
@@ -58,20 +57,17 @@ public class AssetsWindow extends ImGuiWindow {
                 if (ImGui.beginTabItem(tab.getName())) {
                     if (tab.getSpritesheets() != null) {
                         for (SpritesheetAsset asset : tab.getSpritesheets()) {
-                            Texture texture = AssetFlyWeight.getTexture(asset.getSrc());
-                            Spritesheet spritesheet;
-                            if (!AssetFlyWeight.hasSpritesheet(asset.getSrc())) {
-                                spritesheet = new Spritesheet(
-                                        texture, asset.getWidth(), asset.getHeight(),
-                                        asset.getSize(), asset.getSpacing());
-                                AssetFlyWeight.addSpritesheet(asset.getSrc(), spritesheet);
-                            } else {
-                                spritesheet = AssetFlyWeight.getSpritesheet(asset.getSrc());
-                            }
+                            Texture texture = Assets.getTexture(asset.getSrc());
+                            Assets.addSpritesheet(asset.getSrc(),
+                                    () -> new Spritesheet(texture,
+                                            asset.getWidth(), asset.getHeight(),
+                                            asset.getSize(), asset.getSpacing()));
+                            Spritesheet spritesheet = Assets.getSpritesheet(asset.getSrc());
+
                             Class<? extends Prefab> cls =
                                     Objects.requireNonNullElseGet(context.getPrefab(asset.getPrefab()),
                                             () -> SpritePrefab.class);
-                            Prefab prefab = PrefabFlyWeight.getPrefab(cls);
+                            Prefab prefab = ObjectFlyWeight.getPrefab(cls);
 
                             int from = asset.getFrom();
                             int to = asset.getTo();
@@ -120,7 +116,7 @@ public class AssetsWindow extends ImGuiWindow {
             return;
         }
         for (SoundAsset asset : tab.getSounds()) {
-            Sound sound = AssetFlyWeight.addSound(asset.getSrc(), asset.loops());
+            Sound sound = com.github.wnebyte.sproink.util.Assets.addSound(asset.getSrc(), asset.loops());
             File tmp = new File(sound.getPath());
             if (ImGui.button(tmp.getName())) {
                 if (!sound.isPlaying()) {

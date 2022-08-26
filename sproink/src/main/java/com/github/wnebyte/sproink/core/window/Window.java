@@ -1,6 +1,7 @@
 package com.github.wnebyte.sproink.core.window;
 
 import com.github.wnebyte.sproink.observer.event.WindowBeginLoopEvent;
+import com.google.gson.Gson;
 import org.joml.Vector4f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -79,22 +80,22 @@ public class Window {
         return window.scene;
     }
 
-    public static void setScene(SceneInitializer sceneInitializer) {
-        if (window.scene != null) {
-            window.scene.destroy();
-        }
-        window.scene = new Scene(sceneInitializer);
-        window.scene.load();
-        window.scene.init();
-        window.scene.start();
-    }
-
-    public static void setScene(String path, SceneInitializer sceneInitializer) {
+    public static void setScene(String path, SceneInitializer sceneInitializer, Gson gson) {
         if (window.scene != null) {
             window.scene.destroy();
         }
         window.scene = new Scene(path, sceneInitializer);
-        window.scene.load();
+        window.scene.load(gson);
+        window.scene.init();
+        window.scene.start();
+    }
+
+    public static void setScene(SceneInitializer sceneInitializer, Gson gson) {
+        if (window.scene != null) {
+            window.scene.destroy();
+        }
+        window.scene = new Scene(sceneInitializer);
+        window.scene.load(gson);
         window.scene.init();
         window.scene.start();
     }
@@ -251,9 +252,6 @@ public class Window {
             dt = endTime - beginTime;
             beginTime = endTime;
         }
-
-        scene.save();
-
     }
 
     public static int getWidth() {

@@ -1,8 +1,8 @@
 package com.github.wnebyte.sproink.core;
 
 import org.joml.Vector2f;
+import com.github.wnebyte.sproink.core.scene.Scene;
 import com.github.wnebyte.sproink.components.*;
-import com.github.wnebyte.sproink.core.window.Window;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
 import com.github.wnebyte.sproink.animation.AnimationState;
 import com.github.wnebyte.sproink.util.ResourceFlyWeight;
@@ -15,7 +15,7 @@ import com.github.wnebyte.sproink.physics2d.components.CircleCollider;
 public class Prefabs {
 
     public static GameObject generateSpriteObject(Sprite sprite, float sizeX, float sizeY) {
-        GameObject go = Window.getScene().createGameObject("Sprite_Object_Gen");
+        GameObject go = Scene.createGameObject("Sprite_Object_Gen");
         go.transform.scale.x = sizeX;
         go.transform.scale.y = sizeY;
         SpriteRenderer spr = new SpriteRenderer();

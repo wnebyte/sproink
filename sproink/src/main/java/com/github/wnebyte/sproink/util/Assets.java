@@ -4,12 +4,13 @@ import java.io.File;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collection;
+import java.util.function.Supplier;
 import com.github.wnebyte.sproink.core.audio.Sound;
 import com.github.wnebyte.sproink.renderer.Shader;
 import com.github.wnebyte.sproink.renderer.Texture;
 import com.github.wnebyte.sproink.components.Spritesheet;
 
-public final class AssetFlyWeight {
+public final class Assets {
 
     private static final Map<String, Shader> shaders = new HashMap<>();
 
@@ -25,7 +26,7 @@ public final class AssetFlyWeight {
      */
     public static Shader getShader(String path) {
         File file = new File(path);
-        assert file.exists() : String.format("Error: (AssetFlyWeight) Shader: '%s' does not exist",
+        assert file.exists() : String.format("Error: (Assets) Shader: '%s' does not exist",
                 file.getAbsolutePath());
 
         if (shaders.containsKey(file.getAbsolutePath())) {
@@ -44,7 +45,7 @@ public final class AssetFlyWeight {
      */
     public static Texture getTexture(String path) {
         File file = new File(path);
-        assert file.exists() : String.format("Error: (AssetFlyWeight) Texture: '%s' does not exist",
+        assert file.exists() : String.format("Error: (Assets) Texture: '%s' does not exist",
                 file.getAbsolutePath());
 
         if (textures.containsKey(file.getAbsolutePath())) {
@@ -59,26 +60,26 @@ public final class AssetFlyWeight {
 
     public static Spritesheet getSpritesheet(String path) {
         File file = new File(path);
-        assert file.exists() : String.format("Error: (AssetFlyWeight) Spritesheet: '%s' does not exist",
+        assert file.exists() : String.format("Error: (Assets) Spritesheet: '%s' does not exist",
                 file.getAbsolutePath());
 
         if (spritesheets.containsKey(file.getAbsolutePath())) {
             return spritesheets.get(file.getAbsolutePath());
         } else {
-            assert false: String.format("Error: (AssetFlyWeight) " +
+            assert false: String.format("Error: (Assets) " +
                     "Spritesheet: '%s' has not yet been added to pool.",
                     file.getAbsolutePath());
             return null;
         }
     }
 
-    public static void addSpritesheet(String path, Spritesheet spritesheet) {
+    public static void addSpritesheet(String path, Supplier<Spritesheet> supplier) {
         File file = new File(path);
-        assert file.exists() : String.format("Error: (AssetFlyWeight) Spritesheet: '%s' does not exist",
+        assert file.exists() : String.format("Error: (Assets) Spritesheet: '%s' does not exist",
                 file.getAbsolutePath());
 
         if (!spritesheets.containsKey(file.getAbsolutePath())) {
-            spritesheets.put(file.getAbsolutePath(), spritesheet);
+            spritesheets.put(file.getAbsolutePath(), supplier.get());
         }
     }
 
@@ -89,13 +90,13 @@ public final class AssetFlyWeight {
 
     public static Sound getSound(String path) {
         File file = new File(path);
-        assert file.exists() : String.format("Error: (AssetFlyWeight) Sound: '%s' does not exist",
+        assert file.exists() : String.format("Error: (Assets) Sound: '%s' does not exist",
                 file.getAbsolutePath());
 
         if (sounds.containsKey(file.getAbsolutePath())) {
             return sounds.get(file.getAbsolutePath());
         } else {
-            assert false : String.format("Error (AssetFlyWeight): Sound has not yet been added to pool: '%s'",
+            assert false : String.format("Error (Assets): Sound has not yet been added to pool: '%s'",
                     file.getAbsolutePath());
             return null;
         }
@@ -103,7 +104,7 @@ public final class AssetFlyWeight {
 
     public static Sound addSound(String path, boolean loops) {
         File file = new File(path);
-        assert file.exists() : String.format("Error: (AssetFlyWeight) Sound: '%s' does not exist",
+        assert file.exists() : String.format("Error: (Assets) Sound: '%s' does not exist",
                 file.getAbsolutePath());
 
         if (sounds.containsKey(file.getAbsolutePath())) {

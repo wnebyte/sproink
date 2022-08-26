@@ -1,5 +1,6 @@
 package com.github.wnebyte.sproink.components;
 
+import com.github.wnebyte.sproink.util.Settings;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.jbox2d.dynamics.contacts.Contact;
@@ -133,7 +134,7 @@ public class PlayerController extends Component {
                 rb.setVelocity(velocity);
                 rb.setAngularVelocity(0.0f);
             } else if (!deadGoingUp && gameObject.transform.position.y <= deadMinHeight) {
-                Window.setScene(new LevelSceneInitializer());
+                Window.setScene(new LevelSceneInitializer(), Settings.GSON);
             }
             return;
         }
