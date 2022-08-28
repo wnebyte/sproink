@@ -3,10 +3,11 @@ package com.github.wnebyte.sproink.components;
 import java.util.Objects;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
+import com.github.wnebyte.sproink.core.Component;
 import com.github.wnebyte.sproink.core.Transform;
-import com.github.wnebyte.sproink.core.ecs.Component;
 import com.github.wnebyte.sproink.renderer.Texture;
 import com.github.wnebyte.sproink.ui.JImGui;
+import com.github.wnebyte.sproink.util.Assets;
 
 public class SpriteRenderer extends Component {
 
@@ -46,12 +47,19 @@ public class SpriteRenderer extends Component {
         }
     }
 
-    public Vector4f getColor() {
-        return color;
+    public void refresh() {
+        Texture texture = sprite.getTexture();
+        if (texture != null) {
+            sprite.setTexture(Assets.getTexture(texture.getPath()));
+        }
     }
 
     public Texture getTexture() {
         return sprite.getTexture();
+    }
+
+    public void setTexture(Texture texture) {
+        sprite.setTexture(texture);
     }
 
     public Vector2f[] getTexCoords() {
@@ -75,15 +83,15 @@ public class SpriteRenderer extends Component {
         this.dirty = true;
     }
 
+    public Vector4f getColor() {
+        return color;
+    }
+
     public void setColor(Vector4f color) {
         if (!this.color.equals(color)) {
             this.color.set(color);
             this.dirty = true;
         }
-    }
-
-    public void setTexture(Texture texture) {
-        sprite.setTexture(texture);
     }
 
     @Override

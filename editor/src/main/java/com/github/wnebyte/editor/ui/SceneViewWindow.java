@@ -5,7 +5,7 @@ import imgui.ImGui;
 import com.github.wnebyte.editor.project.Context;
 import com.github.wnebyte.editor.observer.event.SetSceneEvent;
 import com.github.wnebyte.editor.observer.event.DeleteSceneEvent;
-import com.github.wnebyte.sproink.core.window.Window;
+import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.observer.EventSystem;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
 

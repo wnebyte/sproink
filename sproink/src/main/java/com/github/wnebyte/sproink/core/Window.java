@@ -1,7 +1,6 @@
-package com.github.wnebyte.sproink.core.window;
+package com.github.wnebyte.sproink.core;
 
 import com.github.wnebyte.sproink.observer.event.WindowBeginLoopEvent;
-import com.google.gson.Gson;
 import org.joml.Vector4f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -11,10 +10,6 @@ import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALCapabilities;
-import com.github.wnebyte.sproink.core.event.KeyListener;
-import com.github.wnebyte.sproink.core.event.MouseListener;
-import com.github.wnebyte.sproink.core.scene.Scene;
-import com.github.wnebyte.sproink.core.scene.SceneInitializer;
 import com.github.wnebyte.sproink.ui.ImGuiLayer;
 import com.github.wnebyte.sproink.util.ResourceFlyWeight;
 import com.github.wnebyte.sproink.renderer.*;

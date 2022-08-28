@@ -1,4 +1,4 @@
-package com.github.wnebyte.sproink.core.scene;
+package com.github.wnebyte.sproink.core;
 
 import java.io.File;
 import java.util.List;
@@ -10,10 +10,6 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import org.joml.Vector2f;
 import com.google.gson.Gson;
-import com.github.wnebyte.sproink.core.Transform;
-import com.github.wnebyte.sproink.core.camera.Camera;
-import com.github.wnebyte.sproink.core.ecs.Component;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
 import com.github.wnebyte.sproink.physics2d.Physics2D;
 import com.github.wnebyte.sproink.renderer.Renderer;
 import com.github.wnebyte.sproink.renderer.Shader;

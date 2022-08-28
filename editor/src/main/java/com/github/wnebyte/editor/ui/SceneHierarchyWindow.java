@@ -3,9 +3,9 @@ package com.github.wnebyte.editor.ui;
 import java.util.List;
 import imgui.ImGui;
 import imgui.flag.ImGuiTreeNodeFlags;
-import com.github.wnebyte.sproink.core.window.Window;
+import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
+import com.github.wnebyte.sproink.core.GameObject;
 
 public class SceneHierarchyWindow extends ImGuiWindow {
 

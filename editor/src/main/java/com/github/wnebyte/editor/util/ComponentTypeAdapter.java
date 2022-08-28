@@ -3,7 +3,7 @@ package com.github.wnebyte.editor.util;
 import java.lang.reflect.Type;
 import com.google.gson.*;
 import com.github.wnebyte.editor.project.Context;
-import com.github.wnebyte.sproink.core.ecs.Component;
+import com.github.wnebyte.sproink.core.Component;
 
 public class ComponentTypeAdapter implements JsonSerializer<Component>, JsonDeserializer<Component> {
 

@@ -1,8 +1,8 @@
 package com.github.wnebyte.editor.components;
 
-import com.github.wnebyte.sproink.core.ecs.Component;
-import com.github.wnebyte.sproink.core.event.KeyListener;
-import com.github.wnebyte.sproink.core.window.Window;
+import com.github.wnebyte.sproink.core.Component;
+import com.github.wnebyte.sproink.core.KeyListener;
+import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.components.Spritesheet;
 import com.github.wnebyte.editor.ui.PropertiesWindow;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;

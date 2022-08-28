@@ -4,7 +4,7 @@ import java.util.*;
 import imgui.ImGui;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
-import com.github.wnebyte.sproink.core.ecs.Component;
+import com.github.wnebyte.sproink.core.Component;
 import com.github.wnebyte.sproink.animation.AnimationState;
 import com.github.wnebyte.sproink.animation.Frame;
 
@@ -85,6 +85,13 @@ public class StateMachine extends Component {
     }
 
     @Override
+    public void refresh() {
+        for (AnimationState state : states) {
+            state.refresh();
+        }
+    }
+
+    @Override
     public void imGui() {
         int index = 0;
         for (AnimationState state : states) {
@@ -151,11 +158,5 @@ public class StateMachine extends Component {
         }
 
         System.out.printf("(Debug): Unable to find state: '%s'%n", animationTitle);
-    }
-
-    public void refreshTextures() {
-        for (AnimationState state : states) {
-            state.refreshTextures();
-        }
     }
 }

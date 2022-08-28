@@ -1,4 +1,4 @@
-package com.github.wnebyte.sproink.core.camera;
+package com.github.wnebyte.sproink.core;
 
 import java.util.Objects;
 import org.joml.Vector2f;

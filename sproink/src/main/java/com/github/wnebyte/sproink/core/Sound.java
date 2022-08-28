@@ -1,4 +1,4 @@
-package com.github.wnebyte.sproink.core.audio;
+package com.github.wnebyte.sproink.core;
 
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;

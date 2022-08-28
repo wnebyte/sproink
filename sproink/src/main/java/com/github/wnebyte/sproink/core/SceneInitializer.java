@@ -1,4 +1,4 @@
-package com.github.wnebyte.sproink.core.scene;
+package com.github.wnebyte.sproink.core;
 
 public interface SceneInitializer {
 

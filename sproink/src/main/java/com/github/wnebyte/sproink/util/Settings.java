@@ -1,11 +1,9 @@
 package com.github.wnebyte.sproink.util;
 
-import com.github.wnebyte.sproink.util.io.ComponentTypeAdapter;
-import com.github.wnebyte.sproink.util.io.GameObjectTypeAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.github.wnebyte.sproink.core.ecs.Component;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
+import com.github.wnebyte.sproink.core.Component;
+import com.github.wnebyte.sproink.core.GameObject;
 
 public class Settings {
 

@@ -1,6 +1,6 @@
 package com.github.wnebyte.sproink.components;
 
-import com.github.wnebyte.sproink.core.ecs.Component;
+import com.github.wnebyte.sproink.core.Component;
 
 public class NonPickable extends Component {
 }

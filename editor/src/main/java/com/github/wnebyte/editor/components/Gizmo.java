@@ -2,19 +2,15 @@ package com.github.wnebyte.editor.components;
 
 import org.joml.Vector2f;
 import org.joml.Vector4f;
-import com.github.wnebyte.sproink.core.Prefabs;
-import com.github.wnebyte.sproink.core.ecs.Component;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
-import com.github.wnebyte.sproink.core.event.MouseListener;
-import com.github.wnebyte.sproink.core.window.Window;
+import com.github.wnebyte.sproink.core.*;
 import com.github.wnebyte.sproink.components.NonPickable;
 import com.github.wnebyte.sproink.components.Sprite;
 import com.github.wnebyte.sproink.components.SpriteRenderer;
 import com.github.wnebyte.editor.ui.PropertiesWindow;
-import static com.github.wnebyte.sproink.core.event.KeyListener.isKeyPressed;
-import static com.github.wnebyte.sproink.core.event.KeyListener.keyBeginPress;
-import static com.github.wnebyte.sproink.core.event.MouseListener.isDragging;
-import static com.github.wnebyte.sproink.core.event.MouseListener.isMouseButtonDown;
+import static com.github.wnebyte.sproink.core.KeyListener.isKeyPressed;
+import static com.github.wnebyte.sproink.core.KeyListener.isKeyBeginPress;
+import static com.github.wnebyte.sproink.core.MouseListener.isDragging;
+import static com.github.wnebyte.sproink.core.MouseListener.isMouseButtonDown;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Gizmo extends Component {
@@ -39,6 +35,8 @@ public class Gizmo extends Component {
 
     protected boolean yAxisActive = false;
 
+    protected GameObject activeGameObject = null;
+
     private boolean using = false;
 
     private final GameObject xAxisObject;
@@ -51,12 +49,10 @@ public class Gizmo extends Component {
 
     private final PropertiesWindow propertiesWindow;
 
-    protected GameObject activeGameObject = null;
-
     public Gizmo(Sprite arrowSprite, PropertiesWindow propertiesWindow) {
         this.propertiesWindow = propertiesWindow;
-        xAxisObject = Prefabs.generateSpriteObject(arrowSprite, gizmoWidth, gizmoHeight);
-        yAxisObject = Prefabs.generateSpriteObject(arrowSprite, gizmoWidth, gizmoHeight);
+        xAxisObject = Scene.createGameObject(arrowSprite, "X_Axis_Object", gizmoWidth, gizmoHeight);
+        yAxisObject = Scene.createGameObject(arrowSprite, "Y_Axis_Object", gizmoWidth, gizmoHeight);
         xAxisSprite = xAxisObject.getComponent(SpriteRenderer.class);
         yAxisSprite = yAxisObject.getComponent(SpriteRenderer.class);
         xAxisObject.addComponent(new NonPickable());
@@ -94,14 +90,14 @@ public class Gizmo extends Component {
 
             // Todo: move this into it's own keyEditorBinding component
             if (isKeyPressed(GLFW_KEY_LEFT_CONTROL) &&
-                    keyBeginPress(GLFW_KEY_D)) {
+                    isKeyBeginPress(GLFW_KEY_D)) {
                 GameObject newObject = activeGameObject.copy();
                 Window.getScene().addGameObjectToScene(newObject);
                 newObject.transform.position.add(new Vector2f(0.1f, 0.1f));
                 propertiesWindow.setActiveGameObject(newObject);
                 System.out.println("(Debug): Copy");
                 return;
-            } else if (keyBeginPress(GLFW_KEY_DELETE)) {
+            } else if (isKeyBeginPress(GLFW_KEY_DELETE)) {
                 activeGameObject.destroy();
                 setInactive();
                 propertiesWindow.setActiveGameObject(null);
@@ -132,14 +128,6 @@ public class Gizmo extends Component {
             xAxisObject.transform.position.add(xAxisOffset);
             yAxisObject.transform.position.add(yAxisOffset);
         }
-    }
-
-    public boolean isxAxisActive() {
-        return xAxisActive;
-    }
-
-    public boolean isyAxisActive() {
-        return yAxisActive;
     }
 
     private boolean checkXHoverState() {

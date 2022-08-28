@@ -1,10 +1,10 @@
 package com.github.wnebyte.editor.components;
 
 import org.joml.Vector2f;
-import com.github.wnebyte.sproink.core.event.KeyListener;
-import com.github.wnebyte.sproink.core.event.MouseListener;
-import com.github.wnebyte.sproink.core.camera.Camera;
-import com.github.wnebyte.sproink.core.ecs.Component;
+import com.github.wnebyte.sproink.core.KeyListener;
+import com.github.wnebyte.sproink.core.MouseListener;
+import com.github.wnebyte.sproink.core.Camera;
+import com.github.wnebyte.sproink.core.Component;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_KP_DECIMAL;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_MIDDLE;
 

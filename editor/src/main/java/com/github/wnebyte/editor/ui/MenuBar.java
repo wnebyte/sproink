@@ -1,13 +1,13 @@
 package com.github.wnebyte.editor.ui;
 
 import com.github.wnebyte.editor.project.Context;
-import com.github.wnebyte.sproink.core.scene.SceneInitializer;
+import com.github.wnebyte.sproink.core.SceneInitializer;
 import imgui.ImGui;
 import imgui.type.ImString;
 import imgui.flag.ImGuiInputTextFlags;
 import com.github.wnebyte.editor.observer.event.CompileEvent;
 import com.github.wnebyte.editor.observer.event.SaveSceneEvent;
-import com.github.wnebyte.sproink.core.window.Window;
+import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
 import com.github.wnebyte.sproink.ui.GameViewWindow;
 import com.github.wnebyte.sproink.observer.EventSystem;

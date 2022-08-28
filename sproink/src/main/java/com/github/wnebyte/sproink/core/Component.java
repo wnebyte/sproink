@@ -1,13 +1,13 @@
-package com.github.wnebyte.sproink.core.ecs;
+package com.github.wnebyte.sproink.core;
 
 import java.util.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import imgui.ImGui;
+import imgui.type.ImInt;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import imgui.ImGui;
-import imgui.type.ImInt;
 import org.jbox2d.dynamics.contacts.Contact;
 import com.github.wnebyte.sproink.ui.JImGui;
 import com.github.wnebyte.util.Arrays;
@@ -19,10 +19,10 @@ public abstract class Component {
         List<Field> c = new ArrayList<>();
 
         while (cls != null && cls != Component.class) {
-            for (Field f : cls.getDeclaredFields()) {
-                int mod = f.getModifiers();
+            for (Field field : cls.getDeclaredFields()) {
+                int mod = field.getModifiers();
                 if (!Modifier.isTransient(mod) && !Modifier.isStatic(mod) && !Modifier.isFinal(mod)) {
-                    c.add(f);
+                    c.add(field);
                 }
             }
             cls = cls.getSuperclass();
@@ -41,11 +41,15 @@ public abstract class Component {
 
     public transient GameObject gameObject;
 
-    public void start() { }
+    public void start() {}
+
+    public void update(float dt) {}
 
     public void editorUpdate(float dt) {}
 
-    public void update(float dt) {}
+    public void destroy() {}
+
+    public void refresh() {}
 
     public void imGui() {
         try {
@@ -116,11 +120,9 @@ public abstract class Component {
 
     public void postSolve(GameObject go, Contact contact, Vector2f contactNormal) {}
 
-    public void destroy() {}
-
     public void generateId() {
-        if (this.id == -1) {
-            this.id = ID_COUNTER++;
+        if (id == -1) {
+            id = ID_COUNTER++;
         }
     }
 
@@ -133,8 +135,8 @@ public abstract class Component {
         if (o == null) return false;
         if (o == this) return true;
         if (!(o instanceof Component)) return false;
-        Component component = (Component) o;
-        return super.equals(component);
+        Component c = (Component) o;
+        return Objects.equals(c.id, this.id);
     }
 
     @Override
@@ -142,11 +144,11 @@ public abstract class Component {
         int result = 33;
         return result +
                 17 +
-                super.hashCode();
+                Objects.hashCode(this.id);
     }
 
     @Override
     public String toString() {
-        return "Component";
+        return String.format("Component[type: %s, id: %d]", this.getClass(), id);
     }
 }

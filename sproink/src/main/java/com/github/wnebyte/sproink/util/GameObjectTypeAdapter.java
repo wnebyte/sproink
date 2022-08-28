@@ -1,10 +1,10 @@
-package com.github.wnebyte.sproink.util.io;
+package com.github.wnebyte.sproink.util;
 
 import java.lang.reflect.Type;
 import com.google.gson.*;
+import com.github.wnebyte.sproink.core.GameObject;
+import com.github.wnebyte.sproink.core.Component;
 import com.github.wnebyte.sproink.core.Transform;
-import com.github.wnebyte.sproink.core.ecs.Component;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
 
 public class GameObjectTypeAdapter implements JsonDeserializer<GameObject> {
 
@@ -18,6 +18,7 @@ public class GameObjectTypeAdapter implements JsonDeserializer<GameObject> {
         GameObject go = new GameObject(name);
         for (JsonElement e : components) {
             Component c = context.deserialize(e, Component.class);
+            c.refresh();
             go.addComponent(c);
         }
         go.transform = go.getComponent(Transform.class);

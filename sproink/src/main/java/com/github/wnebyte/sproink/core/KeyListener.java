@@ -1,4 +1,4 @@
-package com.github.wnebyte.sproink.core.event;
+package com.github.wnebyte.sproink.core;
 
 import java.util.Arrays;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
@@ -37,7 +37,7 @@ public class KeyListener {
         return get().keyPressed[keyCode];
     }
 
-    public static boolean keyBeginPress(int keyCode) {
+    public static boolean isKeyBeginPress(int keyCode) {
         return get().keyBeginPress[keyCode];
     }
 }

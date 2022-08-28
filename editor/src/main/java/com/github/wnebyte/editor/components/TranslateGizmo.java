@@ -2,7 +2,7 @@ package com.github.wnebyte.editor.components;
 
 import com.github.wnebyte.sproink.components.Sprite;
 import com.github.wnebyte.editor.ui.PropertiesWindow;
-import com.github.wnebyte.sproink.core.event.MouseListener;
+import com.github.wnebyte.sproink.core.MouseListener;
 
 public class TranslateGizmo extends Gizmo {
 

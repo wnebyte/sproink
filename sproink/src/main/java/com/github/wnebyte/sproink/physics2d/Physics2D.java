@@ -5,7 +5,7 @@ import org.jbox2d.dynamics.*;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
+import com.github.wnebyte.sproink.core.GameObject;
 import com.github.wnebyte.sproink.core.Transform;
 import com.github.wnebyte.sproink.physics2d.components.Ground;
 import com.github.wnebyte.sproink.physics2d.components.Box2DCollider;

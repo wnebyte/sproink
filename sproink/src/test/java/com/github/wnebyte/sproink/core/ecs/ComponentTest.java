@@ -3,6 +3,8 @@ package com.github.wnebyte.sproink.core.ecs;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
+
+import com.github.wnebyte.sproink.core.Component;
 import org.junit.Test;
 import com.github.wnebyte.sproink.physics2d.components.CircleCollider;
 

@@ -2,10 +2,10 @@ package com.github.wnebyte.sproink;
 
 import java.util.List;
 import java.util.ArrayList;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
+import com.github.wnebyte.sproink.core.GameObject;
 import com.github.wnebyte.sproink.ui.ImGuiLayer;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
-import com.github.wnebyte.sproink.core.window.Window;
+import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.observer.EventSystem;
 import com.github.wnebyte.sproink.observer.Observer;
 import com.github.wnebyte.sproink.observer.event.Event;

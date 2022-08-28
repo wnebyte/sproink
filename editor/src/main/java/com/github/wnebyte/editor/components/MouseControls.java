@@ -3,27 +3,31 @@ package com.github.wnebyte.editor.components;
 import java.util.Set;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
-import com.github.wnebyte.sproink.core.scene.Scene;
-import com.github.wnebyte.sproink.core.ecs.Component;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
-import com.github.wnebyte.sproink.core.event.MouseListener;
-import com.github.wnebyte.sproink.core.window.Window;
+import org.joml.Vector4f;
+import com.github.wnebyte.editor.ui.PropertiesWindow;
+import com.github.wnebyte.editor.util.Settings;
+import com.github.wnebyte.sproink.core.Window;
+import com.github.wnebyte.sproink.core.Scene;
+import com.github.wnebyte.sproink.core.GameObject;
+import com.github.wnebyte.sproink.core.Component;
+import com.github.wnebyte.sproink.core.MouseListener;
 import com.github.wnebyte.sproink.renderer.DebugDraw;
 import com.github.wnebyte.sproink.components.NonPickable;
 import com.github.wnebyte.sproink.components.SpriteRenderer;
-import com.github.wnebyte.sproink.components.StateMachine;
-import com.github.wnebyte.editor.ui.PropertiesWindow;
-import com.github.wnebyte.editor.util.Settings;
 import com.github.wnebyte.util.Sets;
-import static com.github.wnebyte.sproink.core.event.MouseListener.isDragging;
-import static com.github.wnebyte.sproink.core.event.MouseListener.isMouseButtonDown;
-import static com.github.wnebyte.sproink.core.event.KeyListener.isKeyPressed;
-import static com.github.wnebyte.editor.util.Settings.SPR_DRAG_COLOR;
-import static com.github.wnebyte.editor.util.Settings.SPR_DROP_COLOR;
+import static com.github.wnebyte.sproink.core.MouseListener.isDragging;
+import static com.github.wnebyte.sproink.core.MouseListener.isMouseButtonDown;
+import static com.github.wnebyte.sproink.core.KeyListener.isKeyPressed;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 public class MouseControls extends Component {
+
+    private static final Vector4f DEFAULT_COLOR
+            = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+    private static final Vector4f DRAG_COLOR
+            = new Vector4f(0.8f, 0.8f, 0.8f, 0.8f);
 
     private GameObject draggable = null;
 
@@ -42,17 +46,14 @@ public class MouseControls extends Component {
             draggable.destroy();
         }
         draggable = go;
-        draggable.getComponent(SpriteRenderer.class).setColor(SPR_DRAG_COLOR);
+        draggable.getComponent(SpriteRenderer.class).setColor(DRAG_COLOR);
         draggable.addComponent(new NonPickable());
         Window.getScene().addGameObjectToScene(go);
     }
 
     public void drop() {
         GameObject go = draggable.copy();
-        if (go.getComponent(StateMachine.class) != null) {
-            go.getComponent(StateMachine.class).refreshTextures();
-        }
-        go.getComponent(SpriteRenderer.class).setColor(SPR_DROP_COLOR);
+        go.getComponent(SpriteRenderer.class).setColor(DEFAULT_COLOR);
         go.removeComponent(NonPickable.class);
         Window.getScene().addGameObjectToScene(go);
     }

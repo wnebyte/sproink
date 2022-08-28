@@ -4,7 +4,7 @@ import org.joml.Vector2f;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.callbacks.RayCastCallback;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
+import com.github.wnebyte.sproink.core.GameObject;
 
 public class RaycastInfo implements RayCastCallback {
 

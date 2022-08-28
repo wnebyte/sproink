@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.ArrayList;
 import org.joml.Vector2f;
 import com.github.wnebyte.sproink.components.StateMachine;
-import com.github.wnebyte.sproink.core.ecs.Component;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
-import com.github.wnebyte.sproink.core.window.Window;
+import com.github.wnebyte.sproink.core.Component;
+import com.github.wnebyte.sproink.core.GameObject;
+import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.util.Settings;
 import com.github.wnebyte.editor.ui.PropertiesWindow;
-import static com.github.wnebyte.sproink.core.event.KeyListener.isKeyPressed;
-import static com.github.wnebyte.sproink.core.event.KeyListener.keyBeginPress;
+import static com.github.wnebyte.sproink.core.KeyListener.isKeyPressed;
+import static com.github.wnebyte.sproink.core.KeyListener.isKeyBeginPress;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class KeyControls extends Component {
@@ -28,18 +28,18 @@ public class KeyControls extends Component {
         List<GameObject> activeGameObjects = props.getActiveGameObjects();
         float multiplier = isKeyPressed(GLFW_KEY_LEFT_SHIFT) ? 0.1f : 1.0f;
 
-        if (isKeyPressed(GLFW_KEY_LEFT_CONTROL) && keyBeginPress(GLFW_KEY_D) &&
+        if (isKeyPressed(GLFW_KEY_LEFT_CONTROL) && isKeyBeginPress(GLFW_KEY_D) &&
                 activeGameObject != null) {
             GameObject copy = activeGameObject.copy();
             Window.getScene().addGameObjectToScene(copy);
             copy.transform.position.add(new Vector2f(Settings.GRID_WIDTH, 0.0f));
             props.setActiveGameObject(copy);
             if (copy.getComponent(StateMachine.class) != null) {
-                copy.getComponent(StateMachine.class).refreshTextures();
+                copy.getComponent(StateMachine.class).refresh();
             }
             System.out.println("(Debug): Copy");
         }
-        else if (isKeyPressed(GLFW_KEY_LEFT_CONTROL) && keyBeginPress(GLFW_KEY_D) &&
+        else if (isKeyPressed(GLFW_KEY_LEFT_CONTROL) && isKeyBeginPress(GLFW_KEY_D) &&
                 activeGameObjects.size() > 1) {
             List<GameObject> gameObjects = new ArrayList<>(activeGameObjects);
             props.clearSelected();
@@ -48,11 +48,11 @@ public class KeyControls extends Component {
                 Window.getScene().addGameObjectToScene(copy);
                 props.addActiveGameObject(copy);
                 if (copy.getComponent(StateMachine.class) != null) {
-                    copy.getComponent(StateMachine.class).refreshTextures();
+                    copy.getComponent(StateMachine.class).refresh();
                 }
             }
         }
-        else if (keyBeginPress(GLFW_KEY_DELETE)) {
+        else if (isKeyBeginPress(GLFW_KEY_DELETE)) {
             for (GameObject go : activeGameObjects) {
                 go.destroy();
             }

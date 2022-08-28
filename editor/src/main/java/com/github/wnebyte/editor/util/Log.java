@@ -2,7 +2,7 @@ package com.github.wnebyte.editor.util;
 
 import com.github.wnebyte.editor.ui.LogWindow;
 import com.github.wnebyte.sproink.ui.ImGuiLayer;
-import com.github.wnebyte.sproink.core.window.Window;
+import com.github.wnebyte.sproink.core.Window;
 
 public class Log {
 

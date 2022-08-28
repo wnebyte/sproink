@@ -2,7 +2,6 @@ package com.github.wnebyte.sproink.core;
 
 import java.util.Objects;
 import org.joml.Vector2f;
-import com.github.wnebyte.sproink.core.ecs.Component;
 import com.github.wnebyte.sproink.ui.JImGui;
 
 public class Transform extends Component {

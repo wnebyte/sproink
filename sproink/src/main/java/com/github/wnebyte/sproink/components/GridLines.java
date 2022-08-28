@@ -2,9 +2,9 @@ package com.github.wnebyte.sproink.components;
 
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import com.github.wnebyte.sproink.core.camera.Camera;
-import com.github.wnebyte.sproink.core.ecs.Component;
-import com.github.wnebyte.sproink.core.window.Window;
+import com.github.wnebyte.sproink.core.Camera;
+import com.github.wnebyte.sproink.core.Component;
+import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.renderer.DebugDraw;
 import com.github.wnebyte.sproink.util.Settings;
 

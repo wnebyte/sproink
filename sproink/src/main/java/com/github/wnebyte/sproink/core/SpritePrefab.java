@@ -1,7 +1,5 @@
 package com.github.wnebyte.sproink.core;
 
-import com.github.wnebyte.sproink.core.scene.Scene;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
 import com.github.wnebyte.sproink.components.Sprite;
 import com.github.wnebyte.sproink.components.SpriteRenderer;
 

@@ -2,9 +2,8 @@ package com.github.wnebyte.sproink.animation;
 
 import java.util.List;
 import java.util.ArrayList;
-
 import com.github.wnebyte.sproink.components.Sprite;
-import com.github.wnebyte.sproink.util.ResourceFlyWeight;
+import com.github.wnebyte.sproink.util.Assets;
 
 public class AnimationState {
 
@@ -48,9 +47,9 @@ public class AnimationState {
         return DEFAULT_SPRITE;
     }
 
-    public void refreshTextures() {
+    public void refresh() {
         for (Frame frame : frames) {
-            frame.sprite.setTexture(ResourceFlyWeight.getTexture(frame.sprite.getTexture().getPath()));
+            frame.sprite.setTexture(Assets.getTexture(frame.sprite.getTexture().getPath()));
         }
     }
 }

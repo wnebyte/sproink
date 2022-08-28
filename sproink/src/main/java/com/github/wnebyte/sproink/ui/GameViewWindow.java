@@ -1,17 +1,14 @@
 package com.github.wnebyte.sproink.ui;
 
-import com.github.wnebyte.sproink.core.scene.SceneInitializer;
 import org.joml.Vector2f;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiWindowFlags;
-import com.github.wnebyte.sproink.core.window.Window;
+import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.observer.EventSystem;
-import com.github.wnebyte.sproink.core.event.MouseListener;
+import com.github.wnebyte.sproink.core.MouseListener;
 import com.github.wnebyte.sproink.observer.event.GameEngineStartPlayEvent;
 import com.github.wnebyte.sproink.observer.event.GameEngineStopPlayEvent;
-
-import java.util.Arrays;
 
 public class GameViewWindow extends ImGuiWindow {
 

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
-import com.github.wnebyte.sproink.core.audio.Sound;
+import com.github.wnebyte.sproink.core.Sound;
 import com.github.wnebyte.sproink.components.Spritesheet;
 import com.github.wnebyte.sproink.renderer.Shader;
 import com.github.wnebyte.sproink.renderer.Texture;

@@ -1,17 +1,14 @@
-package com.github.wnebyte.sproink.core.ecs;
+package com.github.wnebyte.sproink.core;
 
 import java.util.*;
-
-import com.github.wnebyte.sproink.core.scene.Scene;
-import com.github.wnebyte.sproink.util.Assets;
 import imgui.ImGui;
 import com.google.gson.Gson;
-import com.github.wnebyte.sproink.components.SpriteRenderer;
-import com.github.wnebyte.sproink.core.Transform;
-import com.github.wnebyte.sproink.util.ResourceFlyWeight;
-import com.github.wnebyte.sproink.util.Settings;
 
 public class GameObject {
+
+    public static void init(int maxId) {
+        ID_COUNTER = maxId;
+    }
 
     private static int ID_COUNTER = 0;
 
@@ -25,12 +22,47 @@ public class GameObject {
 
     private boolean serialize = true;
 
-    private boolean isDead = false;
+    private boolean dead = false;
 
     public GameObject(String name) {
         this.name = name;
         this.components = new ArrayList<>();
         this.id = ID_COUNTER++;
+    }
+
+    public void start() {
+        for (int i = 0; i < components.size(); i++) {
+            Component c = components.get(i);
+            c.start();
+        }
+    }
+
+    public void update(float dt) {
+        for (Component c : components) {
+            c.update(dt);
+        }
+    }
+
+    public void editorUpdate(float dt) {
+        for (Component c : components) {
+            c.editorUpdate(dt);
+        }
+    }
+
+    public void destroy() {
+        dead = true;
+        for (int i = 0; i < components.size(); i++) {
+            Component c = components.get(i);
+            c.destroy();
+        }
+    }
+
+    public void imGui() {
+        for (Component c : components) {
+            if (ImGui.collapsingHeader(c.getClass().getSimpleName())) {
+                c.imGui();
+            }
+        }
     }
 
     public <T extends Component> T getComponent(Class<T> componentClass) {
@@ -40,16 +72,12 @@ public class GameObject {
                     return componentClass.cast(c);
                 } catch (ClassCastException e) {
                     e.printStackTrace();
-                    assert false : "Error: (GameObject) Casting Component.";
+                    assert false : String.format("Error: (GameObject) Casting Component: '%s'", c.getClass());
                 }
             }
         }
 
         return null;
-    }
-
-    public List<Component> getAllComponents() {
-        return components;
     }
 
     public <T extends Component> void removeComponent(Class<T> componentClass) {
@@ -68,30 +96,19 @@ public class GameObject {
         c.gameObject = this;
     }
 
-    public void start() {
-        for (int i = 0; i < components.size(); i++) {
-            components.get(i).start();
-        }
+    public List<Component> getAllComponents() {
+        return components;
     }
 
-    public void editorUpdate(float dt) {
-        for (Component c : components) {
-            c.editorUpdate(dt);
-        }
+    public GameObject copy() {
+        Gson gson = Scene.getGson();
+        String json = gson.toJson(this);
+        GameObject go = gson.fromJson(json, GameObject.class);
+        return go;
     }
 
-    public void update(float dt) {
-        for (Component c : components) {
-            c.update(dt);
-        }
-    }
-
-    public void imGui() {
-        for (Component c : components) {
-            if (ImGui.collapsingHeader(c.getClass().getSimpleName())) {
-                c.imGui();
-            }
-        }
+    public void generateId() {
+        id = ID_COUNTER++;
     }
 
     public int getId() {
@@ -115,41 +132,7 @@ public class GameObject {
     }
 
     public boolean isDead() {
-        return isDead;
-    }
-
-    public void generateId() {
-        id = ID_COUNTER++;
-    }
-
-    public void destroy() {
-        isDead = true;
-        for (int i = 0; i < components.size(); i++) {
-            Component c = components.get(i);
-            c.destroy();
-        }
-    }
-
-    public GameObject copy() {
-        // Todo: come up with cleaner solution
-        Gson gson = Scene.getGson();
-        String objAsJson = gson.toJson(this);
-        GameObject go = gson.fromJson(objAsJson, GameObject.class);
-        go.generateId();
-        for (Component c : go.getAllComponents()) {
-            c.generateId();
-        }
-
-        SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
-        if (spr != null && spr.getTexture() != null) {
-            spr.setTexture(Assets.getTexture(spr.getTexture().getPath()));
-        }
-
-        return go;
-    }
-
-    public static void init(int maxId) {
-        ID_COUNTER = maxId;
+        return dead;
     }
 
     @Override
@@ -160,9 +143,7 @@ public class GameObject {
         GameObject go = (GameObject) o;
         return Objects.equals(go.id, this.id) &&
                 Objects.equals(go.name, this.name) &&
-                Arrays.equals(go.components.toArray(), this.components.toArray()) &&
-                Objects.equals(go.transform, this.transform) &&
-                super.equals(go);
+                Arrays.equals(go.components.toArray(), this.components.toArray());
     }
 
     @Override
@@ -172,9 +153,7 @@ public class GameObject {
                 13 +
                 Objects.hashCode(this.id) +
                 Objects.hashCode(this.name) +
-                Objects.hashCode(this.components) +
-                Objects.hashCode(this.transform) +
-                super.hashCode();
+                Arrays.hashCode(this.components.toArray());
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.github.wnebyte.sproink;
 
-import com.github.wnebyte.sproink.core.scene.Scene;
-import com.github.wnebyte.sproink.core.scene.SceneInitializer;
+import com.github.wnebyte.sproink.core.SceneInitializer;
 
 public class Configuration {
 

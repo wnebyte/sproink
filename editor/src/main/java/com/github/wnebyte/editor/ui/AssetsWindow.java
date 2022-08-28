@@ -6,16 +6,16 @@ import imgui.ImGui;
 import imgui.ImVec2;
 import com.github.wnebyte.editor.project.*;
 import com.github.wnebyte.editor.components.MouseControls;
-import com.github.wnebyte.sproink.core.window.Window;
+import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
 import com.github.wnebyte.sproink.renderer.Texture;
 import com.github.wnebyte.sproink.components.Spritesheet;
 import com.github.wnebyte.sproink.core.Prefab;
 import com.github.wnebyte.sproink.components.Sprite;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
+import com.github.wnebyte.sproink.core.GameObject;
 import com.github.wnebyte.sproink.util.Assets;
 import com.github.wnebyte.sproink.core.SpritePrefab;
-import com.github.wnebyte.sproink.core.audio.Sound;
+import com.github.wnebyte.sproink.core.Sound;
 import com.github.wnebyte.util.Objects;
 
 public class AssetsWindow extends ImGuiWindow {

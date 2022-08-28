@@ -3,7 +3,7 @@ package com.github.wnebyte.sproink.renderer;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
+import com.github.wnebyte.sproink.core.GameObject;
 import com.github.wnebyte.sproink.components.SpriteRenderer;
 
 public class Renderer {

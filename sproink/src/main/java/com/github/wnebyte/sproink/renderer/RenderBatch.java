@@ -7,8 +7,8 @@ import com.github.wnebyte.sproink.components.SpriteRenderer;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.joml.Matrix4f;
-import com.github.wnebyte.sproink.core.window.Window;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
+import com.github.wnebyte.sproink.core.Window;
+import com.github.wnebyte.sproink.core.GameObject;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;

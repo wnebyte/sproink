@@ -6,8 +6,8 @@ import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
 import org.jbox2d.collision.WorldManifold;
 import org.jbox2d.dynamics.contacts.Contact;
-import com.github.wnebyte.sproink.core.ecs.Component;
-import com.github.wnebyte.sproink.core.ecs.GameObject;
+import com.github.wnebyte.sproink.core.Component;
+import com.github.wnebyte.sproink.core.GameObject;
 
 /*
 PreSolve -> BeginContact -> EndContact -> PostSolve

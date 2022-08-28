@@ -4,8 +4,8 @@ import com.github.wnebyte.sproink.physics2d.enums.BodyType;
 import org.joml.Vector2f;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-import com.github.wnebyte.sproink.core.window.Window;
-import com.github.wnebyte.sproink.core.ecs.Component;
+import com.github.wnebyte.sproink.core.Window;
+import com.github.wnebyte.sproink.core.Component;
 
 public class RigidBody2D extends Component {
 

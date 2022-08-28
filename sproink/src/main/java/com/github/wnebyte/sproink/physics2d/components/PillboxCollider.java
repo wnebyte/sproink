@@ -1,7 +1,7 @@
 package com.github.wnebyte.sproink.physics2d.components;
 
 import org.joml.Vector2f;
-import com.github.wnebyte.sproink.core.window.Window;
+import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.physics2d.Physics2D;
 
 public class PillboxCollider extends Collider {

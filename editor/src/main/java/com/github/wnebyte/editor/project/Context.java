@@ -1,8 +1,6 @@
 package com.github.wnebyte.editor.project;
 
 import java.net.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 import java.io.File;
@@ -20,8 +18,8 @@ import org.reflections.util.ConfigurationBuilder;
 import com.github.wnebyte.editor.scenes.LevelEditorSceneInitializer;
 import com.github.wnebyte.editor.util.Log;
 import com.github.wnebyte.sproink.core.Prefab;
-import com.github.wnebyte.sproink.core.ecs.Component;
-import com.github.wnebyte.sproink.core.scene.SceneInitializer;
+import com.github.wnebyte.sproink.core.Component;
+import com.github.wnebyte.sproink.core.SceneInitializer;
 import com.github.wnebyte.sproink.scenes.LevelSceneInitializer;
 
 public class Context {
