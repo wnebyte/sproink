@@ -1,4 +1,4 @@
-package com.github.wnebyte.sproink.components;
+package com.github.wnebyte.sproink.physics2d.components;
 
 import com.github.wnebyte.sproink.core.ecs.Component;
 

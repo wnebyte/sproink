@@ -1,5 +1,6 @@
 package com.github.wnebyte.sproink;
 
+import com.github.wnebyte.sproink.core.scene.Scene;
 import com.github.wnebyte.sproink.core.scene.SceneInitializer;
 
 public class Configuration {
@@ -8,7 +9,9 @@ public class Configuration {
 
     protected int width, height;
 
-    protected SceneInitializer scene;
+    protected String scene;
+
+    protected SceneInitializer sceneInitializer;
 
     public void setTitle(String title) {
         this.title = title;
@@ -22,7 +25,11 @@ public class Configuration {
         this.height = height;
     }
 
-    public void setScene(SceneInitializer scene) {
+    public void setScene(String scene) {
         this.scene = scene;
+    }
+
+    public void setSceneInitializer(SceneInitializer scene) {
+        this.sceneInitializer = scene;
     }
 }

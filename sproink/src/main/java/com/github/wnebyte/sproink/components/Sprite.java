@@ -6,7 +6,7 @@ import com.github.wnebyte.sproink.renderer.Texture;
 
 public class Sprite {
 
-    private Texture texture = null;
+    private Texture texture;
 
     private float width, height;
 

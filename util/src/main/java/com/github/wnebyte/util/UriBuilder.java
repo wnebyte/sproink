@@ -10,6 +10,18 @@ import java.util.ArrayList;
 
 public class UriBuilder {
 
+    public static String normalize(String s) {
+        if (SEP.equals("\\")) {
+            // windows
+            return s.replace("/", "\\");
+        } else if (SEP.equals("/")) {
+            // linux
+            return s.replace("\\", "/");
+        } else {
+            return s;
+        }
+    }
+
     private static final String SEP = File.separator;
 
     private String authority = null;
@@ -56,16 +68,6 @@ public class UriBuilder {
 
     public Path toPath() {
         return Paths.get(build());
-    }
-
-    private String normalize(String s) {
-        if (SEP.equals("\\")) {
-            return s.replace("/", "\\");
-        } else if (SEP.equals("/")) {
-            return s.replace("\\", "/");
-        } else {
-            return s;
-        }
     }
 
     @Override

@@ -12,12 +12,12 @@ public final class Project {
     private String name;
 
     @XmlAttribute
-    private String path;
+    private String projectDir;
 
-    @XmlAttribute(name = "out-dir")
+    @XmlAttribute
     private String outDir;
 
-    @XmlAttribute(name = "assets-dir")
+    @XmlAttribute
     private String assetsDir;
 
     @XmlElement
@@ -25,8 +25,8 @@ public final class Project {
 
     public Project() {}
 
-    public Project(String name, String path, String outDir, String assetsDir, Editor editor) {
-        this.path = path;
+    public Project(String name, String projectDir, String outDir, String assetsDir, Editor editor) {
+        this.projectDir = projectDir;
         this.name = name;
         this.outDir = outDir;
         this.assetsDir = assetsDir;
@@ -41,12 +41,12 @@ public final class Project {
         return name;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setProjectDir(String projectDir) {
+        this.projectDir = projectDir;
     }
 
-    public String getPath() {
-        return path;
+    public String getProjectDir() {
+        return projectDir;
     }
 
     public void setOutDir(String outDir) {
@@ -101,10 +101,10 @@ public final class Project {
             return null;
         }
         if (value.startsWith(File.separator)) {
-            value = path + File.separator + value;
+            value = projectDir + File.separator + value;
         }
-        if (value.contains("$PATH")) {
-            value = value.replace("$PATH", path);
+        if (value.contains("$PROJECTDIR")) {
+            value = value.replace("$PROJECTDIR", projectDir);
         }
         if (value.contains("$OUTDIR")) {
             value = value.replace("$OUTDIR", outDir);

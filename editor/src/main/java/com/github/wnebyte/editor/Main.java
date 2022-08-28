@@ -6,8 +6,10 @@ import com.github.wnebyte.editor.observer.ApplicationObserver;
 import com.github.wnebyte.editor.scenes.LevelEditorSceneInitializer;
 import com.github.wnebyte.sproink.Application;
 import com.github.wnebyte.sproink.Configuration;
+import com.github.wnebyte.sproink.core.scene.Scene;
 import com.github.wnebyte.sproink.core.window.Window;
 import com.github.wnebyte.sproink.observer.Observer;
+import com.github.wnebyte.sproink.scenes.LevelSceneInitializer;
 import com.github.wnebyte.sproink.ui.GameViewWindow;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
 
@@ -22,7 +24,8 @@ public class Main extends Application {
     @Override
     public void configure(final Configuration conf) {
         conf.setTitle("Editor");
-        conf.setScene(new LevelEditorSceneInitializer());
+        conf.setScene("non-serial-scene.json");
+        conf.setSceneInitializer(new LevelEditorSceneInitializer());
     }
 
     @Override

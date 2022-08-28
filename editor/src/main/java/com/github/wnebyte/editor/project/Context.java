@@ -13,6 +13,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import com.github.wnebyte.editor.scenes.LevelEditorSceneInitializer;
+import com.github.wnebyte.sproink.scenes.LevelSceneInitializer;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
@@ -23,7 +24,7 @@ import com.github.wnebyte.sproink.core.scene.SceneInitializer;
 
 public class Context {
 
-    public static Context newInstance(String name, String path) {
+    public static Context newProject(String name, String path) {
         File parent = new File(path);
         assert (parent.exists() && parent.isDirectory()) :
                 String.format("Error (Context): Path: '%s' does not exist/is not a directory", parent.getAbsolutePath());
@@ -33,22 +34,18 @@ public class Context {
         init.copyTemplates();
         File projectFile = new File(root.getAbsolutePath() + File.separator + "project.xml");
         Context context = new Context(projectFile);
-        context.loadProject();
         context.getProject().setName(name);
-        context.getProject().setPath(root.getAbsolutePath());
+        context.getProject().setProjectDir(root.getAbsolutePath());
         context.syncProject();
-        context.schedule();
         Context.instance = context;
         return get();
     }
 
-    public static Context open(String path) {
+    public static Context openProject(String path) {
         File projectFile = new File(path + File.separator + "project.xml");
         assert projectFile.exists() :
                 String.format("Error (Context): ProjectFile: '%s' does not exists", projectFile.getAbsolutePath());
         Context context = new Context(projectFile);
-        context.loadProject();
-        context.schedule();
         Context.instance = context;
         return get();
     }
@@ -92,7 +89,7 @@ public class Context {
 
     private Project project;
 
-    private final File file;
+    private final File projectFile;
 
     private final Set<Class<? extends Prefab>> prefabs;
 
@@ -102,28 +99,66 @@ public class Context {
 
     private final ScheduledExecutorService executor;
 
-    private Context(File file) {
-        this.file = file;
+   // private final GradleCompiler compiler;
+
+    private final Reflections reflections;
+
+    private ClassLoader classLoader;
+
+    private Context(File projectFile) {
+        this.projectFile = projectFile;
+        this.project = unmarshall(projectFile);
+        this.project.format();
         this.prefabs = new HashSet<>();
         this.components = new HashSet<>();
         this.sceneInitializers = new HashSet<>();
         this.executor = Executors.newScheduledThreadPool(1);
+        try {
+            this.classLoader = new URLClassLoader(new URL[] {
+                    new File(project.getOutDir()).toURI().toURL()
+            }, this.getClass().getClassLoader());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ConfigurationBuilder conf = new ConfigurationBuilder();
+        conf.setClassLoaders(new ClassLoader[]{classLoader});
+        conf.setUrls(ClasspathHelper.forClassLoader(classLoader));
+        conf.setScanners(new SubTypesScanner());
+        this.reflections = new Reflections(conf);
+        this.prefabs.addAll(getSubTypesOf(Prefab.class));
+        this.components.addAll(getSubTypesOf(Component.class));
+        this.sceneInitializers.addAll(getSubTypesOf(SceneInitializer.class));
+      //  this.compiler = new GradleCompiler(new File(project.getProjectDir()));
     }
 
+    private <T> Set<Class<? extends T>> getSubTypesOf(Class<T> cls) {
+        Set<Class<? extends T>> set = reflections.getSubTypesOf(cls);
+        return set;
+    }
+
+    /*
+    public void compile() {
+        compiler.compile();
+    }
+     */
+
     private void schedule() {
+        /*
         executor.scheduleAtFixedRate(() -> {
             prefabs.addAll(fetchSubTypesOf(Prefab.class));
             components.addAll(fetchSubTypesOf(Component.class));
             sceneInitializers.addAll(fetchSubTypesOf(SceneInitializer.class));
         }, 0, 60, TimeUnit.SECONDS);
+
+         */
     }
 
     public void saveProject() {
-        Context.marshall(project, file);
+        Context.marshall(project, projectFile);
     }
 
     public void loadProject() {
-        project = Context.unmarshall(file);
+        project = Context.unmarshall(projectFile);
         project.format();
     }
 
@@ -151,6 +186,63 @@ public class Context {
                 .findFirst().orElse(null);
     }
 
+    public Prefab newPrefab(String canonicalName) {
+        try {
+            return (Prefab) classLoader.loadClass(canonicalName).newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Component newComponent(String canonicalName) {
+        try {
+            return (Component) classLoader.loadClass(canonicalName).newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public SceneInitializer newSceneInitializer(String canonicalName) {
+        try {
+            return (SceneInitializer) classLoader.loadClass(canonicalName).newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Class<? extends SceneInitializer> editorSceneInitializer
+            = LevelEditorSceneInitializer.class;
+
+    private Class<? extends SceneInitializer> sceneInitializer
+            = LevelSceneInitializer.class;
+
+    public Class<? extends SceneInitializer> getEditorSceneInitializer() {
+        return editorSceneInitializer;
+    }
+
+    public void setEditorSceneInitializer(Class<? extends SceneInitializer> cls) {
+        editorSceneInitializer = cls;
+    }
+
+    public SceneInitializer newEditorSceneInitializer() {
+        return newSceneInitializer(editorSceneInitializer.getCanonicalName());
+    }
+
+    public Class<? extends SceneInitializer> getSceneInitializer() {
+        return sceneInitializer;
+    }
+
+    public void setSceneInitializer(Class<? extends SceneInitializer> cls) {
+        sceneInitializer = cls;
+    }
+
+    public SceneInitializer newSceneInitializer() {
+        return newSceneInitializer(sceneInitializer.getCanonicalName());
+    }
+
     public Set<Class<? extends Prefab>> getPrefabs() {
         return prefabs;
     }
@@ -163,26 +255,7 @@ public class Context {
         return sceneInitializers;
     }
 
-    public URLClassLoader getURLClassLoader() {
-        return null;
-    }
-
-    private <T> Set<Class<? extends T>> fetchSubTypesOf(Class<T> cls) {
-        File file = new File(project.getOutDir());
-        try (URLClassLoader child = new URLClassLoader(
-                new URL[] { file.toURI().toURL() },
-                this.getClass().getClassLoader()
-        )) {
-            ConfigurationBuilder conf = new ConfigurationBuilder();
-            conf.setClassLoaders(new ClassLoader[]{child});
-            conf.setUrls(ClasspathHelper.forClassLoader(child));
-            conf.setScanners(new SubTypesScanner());
-            Set<Class<? extends T>> set = new Reflections(conf).getSubTypesOf(cls);
-            return set;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return new HashSet<>();
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 }

@@ -1,14 +1,16 @@
 package com.github.wnebyte.editor.ui;
 
-import com.github.wnebyte.editor.observer.event.SaveSceneEvent;
+import com.github.wnebyte.editor.project.Context;
+import com.github.wnebyte.sproink.core.scene.SceneInitializer;
 import imgui.ImGui;
 import imgui.type.ImString;
 import imgui.flag.ImGuiInputTextFlags;
+import com.github.wnebyte.editor.observer.event.CompileEvent;
+import com.github.wnebyte.editor.observer.event.SaveSceneEvent;
 import com.github.wnebyte.sproink.core.window.Window;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
 import com.github.wnebyte.sproink.ui.GameViewWindow;
 import com.github.wnebyte.sproink.observer.EventSystem;
-import com.github.wnebyte.sproink.observer.event.WindowCloseEvent;
 
 public class MenuBar extends ImGuiWindow {
 
@@ -23,8 +25,12 @@ public class MenuBar extends ImGuiWindow {
             if (ImGui.menuItem("Open Project", "CTRL+O")) {
                 Window.getImGuiLayer().getWindow(OpenProjectWindow.class).show();
             }
-            if (ImGui.menuItem("Close Project")) {
-                EventSystem.notify(null, new WindowCloseEvent());
+            ImGui.separator();
+            if (ImGui.menuItem("Sync")) {
+
+            }
+            if (ImGui.menuItem("Compile")) {
+                EventSystem.notify(null, new CompileEvent());
             }
             ImGui.endMenu();
         }
@@ -35,11 +41,33 @@ public class MenuBar extends ImGuiWindow {
             ImGui.endMenu();
         }
         if (ImGui.beginMenu("Scene")) {
-            if (ImGui.menuItem("New Scene")) {
+            if (ImGui.menuItem("New Scene", "CTRL+ALT+N")) {
                 Window.getImGuiLayer().getWindow(NewSceneWindow.class).show();
             }
-            if (ImGui.menuItem("Save Scene")) {
+            if (ImGui.menuItem("Save Scene", "CTRL+ALT+S")) {
                 EventSystem.notify(null, new SaveSceneEvent());
+            }
+            ImGui.separator();
+            Context context = Context.get();
+            if (context != null) {
+                if (ImGui.beginMenu("Editor Scene Initializer")) {
+                    for (Class<? extends SceneInitializer> cls : context.getSceneInitializers()) {
+                        boolean selected = (cls == context.getEditorSceneInitializer());
+                        if (ImGui.menuItem(cls.getCanonicalName(), "", selected)) {
+                            context.setEditorSceneInitializer(cls);
+                        }
+                    }
+                    ImGui.endMenu();
+                }
+                if (ImGui.beginMenu("Scene Initializer")) {
+                    for (Class<? extends SceneInitializer> cls : context.getSceneInitializers()) {
+                        boolean selected = (cls == context.getSceneInitializer());
+                        if (ImGui.menuItem(cls.getCanonicalName(), "", selected)) {
+                            context.setSceneInitializer(cls);
+                        }
+                    }
+                    ImGui.endMenu();
+                }
             }
             ImGui.endMenu();
         }

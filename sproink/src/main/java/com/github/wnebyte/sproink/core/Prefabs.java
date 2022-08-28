@@ -24,6 +24,7 @@ public class Prefabs {
         return go;
     }
 
+    /*
     public static GameObject generateMario() {
         Spritesheet playerSprites = ResourceFlyWeight.getSpritesheet("/images/spritesheet.png");
         Spritesheet bigPlayerSprites = ResourceFlyWeight.getSpritesheet("/images/bigSpritesheet.png");
@@ -453,5 +454,6 @@ public class Prefabs {
 
         return pipe;
     }
+     */
 
 }

@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.github.wnebyte.sproink.core.ecs.Component;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
-import com.github.wnebyte.sproink.core.ecs.GameObjectTypeAdapter;
+import com.github.wnebyte.sproink.util.io.GameObjectTypeAdapter;
 
 public class Settings {
 

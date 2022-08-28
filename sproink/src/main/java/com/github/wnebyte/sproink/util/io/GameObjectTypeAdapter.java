@@ -1,9 +1,10 @@
-package com.github.wnebyte.sproink.core.ecs;
+package com.github.wnebyte.sproink.util.io;
 
 import java.lang.reflect.Type;
-
-import com.github.wnebyte.sproink.core.Transform;
 import com.google.gson.*;
+import com.github.wnebyte.sproink.core.Transform;
+import com.github.wnebyte.sproink.core.ecs.Component;
+import com.github.wnebyte.sproink.core.ecs.GameObject;
 
 public class GameObjectTypeAdapter implements JsonDeserializer<GameObject> {
 

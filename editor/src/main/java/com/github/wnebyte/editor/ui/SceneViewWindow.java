@@ -3,7 +3,7 @@ package com.github.wnebyte.editor.ui;
 import java.io.File;
 import imgui.ImGui;
 import com.github.wnebyte.editor.project.Context;
-import com.github.wnebyte.editor.observer.event.EditSceneEvent;
+import com.github.wnebyte.editor.observer.event.SetSceneEvent;
 import com.github.wnebyte.editor.observer.event.DeleteSceneEvent;
 import com.github.wnebyte.sproink.core.window.Window;
 import com.github.wnebyte.sproink.observer.EventSystem;
@@ -36,10 +36,11 @@ public class SceneViewWindow extends ImGuiWindow {
         if (!root.exists()) return;
 
         ImGui.begin(TITLE, visible, WINDOW_FLAGS);
+
         for (File file : root.listFiles()) {
             if (ImGui.collapsingHeader(file.getName())) {
-                if (ImGui.button("Edit")) {
-                    EventSystem.notify(null, new EditSceneEvent(file.getAbsolutePath()));
+                if (ImGui.button("Set")) {
+                    EventSystem.notify(null, new SetSceneEvent(file.getAbsolutePath()));
                 }
                 ImGui.sameLine();
                 if (ImGui.button("Delete")) {
@@ -54,6 +55,7 @@ public class SceneViewWindow extends ImGuiWindow {
             }
             ImGui.endPopup();
         }
+
         ImGui.end();
     }
 }

@@ -7,18 +7,31 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import com.google.gson.Gson;
+import java.util.Objects;
+
 import org.joml.Vector2f;
+import com.google.gson.Gson;
 import com.github.wnebyte.sproink.core.Transform;
 import com.github.wnebyte.sproink.core.camera.Camera;
 import com.github.wnebyte.sproink.core.ecs.Component;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
 import com.github.wnebyte.sproink.physics2d.Physics2D;
 import com.github.wnebyte.sproink.renderer.Renderer;
+import com.github.wnebyte.sproink.renderer.Shader;
 import com.github.wnebyte.sproink.components.Sprite;
 import com.github.wnebyte.sproink.components.SpriteRenderer;
 
 public class Scene {
+
+    private static Gson gson;
+
+    public static Gson getGson() {
+        return Scene.gson;
+    }
+
+    public static void setGson(Gson gson) {
+        Scene.gson = gson;
+    }
 
     public static GameObject createGameObject(String name) {
         GameObject go = new GameObject(name);
@@ -39,11 +52,13 @@ public class Scene {
         return go;
     }
 
-    private String path;
-
     private Camera camera;
 
     private boolean isRunning;
+
+    private final String path;
+
+    private final String name;
 
     private final Renderer renderer;
 
@@ -55,18 +70,15 @@ public class Scene {
 
     private final SceneInitializer sceneInitializer;
 
-    public Scene(SceneInitializer sceneInitializer) {
-        this("../assets/scenes/scene.json", sceneInitializer);
-    }
-
     public Scene(String path, SceneInitializer sceneInitializer) {
-        this.sceneInitializer = sceneInitializer;
         this.physics2d = new Physics2D();
         this.renderer = new Renderer();
         this.gameObjects = new ArrayList<>();
         this.pendingGameObjects = new ArrayList<>();
         this.isRunning = false;
         this.path = path;
+        this.name = new File(path).getName().split("[.]json")[0];
+        this.sceneInitializer = sceneInitializer;
     }
 
     public void init() {
@@ -100,7 +112,8 @@ public class Scene {
             }
         }
 
-        for (GameObject go : pendingGameObjects) {
+        for (int i = 0; i < pendingGameObjects.size(); i++) {
+            GameObject go = pendingGameObjects.get(i);
             gameObjects.add(go);
             go.start();
             renderer.add(go);
@@ -137,7 +150,7 @@ public class Scene {
     }
 
     public void imGui() {
-        sceneInitializer.imGui();
+
     }
 
     public void render() {
@@ -191,49 +204,55 @@ public class Scene {
         return camera;
     }
 
-    public Renderer getRenderer() {
-        return renderer;
+    public void setShader(Shader shader) {
+        renderer.setShader(shader);
+    }
+
+    public Shader getShader() {
+        return renderer.getShader();
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getPath() {
         return path;
     }
 
-    public String getName() {
-        File file = new File(path);
-        return file.getName();
-    }
+    public void save() {
+        if (!new File(path).exists()) return;
 
-    public void save(Gson gson) {
         try {
             FileWriter writer = new FileWriter(path);
             List<GameObject> out = new ArrayList<>();
-            for (GameObject go : gameObjects) {
-                if (go.isSerialize()) {
-                    out.add(go);
+            for (GameObject obj : this.gameObjects) {
+                if (obj.isSerialize()) {
+                    out.add(obj);
                 }
             }
             writer.write(gson.toJson(out));
             writer.close();
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void load(Gson gson) {
-        String in = "";
+    public void load() {
+        if (!new File(path).exists()) return;
 
+        String inFile = "";
         try {
-            in = new String(Files.readAllBytes(Paths.get(path)));
+            inFile = new String(Files.readAllBytes(Paths.get(path)));
         } catch (IOException e) {
-            System.err.println("Error: (Scene) " + e.getMessage());
+            e.printStackTrace();
         }
 
-        if (!in.equals("")) {
-            int maxGoId = -1;
+        if (!inFile.equals("")) {
+            int maxGoId   = -1;
             int maxCompId = -1;
 
-            GameObject[] objs = gson.fromJson(in, GameObject[].class);
+            GameObject[] objs = gson.fromJson(inFile, GameObject[].class);
             for (GameObject go : objs) {
                 addGameObjectToScene(go);
 
@@ -246,10 +265,29 @@ public class Scene {
                     }
                 }
             }
+
             maxGoId++;
             maxCompId++;
             GameObject.init(maxGoId);
             Component.init(maxCompId);
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        if (o == this) return true;
+        if (!(o instanceof Scene)) return false;
+        Scene scene = (Scene) o;
+        return Objects.equals(scene.path, this.path);
+     }
+
+
+     @Override
+     public int hashCode() {
+        int result = 15;
+        return result *
+                5 +
+                Objects.hashCode(this.path);
+     }
 }

@@ -80,22 +80,12 @@ public class Window {
         return window.scene;
     }
 
-    public static void setScene(String path, SceneInitializer sceneInitializer, Gson gson) {
+    public static void setScene(String path, SceneInitializer sceneInitializer) {
         if (window.scene != null) {
             window.scene.destroy();
         }
         window.scene = new Scene(path, sceneInitializer);
-        window.scene.load(gson);
-        window.scene.init();
-        window.scene.start();
-    }
-
-    public static void setScene(SceneInitializer sceneInitializer, Gson gson) {
-        if (window.scene != null) {
-            window.scene.destroy();
-        }
-        window.scene = new Scene(sceneInitializer);
-        window.scene.load(gson);
+        window.scene.load();
         window.scene.init();
         window.scene.start();
     }
@@ -219,13 +209,12 @@ public class Window {
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            Renderer renderer = scene.getRenderer();
-            renderer.setShader(pickingShader);
+            scene.setShader(pickingShader);
             scene.render();
             pickingTexture.unbind();
             glEnable(GL_BLEND);
 
-            // Render pass 2. Render actual game.
+            // Render pass 2: Render actual game.
             DebugDraw.beginFrame();
             frameBuffer.bind();
             Vector4f color = scene.getCamera().getClearColor();
@@ -233,7 +222,7 @@ public class Window {
             glClear(GL_COLOR_BUFFER_BIT);
 
             if (dt >= 0) {
-                renderer.setShader(defaultShader);
+                scene.setShader(defaultShader);
                 if (runtimePlaying) {
                     scene.update(dt);
                 } else {

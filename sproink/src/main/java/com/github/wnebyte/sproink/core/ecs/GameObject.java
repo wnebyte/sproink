@@ -1,6 +1,9 @@
 package com.github.wnebyte.sproink.core.ecs;
 
 import java.util.*;
+
+import com.github.wnebyte.sproink.core.scene.Scene;
+import com.github.wnebyte.sproink.util.Assets;
 import imgui.ImGui;
 import com.google.gson.Gson;
 import com.github.wnebyte.sproink.components.SpriteRenderer;
@@ -129,7 +132,7 @@ public class GameObject {
 
     public GameObject copy() {
         // Todo: come up with cleaner solution
-        Gson gson = Settings.GSON;
+        Gson gson = Scene.getGson();
         String objAsJson = gson.toJson(this);
         GameObject go = gson.fromJson(objAsJson, GameObject.class);
         go.generateId();
@@ -139,7 +142,7 @@ public class GameObject {
 
         SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
         if (spr != null && spr.getTexture() != null) {
-            spr.setTexture(ResourceFlyWeight.getTexture(spr.getTexture().getPath()));
+            spr.setTexture(Assets.getTexture(spr.getTexture().getPath()));
         }
 
         return go;

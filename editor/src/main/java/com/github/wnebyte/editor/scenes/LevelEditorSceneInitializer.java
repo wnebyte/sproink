@@ -18,7 +18,7 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
     @Override
     public void init(Scene scene) {
         Spritesheet gizmos = Assets.getSpritesheet("../assets/images/spritesheets/gizmos.png");
-        levelEditorStuff = scene.createGameObject("LevelEditorStuff");
+        levelEditorStuff = Scene.createGameObject("LevelEditorStuff");
         levelEditorStuff.setNoSerialize();
         levelEditorStuff.addComponent(new MouseControls());
         levelEditorStuff.addComponent(new KeyControls());
@@ -56,14 +56,8 @@ public class LevelEditorSceneInitializer implements SceneInitializer {
         for (GameObject go : scene.getGameObjects()) {
             SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
             if (spr != null) {
-                Texture texture = spr.getTexture();
-                if (texture != null) {
-                    spr.setTexture(Assets.getTexture(texture.getPath()));
-                }
+                spr.setTexture(Assets.getTexture(spr.getTexture().getPath()));
             }
-        }
-
-        for (GameObject go : scene.getGameObjects()) {
             StateMachine stateMachine = go.getComponent(StateMachine.class);
             if (stateMachine != null) {
                 stateMachine.refreshTextures();

@@ -7,7 +7,7 @@ import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import com.github.wnebyte.sproink.core.ecs.GameObject;
 import com.github.wnebyte.sproink.core.Transform;
-import com.github.wnebyte.sproink.components.Ground;
+import com.github.wnebyte.sproink.physics2d.components.Ground;
 import com.github.wnebyte.sproink.physics2d.components.Box2DCollider;
 import com.github.wnebyte.sproink.physics2d.components.CircleCollider;
 import com.github.wnebyte.sproink.physics2d.components.PillboxCollider;

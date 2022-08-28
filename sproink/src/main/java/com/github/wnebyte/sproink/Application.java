@@ -10,7 +10,6 @@ import com.github.wnebyte.sproink.observer.EventSystem;
 import com.github.wnebyte.sproink.observer.Observer;
 import com.github.wnebyte.sproink.observer.event.Event;
 import com.github.wnebyte.sproink.observer.event.WindowInitEvent;
-import com.github.wnebyte.sproink.util.Settings;
 
 public class Application implements Observer {
 
@@ -40,9 +39,7 @@ public class Application implements Observer {
             List<ImGuiWindow> windows = new ArrayList<>();
             addWindows(windows);
             windows.forEach(imGuiLayer::addWindow);
-            if (conf.scene != null) {
-                Window.setScene(conf.scene, Settings.GSON);
-            }
+            Window.setScene(conf.scene, conf.sceneInitializer);
         }
     }
 }

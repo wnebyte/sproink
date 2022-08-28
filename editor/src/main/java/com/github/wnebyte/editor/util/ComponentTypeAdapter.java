@@ -18,13 +18,14 @@ public class ComponentTypeAdapter implements JsonSerializer<Component>, JsonDese
     @Override
     public Component deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
-        Context c = Context.get();
+        Context project = Context.get();
         JsonObject jsonObject = json.getAsJsonObject();
         String type = jsonObject.get("type").getAsString();
         JsonElement element = jsonObject.get("properties");
 
         try {
-            return context.deserialize(element, Class.forName(type, true, (c != null) ? c.getURLClassLoader() : null));
+            return context.deserialize(element, Class.forName(type, true,
+                    (project != null) ? project.getClassLoader() : this.getClass().getClassLoader()));
         } catch (ClassNotFoundException e) {
             throw new JsonParseException(
                     String.format(

@@ -6,7 +6,6 @@ import imgui.ImGui;
 import imgui.ImVec2;
 import com.github.wnebyte.editor.project.*;
 import com.github.wnebyte.editor.components.MouseControls;
-import com.github.wnebyte.editor.util.ObjectFlyWeight;
 import com.github.wnebyte.sproink.core.window.Window;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
 import com.github.wnebyte.sproink.renderer.Texture;
@@ -64,11 +63,6 @@ public class AssetsWindow extends ImGuiWindow {
                                             asset.getSize(), asset.getSpacing()));
                             Spritesheet spritesheet = Assets.getSpritesheet(asset.getSrc());
 
-                            Class<? extends Prefab> cls =
-                                    Objects.requireNonNullElseGet(context.getPrefab(asset.getPrefab()),
-                                            () -> SpritePrefab.class);
-                            Prefab prefab = ObjectFlyWeight.getPrefab(cls);
-
                             int from = asset.getFrom();
                             int to = asset.getTo();
                             float scaleX = asset.getScaleXOrDefaultValue(1.0f);
@@ -86,8 +80,12 @@ public class AssetsWindow extends ImGuiWindow {
                                         texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) {
                                     GameObject levelEditorStuff = Window.getScene().getGameObject(MouseControls.class);
                                     if (levelEditorStuff != null) {
-                                        GameObject go = prefab.generate(sprite);
-                                        levelEditorStuff.getComponent(MouseControls.class).drag(go);
+                                        Prefab prefab = context.newPrefab(
+                                                Objects.requireNonNullElseGet(asset.getPrefab(), SpritePrefab.class::getCanonicalName));
+                                        if (prefab != null) {
+                                            GameObject go = prefab.generate(sprite);
+                                            levelEditorStuff.getComponent(MouseControls.class).drag(go);
+                                        }
                                     }
                                 }
                                 ImGui.popID();

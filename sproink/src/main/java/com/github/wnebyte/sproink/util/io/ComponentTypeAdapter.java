@@ -1,6 +1,8 @@
-package com.github.wnebyte.sproink.core.ecs;
+package com.github.wnebyte.sproink.util.io;
 
 import java.lang.reflect.Type;
+
+import com.github.wnebyte.sproink.core.ecs.Component;
 import com.google.gson.*;
 
 public class ComponentTypeAdapter implements JsonSerializer<Component>, JsonDeserializer<Component> {

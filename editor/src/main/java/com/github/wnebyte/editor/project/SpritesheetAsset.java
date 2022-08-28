@@ -27,10 +27,10 @@ public final class SpritesheetAsset {
     @XmlAttribute
     private int to;
 
-    @XmlAttribute(name = "scale-x")
+    @XmlAttribute
     private float scaleX;
 
-    @XmlAttribute(name = "scale-y")
+    @XmlAttribute
     private float scaleY;
 
     @XmlAttribute

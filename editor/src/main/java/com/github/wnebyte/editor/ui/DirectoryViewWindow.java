@@ -99,7 +99,7 @@ public class DirectoryViewWindow extends ImGuiWindow {
             }
         };
         int idx = 0;
-        String path = context.getProject().getPath();
+        String path = context.getProject().getProjectDir();
         functor.apply(new File(path), 0, idx);
         if (nodeClicked.get() != -1) {
             if (ImGui.getIO().getKeyCtrl()) {

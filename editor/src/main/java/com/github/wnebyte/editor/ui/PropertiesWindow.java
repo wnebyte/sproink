@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.lang.reflect.Constructor;
 
-import com.github.wnebyte.editor.util.Logger;
+import com.github.wnebyte.editor.util.Log;
 import imgui.ImGui;
 import org.joml.Vector4f;
 import com.github.wnebyte.editor.project.Context;
@@ -61,7 +61,7 @@ public class PropertiesWindow extends ImGuiWindow {
                                 if (obj != null) {
                                     activeGameObject.addComponent((Component) obj);
                                 } else {
-                                    Logger.log(TAG, "Could not instantiate component: '" + cls + "'");
+                                    Log.log(TAG, "Could not instantiate component: '" + cls + "'");
                                 }
                             }
                         }
