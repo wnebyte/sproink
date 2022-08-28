@@ -1,9 +1,9 @@
 package com.github.wnebyte.editor.project;
 
-/*
 import java.io.File;
-import org.gradle.tooling.*;
-import org.gradle.tooling.events.task.TaskFinishEvent;
+import org.gradle.tooling.BuildLauncher;
+import org.gradle.tooling.GradleConnector;
+import org.gradle.tooling.ProjectConnection;
 
 public class GradleCompiler {
 
@@ -18,19 +18,9 @@ public class GradleCompiler {
         try (ProjectConnection connection = connector.connect()) {
             BuildLauncher build = connection.newBuild();
             build.forTasks("clean", "build");
-            build.addProgressListener(new ProgressListener() {
-                @Override
-                public void statusChanged(ProgressEvent event) {
-                    if (event instanceof TaskFinishEvent) {
-                        System.out.println("Compile complete");
-                    }
-                }
-            });
             build.run();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 }
-
- */

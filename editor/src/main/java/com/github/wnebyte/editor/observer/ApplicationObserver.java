@@ -57,6 +57,11 @@ public class ApplicationObserver implements Observer {
             handleNewSceneEvent(e);
         } else if (event instanceof WindowBeginLoopEvent) {
             handleWindowBeginLoopEvent();
+        } else if (event instanceof CompileEvent) {
+            Context context = Context.get();
+            if (context != null) {
+                context.compile();
+            }
         }
     }
 

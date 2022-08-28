@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
-
 import org.joml.Vector2f;
 import com.google.gson.Gson;
 import com.github.wnebyte.sproink.core.Transform;

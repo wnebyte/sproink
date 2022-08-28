@@ -1,8 +1,10 @@
 package com.github.wnebyte.editor.project;
 
 import java.net.*;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.HashSet;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
@@ -11,16 +13,16 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-
-import com.github.wnebyte.editor.scenes.LevelEditorSceneInitializer;
-import com.github.wnebyte.sproink.scenes.LevelSceneInitializer;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
+import com.github.wnebyte.editor.scenes.LevelEditorSceneInitializer;
+import com.github.wnebyte.editor.util.Log;
 import com.github.wnebyte.sproink.core.Prefab;
 import com.github.wnebyte.sproink.core.ecs.Component;
 import com.github.wnebyte.sproink.core.scene.SceneInitializer;
+import com.github.wnebyte.sproink.scenes.LevelSceneInitializer;
 
 public class Context {
 
@@ -71,6 +73,8 @@ public class Context {
         }
     }
 
+    private static final String TAG = "Context";
+
     private static final Unmarshaller unmarshaller;
 
     private static final Marshaller marshaller;
@@ -97,13 +101,19 @@ public class Context {
 
     private final Set<Class<? extends SceneInitializer>> sceneInitializers;
 
-    private final ScheduledExecutorService executor;
+    private final ExecutorService executor;
 
-   // private final GradleCompiler compiler;
+    private final GradleCompiler compiler;
 
-    private final Reflections reflections;
+    private Reflections reflections;
 
     private ClassLoader classLoader;
+
+    private Class<? extends SceneInitializer> editorSceneInitializer
+            = LevelEditorSceneInitializer.class;
+
+    private Class<? extends SceneInitializer> sceneInitializer
+            = LevelSceneInitializer.class;
 
     private Context(File projectFile) {
         this.projectFile = projectFile;
@@ -112,23 +122,10 @@ public class Context {
         this.prefabs = new HashSet<>();
         this.components = new HashSet<>();
         this.sceneInitializers = new HashSet<>();
-        this.executor = Executors.newScheduledThreadPool(1);
-        try {
-            this.classLoader = new URLClassLoader(new URL[] {
-                    new File(project.getOutDir()).toURI().toURL()
-            }, this.getClass().getClassLoader());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        ConfigurationBuilder conf = new ConfigurationBuilder();
-        conf.setClassLoaders(new ClassLoader[]{classLoader});
-        conf.setUrls(ClasspathHelper.forClassLoader(classLoader));
-        conf.setScanners(new SubTypesScanner());
-        this.reflections = new Reflections(conf);
-        this.prefabs.addAll(getSubTypesOf(Prefab.class));
-        this.components.addAll(getSubTypesOf(Component.class));
-        this.sceneInitializers.addAll(getSubTypesOf(SceneInitializer.class));
-      //  this.compiler = new GradleCompiler(new File(project.getProjectDir()));
+        this.executor = Executors.newSingleThreadExecutor();
+        this.compiler = new GradleCompiler(new File(project.getProjectDir()));
+        loadClassLoader();
+        loadClasses();
     }
 
     private <T> Set<Class<? extends T>> getSubTypesOf(Class<T> cls) {
@@ -136,21 +133,39 @@ public class Context {
         return set;
     }
 
-    /*
-    public void compile() {
-        compiler.compile();
+    private void loadClassLoader() {
+        try {
+            this.classLoader = new URLClassLoader(new URL[] {
+                    new File(project.getOutDir()).toURI().toURL()
+            }, this.getClass().getClassLoader());
+            ConfigurationBuilder conf = new ConfigurationBuilder();
+            conf.setClassLoaders(new ClassLoader[]{classLoader});
+            conf.setUrls(ClasspathHelper.forClassLoader(classLoader));
+            conf.setScanners(new SubTypesScanner());
+            this.reflections = new Reflections(conf);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-     */
 
-    private void schedule() {
-        /*
-        executor.scheduleAtFixedRate(() -> {
-            prefabs.addAll(fetchSubTypesOf(Prefab.class));
-            components.addAll(fetchSubTypesOf(Component.class));
-            sceneInitializers.addAll(fetchSubTypesOf(SceneInitializer.class));
-        }, 0, 60, TimeUnit.SECONDS);
+    private void loadClasses() {
+        prefabs.clear();
+        components.clear();
+        sceneInitializers.clear();
+        prefabs.addAll(getSubTypesOf(Prefab.class));
+        components.addAll(getSubTypesOf(Component.class));
+        sceneInitializers.addAll(getSubTypesOf(SceneInitializer.class));
+        setEditorSceneInitializer(LevelEditorSceneInitializer.class);
+        setSceneInitializer(LevelSceneInitializer.class);
+    }
 
-         */
+    public void compile() {
+        executor.submit(() -> {
+            compiler.compile();
+            loadClassLoader();
+            loadClasses();
+            Log.log(TAG, "compilation complete");
+        });
     }
 
     public void saveProject() {
@@ -171,22 +186,7 @@ public class Context {
         return project;
     }
 
-    public Class<? extends Prefab> getPrefab(String canonicalName) {
-        return prefabs.stream().filter(cls -> cls.getCanonicalName().equals(canonicalName))
-                .findFirst().orElse(null);
-    }
-
-    public Class<? extends Component> getComponent(String canonicalName) {
-        return components.stream().filter(cls -> cls.getCanonicalName().equals(canonicalName))
-                .findFirst().orElse(null);
-    }
-
-    public Class<? extends SceneInitializer> getSceneInitializer(String canonicalName) {
-        return sceneInitializers.stream().filter(cls -> cls.getCanonicalName().equals(canonicalName))
-                .findFirst().orElse(null);
-    }
-
-    public Prefab newPrefab(String canonicalName) {
+    public synchronized Prefab newPrefab(String canonicalName) {
         try {
             return (Prefab) classLoader.loadClass(canonicalName).newInstance();
         } catch (Exception e) {
@@ -195,7 +195,7 @@ public class Context {
         }
     }
 
-    public Component newComponent(String canonicalName) {
+    public synchronized Component newComponent(String canonicalName) {
         try {
             return (Component) classLoader.loadClass(canonicalName).newInstance();
         } catch (Exception e) {
@@ -204,7 +204,7 @@ public class Context {
         }
     }
 
-    public SceneInitializer newSceneInitializer(String canonicalName) {
+    public synchronized SceneInitializer newSceneInitializer(String canonicalName) {
         try {
             return (SceneInitializer) classLoader.loadClass(canonicalName).newInstance();
         } catch (Exception e) {
@@ -213,11 +213,13 @@ public class Context {
         }
     }
 
-    private Class<? extends SceneInitializer> editorSceneInitializer
-            = LevelEditorSceneInitializer.class;
+    public synchronized SceneInitializer newEditorSceneInitializer() {
+        return newSceneInitializer(editorSceneInitializer.getCanonicalName());
+    }
 
-    private Class<? extends SceneInitializer> sceneInitializer
-            = LevelSceneInitializer.class;
+    public synchronized SceneInitializer newSceneInitializer() {
+        return newSceneInitializer(sceneInitializer.getCanonicalName());
+    }
 
     public Class<? extends SceneInitializer> getEditorSceneInitializer() {
         return editorSceneInitializer;
@@ -227,20 +229,12 @@ public class Context {
         editorSceneInitializer = cls;
     }
 
-    public SceneInitializer newEditorSceneInitializer() {
-        return newSceneInitializer(editorSceneInitializer.getCanonicalName());
-    }
-
     public Class<? extends SceneInitializer> getSceneInitializer() {
         return sceneInitializer;
     }
 
     public void setSceneInitializer(Class<? extends SceneInitializer> cls) {
         sceneInitializer = cls;
-    }
-
-    public SceneInitializer newSceneInitializer() {
-        return newSceneInitializer(sceneInitializer.getCanonicalName());
     }
 
     public Set<Class<? extends Prefab>> getPrefabs() {
