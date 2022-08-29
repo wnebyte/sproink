@@ -16,7 +16,7 @@ import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import com.github.wnebyte.editor.scenes.LevelEditorSceneInitializer;
-import com.github.wnebyte.editor.util.Log;
+import com.github.wnebyte.sproink.util.Log;
 import com.github.wnebyte.sproink.core.Prefab;
 import com.github.wnebyte.sproink.core.Component;
 import com.github.wnebyte.sproink.core.SceneInitializer;
@@ -36,7 +36,8 @@ public class Context {
         Context context = new Context(projectFile);
         context.getProject().setName(name);
         context.getProject().setProjectDir(root.getAbsolutePath());
-        context.syncProject();
+        context.saveProject();
+        context.getProject().format();
         Context.instance = context;
         return get();
     }
@@ -162,7 +163,7 @@ public class Context {
             compiler.compile();
             loadClassLoader();
             loadClasses();
-            Log.log(TAG, "compilation complete");
+            Log.i(TAG, "compilation complete");
         });
     }
 

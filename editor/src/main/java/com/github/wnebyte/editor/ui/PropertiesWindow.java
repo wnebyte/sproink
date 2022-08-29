@@ -2,19 +2,13 @@ package com.github.wnebyte.editor.ui;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.lang.reflect.Constructor;
-
-import com.github.wnebyte.editor.util.Log;
-import imgui.ImGui;
 import org.joml.Vector4f;
+import imgui.ImGui;
 import com.github.wnebyte.editor.project.Context;
-import com.github.wnebyte.sproink.components.SpriteRenderer;
-import com.github.wnebyte.sproink.renderer.PickingTexture;
 import com.github.wnebyte.sproink.core.GameObject;
 import com.github.wnebyte.sproink.core.Component;
+import com.github.wnebyte.sproink.components.SpriteRenderer;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
-import static com.github.wnebyte.util.Reflections.newInstance;
-import static com.github.wnebyte.util.Reflections.getDefaultConstructor;
 
 public class PropertiesWindow extends ImGuiWindow {
 
@@ -28,15 +22,12 @@ public class PropertiesWindow extends ImGuiWindow {
 
     private final List<Vector4f> activeGameObjectsOgColor;
 
-    private final PickingTexture pickingTexture;
-
-    public PropertiesWindow(PickingTexture pickingTexture) {
-        this(true, pickingTexture);
+    public PropertiesWindow() {
+        this(true);
     }
 
-    public PropertiesWindow(boolean visible, PickingTexture pickingTexture) {
+    public PropertiesWindow(boolean visible) {
         this.visible.set(visible);
-        this.pickingTexture = pickingTexture;
         this.activeGameObjects = new ArrayList<>();
         this.activeGameObjectsOgColor = new ArrayList<>();
     }
@@ -55,15 +46,8 @@ public class PropertiesWindow extends ImGuiWindow {
                 for (Class<? extends Component> cls : context.getComponents()) {
                     if (ImGui.menuItem("Add " + cls.getSimpleName())) {
                         if (activeGameObject.getComponent(cls) == null) {
-                            Constructor<?> cons = getDefaultConstructor(cls);
-                            if (cons != null) {
-                                Object obj = newInstance(cons);
-                                if (obj != null) {
-                                    activeGameObject.addComponent((Component) obj);
-                                } else {
-                                    Log.log(TAG, "Could not instantiate component: '" + cls + "'");
-                                }
-                            }
+                            Component c = context.newComponent(cls.getCanonicalName());
+                            activeGameObject.addComponent(c);
                         }
                     }
                 }
@@ -86,7 +70,8 @@ public class PropertiesWindow extends ImGuiWindow {
             for (GameObject go : activeGameObjects) {
                 SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
                 if (spr != null) {
-                    spr.setColor(activeGameObjectsOgColor.get(i));
+                    Vector4f color = activeGameObjectsOgColor.get(i);
+                    spr.setColor(color);
                 }
                 i++;
             }
@@ -115,9 +100,5 @@ public class PropertiesWindow extends ImGuiWindow {
             activeGameObjectsOgColor.add(new Vector4f());
         }
         activeGameObjects.add(go);
-    }
-
-    public PickingTexture getPickingTexture() {
-        return pickingTexture;
     }
 }

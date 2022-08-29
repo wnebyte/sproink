@@ -152,6 +152,11 @@ public class Scene {
         renderer.render();
     }
 
+    public void render(Shader shader) {
+        renderer.setShader(shader);
+        renderer.render();
+    }
+
     public void destroy() {
         for (GameObject go : gameObjects) {
             go.destroy();

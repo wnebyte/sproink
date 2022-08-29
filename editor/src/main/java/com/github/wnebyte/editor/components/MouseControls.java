@@ -5,6 +5,7 @@ import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector4f;
 import com.github.wnebyte.editor.ui.PropertiesWindow;
+import com.github.wnebyte.sproink.util.Log;
 import com.github.wnebyte.editor.util.Settings;
 import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.core.Scene;
@@ -22,6 +23,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 public class MouseControls extends Component {
+
+    private static final String TAG = "MouseControls";
 
     private static final Vector4f DEFAULT_COLOR
             = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -96,12 +99,12 @@ public class MouseControls extends Component {
         else if (!isDragging() && isMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && debounce < 0) {
             int x = (int)MouseListener.getScreenX();
             int y = (int)MouseListener.getScreenY();
-            int id = props.getPickingTexture().readPixel(x, y);
-            GameObject pickedGo = scene.getGameObject(id);
-            if (pickedGo != null && pickedGo.getComponent(NonPickable.class) == null) {
-                props.setActiveGameObject(pickedGo);
-                System.out.printf("(Debug): ID: '%d'%n", id);
-            } else if (pickedGo == null && !isDragging()) {
+            int id = Window.getPickingTexture().readPixel(x, y);
+            GameObject go = scene.getGameObject(id);
+            if (go != null && go.getComponent(NonPickable.class) == null) {
+                props.setActiveGameObject(go);
+                Log.i(TAG, "ID: '%d'", id);
+            } else if (go == null && !isDragging()) {
                 props.clearSelected();
             }
             debounce = debounceTime;
@@ -142,14 +145,15 @@ public class MouseControls extends Component {
                 screenEndY = tmp;
             }
 
-            float[] ids = props.getPickingTexture()
-                    .readPixels(new Vector2i(screenStartX, screenStartY), new Vector2i(screenEndX, screenEndY));
+            float[] ids = Window.getPickingTexture().readPixels(
+                    new Vector2i(screenStartX, screenStartY),
+                    new Vector2i(screenEndX, screenEndY));
             Set<Integer> uniqueIds = Sets.of(ids);
 
             for (Integer id : uniqueIds) {
-                GameObject pickedGo = Window.getScene().getGameObject(id);
-                if (pickedGo != null && pickedGo.getComponent(NonPickable.class) == null) {
-                    props.addActiveGameObject(pickedGo);
+                GameObject go = Window.getScene().getGameObject(id);
+                if (go != null && go.getComponent(NonPickable.class) == null) {
+                    props.addActiveGameObject(go);
                 }
             }
 
@@ -157,20 +161,19 @@ public class MouseControls extends Component {
     }
 
     private boolean blockInSquare(float x, float y) {
-        PropertiesWindow props = Window.getImGuiLayer().getWindow(PropertiesWindow.class);
         Vector2f start = new Vector2f(x, y);
         Vector2f end = new Vector2f(start).add(new Vector2f(Settings.GRID_WIDTH, Settings.GRID_HEIGHT));
         Vector2f startScreenf = MouseListener.world2Screen(start);
         Vector2f endScreenf = MouseListener.world2Screen(end);
         Vector2i startScreen = new Vector2i((int)startScreenf.x + 2, (int)startScreenf.y + 2);
         Vector2i endScreen = new Vector2i((int)endScreenf.x - 2, (int)endScreenf.y - 2);
-        float[] ids = props.getPickingTexture().readPixels(startScreen, endScreen);
+        float[] ids = Window.getPickingTexture().readPixels(startScreen, endScreen);
 
         for (int i = 0; i < ids.length; i++) {
             float id = ids[i];
             if (id >= 0) {
-                GameObject pickedGo = Window.getScene().getGameObject((int)id);
-                if (pickedGo.getComponent(NonPickable.class) == null) {
+                GameObject go = Window.getScene().getGameObject((int)id);
+                if (go.getComponent(NonPickable.class) == null) {
                     return true;
                 }
             }

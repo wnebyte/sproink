@@ -29,7 +29,7 @@ public class ComponentTypeAdapter implements JsonSerializer<Component>, JsonDese
         } catch (ClassNotFoundException e) {
             throw new JsonParseException(
                     String.format(
-                            "Unknown element type '%s'.", type
+                            "Unknown component type '%s'", type
                     ), e
             );
         }

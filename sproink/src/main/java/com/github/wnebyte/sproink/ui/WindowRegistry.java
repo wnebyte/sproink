@@ -1,15 +1,18 @@
-package com.github.wnebyte.sproink.util;
+package com.github.wnebyte.sproink.ui;
 
 import java.util.List;
 import java.util.ArrayList;
-import com.github.wnebyte.sproink.ui.ImGuiWindow;
 
 public class WindowRegistry {
 
     private final List<ImGuiWindow> windows;
 
     public WindowRegistry() {
-        this.windows = new ArrayList<>();
+        this(new ArrayList<>());
+    }
+
+    public WindowRegistry(List<ImGuiWindow> windows) {
+        this.windows = windows;
     }
 
     public <T extends ImGuiWindow> void addWindow(ImGuiWindow window) {
@@ -29,9 +32,14 @@ public class WindowRegistry {
     public <T extends ImGuiWindow> T getWindow(Class<T> windowClass) {
         for (ImGuiWindow window : windows) {
             if (windowClass.isAssignableFrom(window.getClass())) {
-                return windowClass.cast(window);
+                try {
+                    return windowClass.cast(window);
+                } catch (ClassCastException e) {
+                    assert false : String.format("Error: (WindowRegistry) Casting ImGuiWindow: '%s'", window.getClass());
+                }
             }
         }
+
         return null;
     }
 

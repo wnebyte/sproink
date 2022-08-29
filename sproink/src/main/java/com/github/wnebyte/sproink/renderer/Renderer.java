@@ -50,7 +50,8 @@ public class Renderer {
     public void render() {
         shader.use();
         for (int i = 0; i < batches.size(); i++) {
-            batches.get(i).render();
+            RenderBatch batch = batches.get(i);
+            batch.render();
         }
     }
 

@@ -2,14 +2,12 @@ package com.github.wnebyte.sproink.renderer;
 
 import java.util.List;
 import java.util.ArrayList;
-
-import com.github.wnebyte.sproink.components.SpriteRenderer;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.joml.Matrix4f;
 import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.core.GameObject;
-
+import com.github.wnebyte.sproink.components.SpriteRenderer;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;

@@ -15,20 +15,28 @@ import com.github.wnebyte.sproink.physics2d.components.RigidBody2D;
 
 public class Physics2D {
 
-    private final Vec2 gravity = new Vec2(0, -10.0f);
+    private Vec2 gravity = new Vec2(0, -10.0f);
 
     private final World world = new World(gravity);
 
     private float physicsTime = 0.0f;
 
-    private float physicsTimeStep = 1.0f / 60.0f;
+    private final float physicsTimeStep = 1.0f / 60.0f;
 
-    private int velocityIterations = 8;
+    private final int velocityIterations = 8;
 
-    private int positionIterations = 3;
+    private final int positionIterations = 3;
 
     public Physics2D() {
         this.world.setContactListener(new EngineContactListener());
+    }
+
+    public void update(float dt) {
+        physicsTime += dt;
+        if (physicsTime >= 0.0f) {
+            physicsTime -= physicsTimeStep;
+            world.step(physicsTimeStep, velocityIterations, positionIterations);
+        }
     }
 
     public void add(GameObject go) {
@@ -92,14 +100,6 @@ public class Physics2D {
         }
     }
 
-    public void update(float dt) {
-        physicsTime += dt;
-        if (physicsTime >= 0.0f) {
-            physicsTime -= physicsTimeStep;
-            world.step(physicsTimeStep, velocityIterations, positionIterations);
-        }
-    }
-
     public void setIsSensor(RigidBody2D rb) {
         Body body = rb.getRawBody();
         if (body == null) return;
@@ -111,7 +111,7 @@ public class Physics2D {
         }
     }
 
-    public void setNotSensor(RigidBody2D rb) {
+    public void setIsNotSensor(RigidBody2D rb) {
         Body body = rb.getRawBody();
         if (body == null) return;
 
@@ -130,10 +130,15 @@ public class Physics2D {
         return new Vector2f(gravity.x, gravity.y);
     }
 
+    public void setGravity(Vector2f gravity) {
+        Vec2 vec = new Vec2(gravity.x, gravity.y);
+        this.gravity = vec;
+        world.setGravity(vec);
+    }
+
     public RaycastInfo raycast(GameObject reqGo, Vector2f point1, Vector2f point2) {
         RaycastInfo callback = new RaycastInfo(reqGo);
-        world.raycast(callback, new Vec2(point1.x, point1.y),
-                new Vec2(point2.x, point2.y));
+        world.raycast(callback, new Vec2(point1.x, point1.y), new Vec2(point2.x, point2.y));
         return callback;
     }
 
@@ -141,7 +146,7 @@ public class Physics2D {
         Body body = rb.getRawBody();
         if (body == null) return;
 
-        int size = fixtureListSize(body);
+        int size = getFixtureListSize(body);
         for (int i = 0; i < size; i++) {
             body.destroyFixture(body.getFixtureList());
         }
@@ -154,7 +159,7 @@ public class Physics2D {
         Body body = rb.getRawBody();
         if (body == null) return;
 
-        int size = fixtureListSize(body);
+        int size = getFixtureListSize(body);
         for (int i = 0; i < size; i++) {
             body.destroyFixture(body.getFixtureList());
         }
@@ -167,7 +172,7 @@ public class Physics2D {
         Body body = rb.getRawBody();
         if (body == null) return;
 
-        int size = fixtureListSize(body);
+        int size = getFixtureListSize(body);
         for (int i = 0; i < size; i++) {
             body.destroyFixture(body.getFixtureList());
         }
@@ -219,7 +224,7 @@ public class Physics2D {
         addCircleCollider(rb, collider.getBottomCircle());
     }
 
-    private int fixtureListSize(Body body) {
+    private int getFixtureListSize(Body body) {
         int size = 0;
         Fixture fixture = body.getFixtureList();
         while (fixture != null) {
@@ -229,7 +234,7 @@ public class Physics2D {
         return size;
     }
 
-    public boolean checkOnGround(
+    public boolean onGround(
             GameObject gameObject,
             float innerPlayerWidth,
             float height) {

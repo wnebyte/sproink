@@ -1,4 +1,4 @@
-package com.github.wnebyte.sproink.core.ecs;
+package com.github.wnebyte.sproink.core;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

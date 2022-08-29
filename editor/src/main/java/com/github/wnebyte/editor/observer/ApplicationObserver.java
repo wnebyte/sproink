@@ -4,7 +4,6 @@ import java.io.File;
 import java.nio.file.Path;
 import com.github.wnebyte.editor.project.Context;
 import com.github.wnebyte.editor.observer.event.*;
-import com.github.wnebyte.editor.util.Log;
 import com.github.wnebyte.editor.util.Files;
 import com.github.wnebyte.editor.util.Settings;
 import com.github.wnebyte.sproink.core.Window;
@@ -14,6 +13,7 @@ import com.github.wnebyte.sproink.ui.ImGuiWindow;
 import com.github.wnebyte.sproink.ui.GameViewWindow;
 import com.github.wnebyte.sproink.observer.Observer;
 import com.github.wnebyte.sproink.observer.event.*;
+import com.github.wnebyte.sproink.util.Log;
 import com.github.wnebyte.util.UriBuilder;
 
 public class ApplicationObserver implements Observer {
@@ -100,7 +100,7 @@ public class ApplicationObserver implements Observer {
                 window.hide();
             }
         }
-        Log.log(TAG, "Start Play");
+        Log.i(TAG, "Start Play");
     }
 
     private void handleGameEngineStopPlayEvent(GameEngineStopPlayEvent ignoredEvent) {
@@ -118,7 +118,7 @@ public class ApplicationObserver implements Observer {
             }
         }
 
-        Log.log(TAG, "Stop Play");
+        Log.i(TAG, "Stop Play");
     }
 
     /**
@@ -185,9 +185,9 @@ public class ApplicationObserver implements Observer {
             if (!file.exists()) {
                 boolean success = Files.create(file);
                 if (success) {
-                    Log.log(TAG, "Scene: '%s' was successfully created", event.getSceneName());
+                    Log.i(TAG, "Scene: '%s' was successfully created", event.getSceneName());
                 } else {
-                    Log.log(TAG, "Scene: '%s' could not be created", event.getSceneName());
+                    Log.e(TAG, "Scene: '%s' could not be created", event.getSceneName());
                 }
             }
         }
@@ -195,6 +195,7 @@ public class ApplicationObserver implements Observer {
 
     private void handleWindowBeginLoopEvent() {
         Scene.setGson(Settings.GSON);
+        Log.i(TAG, "onWindowBeginLoopEvent()");
 
         if (PROJECT_DIR_PATH.toFile().exists()) {
             String path = Files.read(PROJECT_DIR_PATH);
@@ -218,9 +219,9 @@ public class ApplicationObserver implements Observer {
             String projectDir = context.getProject().getProjectDir();
             String outDir = context.getProject().getOutDir();
             String assetsDir = context.getProject().getAssetsDir();
-            Log.log(TAG, "projectDir: " + projectDir);
-            Log.log(TAG, "outDir: " + outDir);
-            Log.log(TAG, "assetsDir: " + assetsDir);
+            Log.i(TAG, "projectDir: " + projectDir);
+            Log.i(TAG, "outDir: " + outDir);
+            Log.i(TAG, "assetsDir: " + assetsDir);
         }
     }
 }

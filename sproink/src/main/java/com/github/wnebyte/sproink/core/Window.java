@@ -1,20 +1,20 @@
 package com.github.wnebyte.sproink.core;
 
-import com.github.wnebyte.sproink.observer.event.WindowBeginLoopEvent;
 import org.joml.Vector4f;
 import org.lwjgl.Version;
-import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
 import org.lwjgl.openal.ALCapabilities;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWErrorCallback;
 import com.github.wnebyte.sproink.ui.ImGuiLayer;
-import com.github.wnebyte.sproink.util.ResourceFlyWeight;
 import com.github.wnebyte.sproink.renderer.*;
 import com.github.wnebyte.sproink.observer.EventSystem;
 import com.github.wnebyte.sproink.observer.event.WindowInitEvent;
+import com.github.wnebyte.sproink.observer.event.WindowBeginLoopEvent;
+import com.github.wnebyte.sproink.util.Assets;
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.openal.ALC10.*;
@@ -60,13 +60,27 @@ public class Window {
 
     private long audioDevice;
 
-    private Window() {
-        this.title = "Engine";
+    private WindowArgs args;
+
+    private Window(WindowArgs args) {
+        this.title = args.title;
+        this.args = args;
+    }
+
+    public static void initialize(WindowArgs args) {
+        if (Window.window != null) {
+            throw new IllegalStateException(
+                    "Window has already been initialized"
+            );
+        }
+        Window.window = new Window(args);
     }
 
     public static Window get() {
         if (Window.window == null) {
-            Window.window = new Window();
+            throw new IllegalStateException(
+                    "Window has not yet been initialized"
+            );
         }
         return Window.window;
     }
@@ -88,6 +102,7 @@ public class Window {
     public void run() {
         System.out.println("Hello LWJGL " + Version.getVersion());
         init();
+        Window.setScene(args.scene, args.sceneInitializer);
         EventSystem.notify(null, new WindowInitEvent());
         EventSystem.notify(null, new WindowBeginLoopEvent());
         loop();
@@ -105,7 +120,10 @@ public class Window {
 
         // Terminate GLFW and free the error callback
         glfwTerminate();
-        glfwSetErrorCallback(null).free();
+        GLFWErrorCallback callback = glfwSetErrorCallback(null);
+        if (callback != null) {
+            callback.free();
+        }
     }
 
     private void init() {
@@ -119,9 +137,9 @@ public class Window {
             );
         }
 
-        Resolution resolution = getMonitorResolution();
-        width = resolution.width;
-        height = resolution.height;
+        Resolution res = Window.getResolution();
+        width = res.width;
+        height = res.height;
 
         // Configure GLFW
         glfwDefaultWindowHints();
@@ -181,7 +199,7 @@ public class Window {
         pickingTexture = new PickingTexture(width, height);
         glViewport(0, 0, width, height);
 
-        imGuiLayer = new ImGuiLayer(glfwWindow);
+        imGuiLayer = new ImGuiLayer(glfwWindow, args);
         imGuiLayer.init();
     }
 
@@ -190,8 +208,8 @@ public class Window {
         float endTime;
         float dt = -1.0f;
 
-        Shader defaultShader = ResourceFlyWeight.getShader("/shaders/default.glsl");
-        Shader pickingShader = ResourceFlyWeight.getShader("/shaders/picking.glsl");
+        Shader defaultShader = Assets.getShader("../assets/shaders/default.glsl");
+        Shader pickingShader = Assets.getShader("../assets/shaders/picking.glsl");
 
         while (!glfwWindowShouldClose(glfwWindow)) {
             // Poll events
@@ -204,8 +222,7 @@ public class Window {
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            scene.setShader(pickingShader);
-            scene.render();
+            scene.render(pickingShader);
             pickingTexture.unbind();
             glEnable(GL_BLEND);
 
@@ -217,13 +234,12 @@ public class Window {
             glClear(GL_COLOR_BUFFER_BIT);
 
             if (dt >= 0) {
-                scene.setShader(defaultShader);
                 if (runtimePlaying) {
                     scene.update(dt);
                 } else {
                     scene.editorUpdate(dt);
                 }
-                scene.render();
+                scene.render(defaultShader);
                 DebugDraw.draw();
             }
             frameBuffer.unbind();
@@ -279,14 +295,17 @@ public class Window {
         window.runtimePlaying = value;
     }
 
-    public static Resolution getMonitorResolution() {
+    public static Resolution getResolution() {
+        return getResolution(glfwGetPrimaryMonitor());
+    }
+
+    public static Resolution getResolution(long monitor) {
         int width = 0;
         int height = 0;
         int size = width * height;
-        int index = -1;
+        boolean def = false;
 
-        int i = 0;
-        GLFWVidMode.Buffer buffer = glfwGetVideoModes(glfwGetPrimaryMonitor());
+        GLFWVidMode.Buffer buffer = glfwGetVideoModes(monitor);
         for (GLFWVidMode mode : buffer) {
             int tmpWidth = mode.width();
             int tmpHeight = mode.height();
@@ -295,13 +314,10 @@ public class Window {
                 width = tmpWidth;
                 height = tmpHeight;
                 size = tmpSize;
-                index = i;
+                def = true;
             }
-            i++;
         }
 
-        return (index == -1) ?
-                new Resolution(DEFAULT_WIDTH, DEFAULT_HEIGHT) :
-                new Resolution(width, height);
+        return def ? new Resolution(width, height) : new Resolution(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 }

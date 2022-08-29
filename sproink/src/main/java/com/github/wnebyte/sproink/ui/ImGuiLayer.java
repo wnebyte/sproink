@@ -1,19 +1,14 @@
 package com.github.wnebyte.sproink.ui;
 
-import java.io.File;
 import java.util.List;
 import imgui.*;
-import imgui.callback.ImStrConsumer;
-import imgui.callback.ImStrSupplier;
 import imgui.flag.*;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 import imgui.type.ImBoolean;
-import com.github.wnebyte.sproink.core.KeyListener;
-import com.github.wnebyte.sproink.core.MouseListener;
-import com.github.wnebyte.sproink.core.Window;
-import com.github.wnebyte.sproink.core.Scene;
-import com.github.wnebyte.sproink.util.WindowRegistry;
+import imgui.callback.ImStrConsumer;
+import imgui.callback.ImStrSupplier;
+import com.github.wnebyte.sproink.core.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glBindFramebuffer;
@@ -30,11 +25,14 @@ public class ImGuiLayer {
 
     private final WindowRegistry windowRegistry;
 
-    public ImGuiLayer(long glfwWindow) {
+    private WindowArgs args;
+
+    public ImGuiLayer(long glfwWindow, WindowArgs args) {
         this.glfwWindow = glfwWindow;
         this.imGuiGl3 = new ImGuiImplGl3();
         this.imGuiGlfw = new ImGuiImplGlfw();
-        this.windowRegistry = new WindowRegistry();
+        this.windowRegistry = new WindowRegistry(args.windows);
+        this.args = args;
     }
 
     public void init() {
@@ -46,12 +44,12 @@ public class ImGuiLayer {
         // Initialize ImGuiIO config
         final ImGuiIO io = ImGui.getIO();
 
-        io.setIniFilename("../imgui.ini");
-        io.setConfigFlags(ImGuiConfigFlags.DockingEnable);
-        /*
-        io.addConfigFlags(ImGuiConfigFlags.DockingEnable);
-        io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
-         */
+        if (args.iniFileName != null) {
+            io.setIniFilename(args.iniFileName);
+        }
+        if (args.docking) {
+            io.setConfigFlags(ImGuiConfigFlags.DockingEnable);
+        }
         io.setBackendPlatformName("imgui_java_impl_glfw");
 
         // ------------------------------------------------------------
@@ -140,13 +138,11 @@ public class ImGuiLayer {
         fontConfig.setGlyphRanges(fontAtlas.getGlyphRangesDefault());
 
         fontConfig.setPixelSnapH(true);
-        /*
-        fontAtlas.addFontFromFileTTF(ResourceUtil.getAbsolutePath("/fonts/segoeui.ttf"),
-                18, fontConfig);
-         */
-        fontAtlas.addFontFromFileTTF(new File("../assets/fonts/segoeui.ttf").getAbsolutePath(),
-                18, fontConfig);
-
+        if (args.fonts != null) {
+            for (FontConfig font : args.fonts) {
+                fontAtlas.addFontFromFileTTF(font.getPath(), font.getPixelSize(), fontConfig);
+            }
+        }
         fontConfig.destroy(); // After all fonts were added we don't need this config more
 
         // Method initializes LWJGL3 renderer.
@@ -158,7 +154,9 @@ public class ImGuiLayer {
 
     public void update(float dt, Scene scene) {
         startFrame();
-        setupDockSpace();
+        if (args.docking) {
+            setupDockSpace();
+        }
         scene.imGui();
         getAllWindows().forEach(ImGuiWindow::imGui);
         endFrame();

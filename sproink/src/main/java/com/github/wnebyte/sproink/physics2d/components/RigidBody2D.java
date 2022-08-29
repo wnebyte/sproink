@@ -1,11 +1,11 @@
 package com.github.wnebyte.sproink.physics2d.components;
 
-import com.github.wnebyte.sproink.physics2d.enums.BodyType;
 import org.joml.Vector2f;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.core.Component;
+import com.github.wnebyte.sproink.physics2d.enums.BodyType;
 
 public class RigidBody2D extends Component {
 
@@ -170,10 +170,10 @@ public class RigidBody2D extends Component {
         }
     }
 
-    public void setNotSensor() {
+    public void setIsNotSensor() {
         this.isSensor = false;
         if (rawBody != null) {
-            Window.getScene().getPhysics().setNotSensor(this);
+            Window.getScene().getPhysics().setIsNotSensor(this);
         }
     }
 }

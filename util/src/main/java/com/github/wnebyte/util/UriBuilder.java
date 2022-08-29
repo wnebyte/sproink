@@ -28,6 +28,12 @@ public class UriBuilder {
 
     private final List<String> paths = new ArrayList<>();
 
+    public UriBuilder() {}
+
+    public UriBuilder(String authority) {
+        setAuthority(authority);
+    }
+
     public UriBuilder setAuthority(String authority) {
         this.authority = authority;
         return this;
