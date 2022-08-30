@@ -2,7 +2,9 @@ package com.github.wnebyte.sproink.core;
 
 import java.util.*;
 import imgui.ImGui;
+import imgui.type.ImBoolean;
 import com.google.gson.Gson;
+import com.github.wnebyte.sproink.util.Settings;
 
 public class GameObject {
 
@@ -20,6 +22,8 @@ public class GameObject {
 
     private final List<Component> components;
 
+    private transient final List<ImBoolean> visibilities;
+
     private boolean serialize = true;
 
     private boolean dead = false;
@@ -27,6 +31,7 @@ public class GameObject {
     public GameObject(String name) {
         this.name = name;
         this.components = new ArrayList<>();
+        this.visibilities = new ArrayList<>();
         this.id = ID_COUNTER++;
     }
 
@@ -58,9 +63,17 @@ public class GameObject {
     }
 
     public void imGui() {
-        for (Component c : components) {
-            if (ImGui.collapsingHeader(c.getClass().getSimpleName())) {
+        for (int i = 0; i < components.size(); i++) {
+            Component c = components.get(i);
+            ImBoolean visible = visibilities.get(i);
+            if (ImGui.collapsingHeader(c.getClass().getSimpleName(), visible)) {
                 c.imGui();
+            }
+            if (c.getClass() == Transform.class) {
+                visible.set(true);
+            } else if (!visible.get()) {
+                removeComponent(c.getClass());
+                i--;
             }
         }
     }
@@ -85,6 +98,7 @@ public class GameObject {
             Component c = components.get(i);
             if (componentClass.isAssignableFrom(c.getClass())) {
                 components.remove(i);
+                visibilities.remove(i);
                 return;
             }
         }
@@ -93,6 +107,7 @@ public class GameObject {
     public void addComponent(Component c) {
         c.generateId();
         components.add(c);
+        visibilities.add(new ImBoolean(true));
         c.gameObject = this;
     }
 
@@ -101,7 +116,7 @@ public class GameObject {
     }
 
     public GameObject copy() {
-        Gson gson = Scene.getGson();
+        Gson gson = Settings.GSON;
         String json = gson.toJson(this);
         GameObject go = gson.fromJson(json, GameObject.class);
         return go;

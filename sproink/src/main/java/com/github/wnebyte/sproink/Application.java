@@ -31,6 +31,7 @@ public class Application {
         // window
         WindowArgs args = new WindowArgs.Builder()
                 .setTitle(conf.title)
+                .setAssetsDir(conf.assetsDir)
                 .setEnableDocking(conf.docking)
                 .setIniFileName(conf.iniFileName)
                 .setScene(conf.scene)

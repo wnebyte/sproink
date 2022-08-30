@@ -31,7 +31,7 @@ public class JImGui {
 
         ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 0);
 
-        float lineHeight = ImGui.getFontSize() + ImGui.getStyle().getFramePaddingY() * 2.0f;
+        float lineHeight = ImGui.getFontSize() + ImGui.getStyle().getFramePaddingY() * 2;
         Vector2f buttonSize = new Vector2f(lineHeight + 3.0f, lineHeight);
         float widthEach = (ImGui.calcItemWidth() - buttonSize.x * 2.0f) / 2.0f;
 

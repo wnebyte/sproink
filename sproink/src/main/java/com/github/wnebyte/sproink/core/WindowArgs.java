@@ -21,6 +21,8 @@ public class WindowArgs {
 
     public SceneInitializer sceneInitializer;
 
+    public String assetsDir;
+
     public WindowArgs(
             String title,
             List<ImGuiWindow> windows,
@@ -28,7 +30,8 @@ public class WindowArgs {
             String iniFileName,
             List<FontConfig> fonts,
             String scene,
-            SceneInitializer sceneInitializer
+            SceneInitializer sceneInitializer,
+            String assetsDir
     ) {
         this.title = title;
         this.windows = windows;
@@ -37,6 +40,7 @@ public class WindowArgs {
         this.fonts = fonts;
         this.scene = scene;
         this.sceneInitializer = sceneInitializer;
+        this.assetsDir = assetsDir;
     }
 
     public String getTitle() {
@@ -59,6 +63,18 @@ public class WindowArgs {
         return fonts;
     }
 
+    public String getScene() {
+        return scene;
+    }
+
+    public SceneInitializer getSceneInitializer() {
+        return sceneInitializer;
+    }
+
+    public String getAssetsDir() {
+        return assetsDir;
+    }
+
     public static class Builder {
 
         private String title = "Window";
@@ -73,7 +89,9 @@ public class WindowArgs {
 
         private String scene = null;
 
-        SceneInitializer sceneInitializer = null;
+        private SceneInitializer sceneInitializer = null;
+
+        private String assetsDir = null;
 
         public Builder setTitle(String title) {
             this.title = title;
@@ -126,9 +144,14 @@ public class WindowArgs {
             return this;
         }
 
+        public Builder setAssetsDir(String assetsDir) {
+            this.assetsDir = assetsDir;
+            return this;
+        }
+
         public WindowArgs build() {
             return new WindowArgs(title, windows, docking, iniFileName, fonts,
-                    scene, sceneInitializer);
+                    scene, sceneInitializer, assetsDir);
         }
     }
 

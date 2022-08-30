@@ -7,7 +7,7 @@ import org.joml.Vector3f;
 import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.core.Camera;
 import com.github.wnebyte.sproink.util.JMath;
-import com.github.wnebyte.sproink.util.ResourceFlyWeight;
+import com.github.wnebyte.sproink.util.Assets;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
@@ -21,7 +21,7 @@ public class DebugDraw {
 
     private static final float[] vertexArray = new float[MAX_LINES * 6 * 2];
 
-    private static final Shader shader = ResourceFlyWeight.getShader("/shaders/debugLine2D.glsl");
+    private static Shader shader;
 
     private static int vaoID;
 
@@ -65,6 +65,10 @@ public class DebugDraw {
     }
 
     public static void draw() {
+        draw(shader);
+    }
+
+    public static void draw(Shader shader) {
         if (lines.size() <= 0) {
             return;
         }
@@ -194,5 +198,9 @@ public class DebugDraw {
         }
 
         addLine2D(points[points.length - 1], points[0], color, ftl);
+    }
+
+    public static void setShader(Shader shader) {
+        DebugDraw.shader = shader;
     }
 }

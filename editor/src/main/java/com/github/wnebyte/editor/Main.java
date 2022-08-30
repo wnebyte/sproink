@@ -23,6 +23,7 @@ public class Main extends Application {
     @Override
     public void configure(final Configuration conf) {
         conf.setTitle("Editor");
+        conf.setAssetsDir("../assets");
         conf.setEnableDocking(true);
         conf.setIniFileName("../imgui.ini");
         conf.setScene("non-serial-scene.json");
@@ -44,7 +45,7 @@ public class Main extends Application {
         windows.add(new SceneViewWindow(false));
         windows.add(new ConsoleWindow(false));
         windows.add(new LogWindow(true));
-        windows.add(new DirectoryViewWindow(true));
+        windows.add(new DirectoryViewWindow(false));
         windows.add(new NewProjectWindow(false));
         windows.add(new OpenProjectWindow(false));
         windows.add(new NewSceneWindow(false));

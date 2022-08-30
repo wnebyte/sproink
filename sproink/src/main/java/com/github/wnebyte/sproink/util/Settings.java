@@ -11,7 +11,7 @@ public class Settings {
 
     public static float GRID_HEIGHT = 0.25f;
 
-    public static final Gson GSON = new GsonBuilder()
+    public static Gson GSON = new GsonBuilder()
             .registerTypeAdapter(Component.class, new ComponentTypeAdapter())
             .registerTypeAdapter(GameObject.class, new GameObjectTypeAdapter())
             .enableComplexMapKeySerialization()

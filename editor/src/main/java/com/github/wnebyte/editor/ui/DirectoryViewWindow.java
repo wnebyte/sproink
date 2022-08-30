@@ -1,15 +1,12 @@
 package com.github.wnebyte.editor.ui;
 
 import java.io.File;
-import java.util.Set;
-import java.util.HashSet;
 import imgui.ImGui;
 import imgui.type.ImInt;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTreeNodeFlags;
 import com.github.wnebyte.editor.project.Context;
 import com.github.wnebyte.sproink.ui.ImGuiWindow;
-import com.github.wnebyte.util.Filter;
 
 public class DirectoryViewWindow extends ImGuiWindow {
 
@@ -18,60 +15,34 @@ public class DirectoryViewWindow extends ImGuiWindow {
         void apply(File file, int depth, int idx);
     }
 
-    public static final Filter<File> DIRECTORY_FILTER = new Filter<File>() {
+    private static final String TAG = "DirectoryViewWindow";
 
-        private final Set<String> names = new HashSet<String>() {
-            { add("src"); }
-            { add("assets"); }
-        };
+    private static final String TITLE = "Directory View";
 
-        @Override
-        public boolean pass(File file) {
-            if (file.isDirectory()) {
-                return names.contains(file.getName());
-            } else {
-                return true;
-            }
-
-        }
-    };
-
-    private static final int BASE_FLAGS = ImGuiTreeNodeFlags.OpenOnArrow |
-            ImGuiTreeNodeFlags.OpenOnDoubleClick |
-            ImGuiTreeNodeFlags.SpanAvailWidth |
-            ImGuiTreeNodeFlags.SpanFullWidth;
-
-    private final ImInt selectionMask = new ImInt((1 << 2));
-
-    private Filter<File> filter = (f) -> true;
+    private static final int WINDOW_FLAGS = 0;
 
     public DirectoryViewWindow() {
         this(true);
     }
 
     public DirectoryViewWindow(boolean visible) {
-        this.visible.set(true);
-    }
-
-    public void setFilter(Filter<File> filter) {
-        this.filter = filter;
+        this.visible.set(visible);
     }
 
     @Override
     public void imGui() {
         if (!isVisible()) return;
-
         Context context = Context.get();
         if (context == null) return;
 
-        ImGui.begin("Directory View", visible);
+        ImGui.begin(TITLE, visible, WINDOW_FLAGS);
+        ImInt selectionMask = new ImInt((1 << 2));
         ImInt nodeClicked = new ImInt(-1);
         ImGui.pushStyleVar(ImGuiStyleVar.IndentSpacing, ImGui.getFontSize());
         Functor functor = new Functor() {
             @Override
             public void apply(File file, int depth, int idx) {
                 for (File child : file.listFiles()) {
-                    if (!filter.pass(child)) continue;
                     int flags = ImGuiTreeNodeFlags.OpenOnArrow |
                             ImGuiTreeNodeFlags.OpenOnDoubleClick |
                             ImGuiTreeNodeFlags.SpanAvailWidth |

@@ -1,6 +1,5 @@
 package com.github.wnebyte.editor.project;
 
-import java.net.*;
 import java.util.Set;
 import java.util.HashSet;
 import java.io.File;
@@ -15,6 +14,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
+import com.github.wnebyte.editor.util.ClassLoaderFactory;
 import com.github.wnebyte.editor.scenes.LevelEditorSceneInitializer;
 import com.github.wnebyte.sproink.util.Log;
 import com.github.wnebyte.sproink.core.Prefab;
@@ -94,24 +94,24 @@ public class Context {
 
     private final File projectFile;
 
-    private final Set<Class<? extends Prefab>> prefabs;
-
-    private final Set<Class<? extends Component>> components;
-
-    private final Set<Class<? extends SceneInitializer>> sceneInitializers;
-
     private final ExecutorService executor;
 
     private final GradleCompiler compiler;
 
-    private Reflections reflections;
+    private volatile Set<Class<? extends Prefab>> prefabs;
 
-    private ClassLoader classLoader;
+    private volatile Set<Class<? extends Component>> components;
 
-    private Class<? extends SceneInitializer> editorSceneInitializer
+    private volatile Set<Class<? extends SceneInitializer>> sceneInitializers;
+
+    private volatile Reflections reflections;
+
+    private volatile ClassLoader classLoader;
+
+    private volatile Class<? extends SceneInitializer> editorSceneInitializer
             = LevelEditorSceneInitializer.class;
 
-    private Class<? extends SceneInitializer> sceneInitializer
+    private volatile Class<? extends SceneInitializer> sceneInitializer
             = LevelSceneInitializer.class;
 
     private Context(File projectFile) {
@@ -122,38 +122,20 @@ public class Context {
         this.components = new HashSet<>();
         this.sceneInitializers = new HashSet<>();
         this.executor = Executors.newSingleThreadExecutor();
-        this.compiler = new GradleCompiler(new File(project.getProjectDir()));
-        loadClassLoader();
+        this.compiler = new GradleCompiler(project.getProjectDir());
+        this.classLoader = ClassLoaderFactory.newInstance(project.getOutDir());
         loadClasses();
     }
 
-    private <T> Set<Class<? extends T>> getSubTypesOf(Class<T> cls) {
-        Set<Class<? extends T>> set = reflections.getSubTypesOf(cls);
-        return set;
-    }
-
-    private void loadClassLoader() {
-        try {
-            this.classLoader = new URLClassLoader(new URL[] {
-                    new File(project.getOutDir()).toURI().toURL()
-            }, this.getClass().getClassLoader());
-            ConfigurationBuilder conf = new ConfigurationBuilder();
-            conf.setClassLoaders(new ClassLoader[]{classLoader});
-            conf.setUrls(ClasspathHelper.forClassLoader(classLoader));
-            conf.setScanners(new SubTypesScanner());
-            this.reflections = new Reflections(conf);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private void loadClasses() {
-        prefabs.clear();
-        components.clear();
-        sceneInitializers.clear();
-        prefabs.addAll(getSubTypesOf(Prefab.class));
-        components.addAll(getSubTypesOf(Component.class));
-        sceneInitializers.addAll(getSubTypesOf(SceneInitializer.class));
+        ConfigurationBuilder conf = new ConfigurationBuilder();
+        conf.setClassLoaders(new ClassLoader[]{classLoader});
+        conf.setUrls(ClasspathHelper.forClassLoader(classLoader));
+        conf.setScanners(new SubTypesScanner());
+        reflections = new Reflections(conf);
+        prefabs = getSubTypesOf(Prefab.class);
+        components = getSubTypesOf(Component.class);
+        sceneInitializers = getSubTypesOf(SceneInitializer.class);
         setEditorSceneInitializer(LevelEditorSceneInitializer.class);
         setSceneInitializer(LevelSceneInitializer.class);
     }
@@ -161,9 +143,11 @@ public class Context {
     public void compile() {
         executor.submit(() -> {
             compiler.compile();
-            loadClassLoader();
-            loadClasses();
             Log.i(TAG, "compilation complete");
+            classLoader = ClassLoaderFactory.newInstance(project.getOutDir());
+            Log.i(TAG, "classloader has been loaded");
+            loadClasses();
+            Log.i(TAG, "classes have been loaded");
         });
     }
 
@@ -185,7 +169,12 @@ public class Context {
         return project;
     }
 
-    public synchronized Prefab newPrefab(String canonicalName) {
+    private <T> Set<Class<? extends T>> getSubTypesOf(Class<T> cls) {
+        Set<Class<? extends T>> set = reflections.getSubTypesOf(cls);
+        return (set == null) ? new HashSet<>(0) : set;
+    }
+
+    public Prefab newPrefab(String canonicalName) {
         try {
             return (Prefab) classLoader.loadClass(canonicalName).newInstance();
         } catch (Exception e) {
@@ -194,7 +183,7 @@ public class Context {
         }
     }
 
-    public synchronized Component newComponent(String canonicalName) {
+    public Component newComponent(String canonicalName) {
         try {
             return (Component) classLoader.loadClass(canonicalName).newInstance();
         } catch (Exception e) {
@@ -203,7 +192,7 @@ public class Context {
         }
     }
 
-    public synchronized SceneInitializer newSceneInitializer(String canonicalName) {
+    public SceneInitializer newSceneInitializer(String canonicalName) {
         try {
             return (SceneInitializer) classLoader.loadClass(canonicalName).newInstance();
         } catch (Exception e) {
@@ -212,11 +201,11 @@ public class Context {
         }
     }
 
-    public synchronized SceneInitializer newEditorSceneInitializer() {
+    public SceneInitializer newEditorSceneInitializer() {
         return newSceneInitializer(editorSceneInitializer.getCanonicalName());
     }
 
-    public synchronized SceneInitializer newSceneInitializer() {
+    public SceneInitializer newSceneInitializer() {
         return newSceneInitializer(sceneInitializer.getCanonicalName());
     }
 

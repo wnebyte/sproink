@@ -9,6 +9,8 @@ import com.github.wnebyte.sproink.core.GameObject;
 
 public class SceneHierarchyWindow extends ImGuiWindow {
 
+    private static final String TAG = "SceneHierarchyWindow";
+
     private static final String PAYLOAD_DRAG_DROP_TYPE = "SceneHierarchy";
 
     public SceneHierarchyWindow() {
@@ -50,6 +52,11 @@ public class SceneHierarchyWindow extends ImGuiWindow {
                 go.getName()
         );
         ImGui.popID();
+
+        if (ImGui.isItemClicked()) {
+            PropertiesWindow props = Window.getImGuiLayer().getWindow(PropertiesWindow.class);
+            props.setActiveGameObject(go);
+        }
 
         if (ImGui.beginDragDropSource()) {
             ImGui.setDragDropPayload(PAYLOAD_DRAG_DROP_TYPE, go);

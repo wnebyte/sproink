@@ -17,6 +17,8 @@ public class Configuration {
 
     protected ILogger logger;
 
+    protected String assetsDir;
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -39,5 +41,9 @@ public class Configuration {
 
     public void setLogger(ILogger logger) {
         this.logger = logger;
+    }
+
+    public void setAssetsDir(String assetsDir) {
+        this.assetsDir = assetsDir;
     }
 }

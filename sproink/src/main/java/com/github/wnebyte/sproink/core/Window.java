@@ -102,8 +102,8 @@ public class Window {
     public void run() {
         System.out.println("Hello LWJGL " + Version.getVersion());
         init();
-        Window.setScene(args.scene, args.sceneInitializer);
         EventSystem.notify(null, new WindowInitEvent());
+        Window.setScene(args.scene, args.sceneInitializer);
         EventSystem.notify(null, new WindowBeginLoopEvent());
         loop();
         destroy();
@@ -137,7 +137,7 @@ public class Window {
             );
         }
 
-        Resolution res = Window.getResolution();
+        Resolution res = Window.getResolution(glfwGetPrimaryMonitor());
         width = res.width;
         height = res.height;
 
@@ -208,8 +208,10 @@ public class Window {
         float endTime;
         float dt = -1.0f;
 
-        Shader defaultShader = Assets.getShader("../assets/shaders/default.glsl");
-        Shader pickingShader = Assets.getShader("../assets/shaders/picking.glsl");
+        String assets = args.getAssetsDir();
+        Shader defaultShader = Assets.getShader(assets + "/shaders/default.glsl");
+        Shader pickingShader = Assets.getShader(assets + "/shaders/picking.glsl");
+        Shader debugShader   = Assets.getShader(assets + "/shaders/debugLine2D.glsl");
 
         while (!glfwWindowShouldClose(glfwWindow)) {
             // Poll events
@@ -240,7 +242,7 @@ public class Window {
                     scene.editorUpdate(dt);
                 }
                 scene.render(defaultShader);
-                DebugDraw.draw();
+                DebugDraw.draw(debugShader);
             }
             frameBuffer.unbind();
             imGuiLayer.update(dt, scene);

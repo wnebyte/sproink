@@ -42,13 +42,13 @@ public class StateMachine extends Component {
         }
     }
 
-    public final Map<StateTrigger, String> stateTransfers = new HashMap<>();
+    private final Map<StateTrigger, String> stateTransfers = new HashMap<>();
 
     private final List<AnimationState> states = new ArrayList<>();
 
-    private transient AnimationState currentState = null;
-
     private String defaultStateTitle = "";
+
+    private transient AnimationState currentState = null;
 
     public StateMachine() {}
 

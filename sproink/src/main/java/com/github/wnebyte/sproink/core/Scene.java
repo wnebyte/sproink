@@ -1,32 +1,25 @@
 package com.github.wnebyte.sproink.core;
 
-import java.io.File;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Objects;
 import org.joml.Vector2f;
-import com.google.gson.Gson;
-import com.github.wnebyte.sproink.physics2d.Physics2D;
-import com.github.wnebyte.sproink.renderer.Renderer;
 import com.github.wnebyte.sproink.renderer.Shader;
+import com.github.wnebyte.sproink.renderer.Renderer;
 import com.github.wnebyte.sproink.components.Sprite;
 import com.github.wnebyte.sproink.components.SpriteRenderer;
+import com.github.wnebyte.sproink.physics2d.Physics2D;
+import com.github.wnebyte.sproink.util.Log;
+import com.github.wnebyte.sproink.util.Settings;
 
 public class Scene {
 
-    private static Gson gson;
-
-    public static Gson getGson() {
-        return Scene.gson;
-    }
-
-    public static void setGson(Gson gson) {
-        Scene.gson = gson;
-    }
+    private static final String TAG = "Scene";
 
     public static GameObject createGameObject(String name) {
         GameObject go = new GameObject(name);
@@ -221,7 +214,11 @@ public class Scene {
     }
 
     public void save() {
-        if (!new File(path).exists()) return;
+        File file = new File(path);
+        if (!file.exists()) {
+            Log.w(TAG, "File: '%s' does not exist and can therefore not be saved to",
+                    file.getAbsolutePath());
+        }
 
         try {
             FileWriter writer = new FileWriter(path);
@@ -231,7 +228,7 @@ public class Scene {
                     out.add(obj);
                 }
             }
-            writer.write(gson.toJson(out));
+            writer.write(Settings.GSON.toJson(out));
             writer.close();
         } catch(IOException e) {
             e.printStackTrace();
@@ -239,7 +236,12 @@ public class Scene {
     }
 
     public void load() {
-        if (!new File(path).exists()) return;
+        File file = new File(path);
+        if (!file.exists()) {
+            Log.w(TAG, "File: '%s' does not exist and can therefore not be loaded",
+                    file.getAbsolutePath());
+            return;
+        }
 
         String inFile = "";
         try {
@@ -252,7 +254,7 @@ public class Scene {
             int maxGoId   = -1;
             int maxCompId = -1;
 
-            GameObject[] objs = gson.fromJson(inFile, GameObject[].class);
+            GameObject[] objs = Settings.GSON.fromJson(inFile, GameObject[].class);
             for (GameObject go : objs) {
                 addGameObjectToScene(go);
 

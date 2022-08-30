@@ -9,9 +9,9 @@ public class GradleCompiler {
 
     private final GradleConnector connector;
 
-    public GradleCompiler(File projectDir) {
+    public GradleCompiler(String projectDir) {
         this.connector = GradleConnector.newConnector()
-                .forProjectDirectory(projectDir);
+                .forProjectDirectory(new File(projectDir));
     }
 
     public void compile() {

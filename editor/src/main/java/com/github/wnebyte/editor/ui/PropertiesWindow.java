@@ -47,7 +47,9 @@ public class PropertiesWindow extends ImGuiWindow {
                     if (ImGui.menuItem("Add " + cls.getSimpleName())) {
                         if (activeGameObject.getComponent(cls) == null) {
                             Component c = context.newComponent(cls.getCanonicalName());
-                            activeGameObject.addComponent(c);
+                            if (c != null) {
+                                activeGameObject.addComponent(c);
+                            }
                         }
                     }
                 }
