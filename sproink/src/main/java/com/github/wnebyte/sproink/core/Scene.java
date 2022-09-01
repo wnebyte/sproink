@@ -58,15 +58,19 @@ public class Scene {
 
     private final SceneInitializer sceneInitializer;
 
+    public Scene(SceneInitializer sceneInitializer) {
+        this(null, sceneInitializer);
+    }
+
     public Scene(String path, SceneInitializer sceneInitializer) {
         this.physics2d = new Physics2D();
         this.renderer = new Renderer();
         this.gameObjects = new ArrayList<>();
         this.pendingGameObjects = new ArrayList<>();
         this.isRunning = false;
-        this.path = path;
-        this.name = new File(path).getName().split("[.]json")[0];
         this.sceneInitializer = sceneInitializer;
+        this.path = path;
+        this.name = (path == null) ? "Non-Serial-Scene.json" : new File(path).getName().split("[.]json")[0];
     }
 
     public void init() {
@@ -214,10 +218,9 @@ public class Scene {
     }
 
     public void save() {
-        File file = new File(path);
-        if (!file.exists()) {
-            Log.w(TAG, "File: '%s' does not exist and can therefore not be saved to",
-                    file.getAbsolutePath());
+        if (path == null || !new File(path).exists()) {
+            Log.w(TAG, "Scene: '%s' can't be saved", name);
+            return;
         }
 
         try {
@@ -236,10 +239,8 @@ public class Scene {
     }
 
     public void load() {
-        File file = new File(path);
-        if (!file.exists()) {
-            Log.w(TAG, "File: '%s' does not exist and can therefore not be loaded",
-                    file.getAbsolutePath());
+        if (path == null || !new File(path).exists()) {
+            Log.w(TAG, "Scene: '%s' can't be loaded", name);
             return;
         }
 
@@ -283,7 +284,6 @@ public class Scene {
         Scene scene = (Scene) o;
         return Objects.equals(scene.path, this.path);
      }
-
 
      @Override
      public int hashCode() {

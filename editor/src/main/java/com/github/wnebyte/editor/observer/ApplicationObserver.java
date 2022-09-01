@@ -4,8 +4,8 @@ import java.io.File;
 import java.nio.file.Path;
 import com.github.wnebyte.editor.project.Context;
 import com.github.wnebyte.editor.observer.event.*;
-import com.github.wnebyte.editor.util.Files;
-import com.github.wnebyte.editor.util.Settings;
+import com.github.wnebyte.sproink.util.Settings;
+import com.github.wnebyte.util.Files;
 import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.core.Scene;
 import com.github.wnebyte.sproink.core.GameObject;
@@ -55,6 +55,8 @@ public class ApplicationObserver implements Observer {
         } else if (event instanceof NewSceneEvent) {
             NewSceneEvent e = (NewSceneEvent) event;
             handleNewSceneEvent(e);
+        } else if (event instanceof WindowInitEvent) {
+            Settings.GSON = com.github.wnebyte.editor.util.Settings.GSON;
         } else if (event instanceof WindowBeginLoopEvent) {
             handleWindowBeginLoopEvent();
         } else if (event instanceof CompileEvent) {
@@ -194,9 +196,6 @@ public class ApplicationObserver implements Observer {
     }
 
     private void handleWindowBeginLoopEvent() {
-        Scene.setGson(Settings.GSON);
-        Log.i(TAG, "onWindowBeginLoopEvent()");
-
         if (PROJECT_DIR_PATH.toFile().exists()) {
             String path = Files.read(PROJECT_DIR_PATH);
             handleOpenProjectEvent(new OpenProjectEvent(path));

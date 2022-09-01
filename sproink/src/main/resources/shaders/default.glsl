@@ -35,8 +35,6 @@ void main() {
     if (id > 0) {
         color = fColor * texture(uTextures[id], fTexCoords);
     } else {
-        // always taken
         color = fColor;
-       // color = vec4(fTexCoords, 0, 1);
     }
 }

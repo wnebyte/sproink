@@ -2,6 +2,7 @@ package com.github.wnebyte.sproink.ui;
 
 import java.util.List;
 import java.util.ArrayList;
+import com.github.wnebyte.util.Objects;
 
 public class WindowRegistry {
 
@@ -12,7 +13,7 @@ public class WindowRegistry {
     }
 
     public WindowRegistry(List<ImGuiWindow> windows) {
-        this.windows = windows;
+        this.windows = Objects.requireNonNullElseGet(windows, ArrayList::new);
     }
 
     public <T extends ImGuiWindow> void addWindow(ImGuiWindow window) {

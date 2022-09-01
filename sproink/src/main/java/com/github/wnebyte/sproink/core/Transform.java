@@ -2,6 +2,7 @@ package com.github.wnebyte.sproink.core;
 
 import java.util.Objects;
 import org.joml.Vector2f;
+import org.joml.Matrix4f;
 import com.github.wnebyte.sproink.ui.JImGui;
 
 public class Transform extends Component {
@@ -106,6 +107,14 @@ public class Transform extends Component {
         transform.scale.set(this.scale);
         transform.rotation = this.rotation;
         transform.zIndex = this.zIndex;
+    }
+
+    public Matrix4f transform() {
+        Matrix4f transformMatrix = new Matrix4f().identity();
+        transformMatrix.translate(position.x, position.y, 0);
+        transformMatrix.rotate((float)Math.toRadians(rotation), 0, 0, 1);
+        transformMatrix.scale(scale.x, scale.y, 1);
+        return transformMatrix;
     }
 
     @Override

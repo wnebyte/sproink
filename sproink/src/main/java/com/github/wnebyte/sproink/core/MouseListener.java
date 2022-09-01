@@ -4,7 +4,6 @@ import java.util.Arrays;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import org.joml.Matrix4f;
-import com.github.wnebyte.sproink.ui.GameViewWindow;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
@@ -43,7 +42,7 @@ public class MouseListener {
     }
 
     public static void mousePosCallback(long window, double xPos, double yPos) {
-        if (!Window.getImGuiLayer().getWindow(GameViewWindow.class).getWantCaptureMouse()) {
+        if (!Window.getImGuiLayer().getWantCaptureMouse()) {
             clear();
         }
         if (get().mouseButtonDown > 0) {
@@ -143,8 +142,7 @@ public class MouseListener {
     public static Vector2f screen2World(Vector2f screenCoords) {
         Vector2f normScreenCoords = new Vector2f(
                 screenCoords.x / Window.getWidth(),
-                screenCoords.y / Window.getHeight()
-        );
+                screenCoords.y / Window.getHeight());
         normScreenCoords.mul(2.0f).sub(new Vector2f(1.0f, 1.0f));
         Camera camera = Window.getScene().getCamera();
         Vector4f tmp = new Vector4f(normScreenCoords.x, normScreenCoords.y, 0, 1);

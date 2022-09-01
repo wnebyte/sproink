@@ -5,20 +5,16 @@ import imgui.ImGui;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
 import com.github.wnebyte.sproink.core.Component;
-import com.github.wnebyte.sproink.animation.AnimationState;
-import com.github.wnebyte.sproink.animation.Frame;
 
 public class StateMachine extends Component {
 
-    static class StateTrigger {
+    private static class StateTrigger {
 
-        String state;
+        private final String state;
 
-        String trigger;
+        private final String trigger;
 
-        StateTrigger() {}
-
-        StateTrigger(String state, String trigger) {
+        private StateTrigger(String state, String trigger) {
             this.state = state;
             this.trigger = trigger;
         }
@@ -55,7 +51,7 @@ public class StateMachine extends Component {
     @Override
     public void start() {
         for (AnimationState state : states) {
-            if (state.title.equals(defaultStateTitle)) {
+            if (state.getTitle().equals(defaultStateTitle)) {
                 currentState = state;
                 break;
             }
@@ -95,18 +91,18 @@ public class StateMachine extends Component {
     public void imGui() {
         int index = 0;
         for (AnimationState state : states) {
-            ImString title = new ImString(state.title);
+            ImString title = new ImString(state.getTitle());
             ImGui.inputText("State", title);
-            state.title = title.get();
+            state.setTitle(title.get());
 
-            ImBoolean doesLoop = new ImBoolean(state.doesLoop);
+            ImBoolean doesLoop = new ImBoolean(state.doesLoop());
             ImGui.checkbox("Does Loop", doesLoop);
-            state.doesLoop = doesLoop.get();
-            for (Frame frame : state.frames) {
+            state.setLoops(doesLoop.get());
+            for (Frame frame : state.getFrames()) {
                 float[] tmp = new float[1];
-                tmp[0] = frame.frameTime;
+                tmp[0] = frame.getFrameTime();
                 ImGui.dragFloat("Frame(" + index + ") Time", tmp, 0.01f);
-                frame.frameTime = tmp[0];
+                frame.setFrameTime(tmp[0]);
                 index++;
             }
         }
@@ -114,7 +110,7 @@ public class StateMachine extends Component {
 
     public void trigger(String trigger) {
         for (StateTrigger st : stateTransfers.keySet()) {
-            if (st.state.equals(currentState.title) && st.trigger.equals(trigger)) {
+            if (st.state.equals(currentState.getTitle()) && st.trigger.equals(trigger)) {
                 if (stateTransfers.get(st) != null) {
                     int newStateIndex = stateIndexOf(stateTransfers.get(st));
                     if (newStateIndex > -1) {
@@ -129,7 +125,7 @@ public class StateMachine extends Component {
     private int stateIndexOf(String stateTitle) {
         int index = 0;
         for (AnimationState state : states) {
-            if (state.title.equals(stateTitle)) {
+            if (state.getTitle().equals(stateTitle)) {
                 return index;
             }
             index++;
@@ -148,8 +144,8 @@ public class StateMachine extends Component {
 
     public void setDefaultState(String animationTitle) {
         for (AnimationState state : states) {
-            if (state.title.equals(animationTitle)) {
-                defaultStateTitle = state.title;
+            if (state.getTitle().equals(animationTitle)) {
+                defaultStateTitle = state.getTitle();
                 if (currentState == null) {
                     currentState = state;
                     return;

@@ -123,7 +123,9 @@ public class GameObject {
     }
 
     public void generateId() {
-        id = ID_COUNTER++;
+        if (id == -1) {
+            id = ID_COUNTER++;
+        }
     }
 
     public int getId() {

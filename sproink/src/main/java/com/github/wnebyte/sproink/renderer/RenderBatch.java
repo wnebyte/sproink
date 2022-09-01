@@ -15,11 +15,11 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class RenderBatch implements Comparable<RenderBatch> {
 
-    //                                      Vertex
-    // ======================================================================================
-    // Pos                      Color                           Tex Coords          Id     //
-    // float, float,            float, float, float, float,     float, float,       float  //
-    // ======================================================================================
+    //                                     Vertex Array Object (VAO)
+    // ================================================================================================
+    // Pos                Color                            Tex Coords         Tex Id      Entity Id  //
+    // float, float       float, float, float, float       float, float       float       float      //
+    // ================================================================================================
 
     private static final int POS_SIZE = 2;
 
@@ -71,7 +71,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
         this.renderer = renderer;
         this.sprites = new SpriteRenderer[maxBatchSize];
         this.maxBatchSize = maxBatchSize;
-        // 4 vertices quads
+        // 4 vertices per quad
         this.vertices = new float[maxBatchSize * 4 * VERTEX_SIZE];
         this.numSprites = 0;
         this.hasRoom = true;
@@ -91,7 +91,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
         // Create and upload the indices buffer
         int eboID = glGenBuffers();
-        int[] indices = generateIndices();
+        int[] indices = genIndices();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices, GL_STATIC_DRAW);
 
@@ -186,9 +186,9 @@ public class RenderBatch implements Comparable<RenderBatch> {
     }
 
     public boolean destroyIfExists(GameObject go) {
-        SpriteRenderer sprite = go.getComponent(SpriteRenderer.class);
+        SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
         for (int i = 0; i < numSprites; i++) {
-            if (sprites[i].equals(sprite)) {
+            if (sprites[i].equals(spr)) {
                 for (int j = i; j < numSprites - 1; j++) {
                     sprites[j] = sprites[j + 1];
                     sprites[j].setDirty();
@@ -201,30 +201,18 @@ public class RenderBatch implements Comparable<RenderBatch> {
     }
 
     private void loadVertexProperties(int index) {
-        SpriteRenderer sprite = sprites[index];
+        SpriteRenderer spr = sprites[index];
 
         // Find offset within array (4 vertices per sprite)
         int offset = index * 4 * VERTEX_SIZE;
-        Vector4f color = sprite.getColor();
-        Vector2f[] texCoords = sprite.getTexCoords();
-        int texId = 0;
+        Vector4f color = spr.getColor();
+        Vector2f[] texCoords = spr.getTexCoords();
+        int texId = (spr.getTexture() == null) ? 0 : textures.indexOf(spr.getTexture()) + 1;
 
-        if (sprite.getTexture() != null) {
-            for (int i = 0; i < textures.size(); i++) {
-                if (textures.get(i).equals(sprite.getTexture())) {
-                    texId = i + 1; // [0] is reserved for our color
-                    break;
-                }
-            }
-        }
-
-        boolean isRotated = (sprite.gameObject.transform.rotation != 0.0f);
-        Matrix4f transformMatrix = new Matrix4f().identity();
+        boolean isRotated = (spr.gameObject.transform.rotation != 0.0f);
+        Matrix4f transformMatrix = null;
         if (isRotated) {
-            transformMatrix.translate(
-                    sprite.gameObject.transform.position.x,sprite.gameObject.transform.position.y, 0);
-            transformMatrix.rotate((float)Math.toRadians(sprite.gameObject.transform.rotation), 0, 0, 1);
-            transformMatrix.scale(sprite.gameObject.transform.scale.x, sprite.gameObject.transform.scale.y, 1);
+            transformMatrix = spr.gameObject.transform.transform();
         }
 
         // Add vertex with the appropriate properties
@@ -239,16 +227,20 @@ public class RenderBatch implements Comparable<RenderBatch> {
                 yAdd = 0.5f;
             }
 
-            Vector4f currentPos = new Vector4f(
-                    sprite.gameObject.transform.position.x + (xAdd * sprite.gameObject.transform.scale.x),
-                    sprite.gameObject.transform.position.y + (yAdd * sprite.gameObject.transform.scale.y),
+            // i0: xAdd =  0.5, yAdd =  0.5
+            // i1: xAdd =  0.5, yAdd = -0.5
+            // i2: xAdd = -0.5, yAdd = -0.5
+            // i3: xAdd = -0.5, yAdd =  0.5
+            Vector4f pos = new Vector4f(
+                    spr.gameObject.transform.position.x + (xAdd * spr.gameObject.transform.scale.x),
+                    spr.gameObject.transform.position.y + (yAdd * spr.gameObject.transform.scale.y),
                     0, 1);
             if (isRotated) {
-                currentPos = new Vector4f(xAdd, yAdd, 0, 1).mul(transformMatrix);
+                pos = new Vector4f(xAdd, yAdd, 0, 1).mul(transformMatrix);
             }
             // Load position
-            vertices[offset] = currentPos.x;
-            vertices[offset + 1] = currentPos.y;
+            vertices[offset]     = pos.x;
+            vertices[offset + 1] = pos.y;
 
             // Load color
             vertices[offset + 2] = color.x;
@@ -264,13 +256,13 @@ public class RenderBatch implements Comparable<RenderBatch> {
             vertices[offset + 8] = texId;
 
             // Load entity id
-            vertices[offset + 9] = sprite.gameObject.getId() + 1;
+            vertices[offset + 9] = spr.gameObject.getId() + 1;
 
             offset += VERTEX_SIZE;
         }
     }
 
-    private int[] generateIndices() {
+    private int[] genIndices() {
         // 6 indices per quad (3 per triangle)
         int[] elements = new int[6 * maxBatchSize];
         for (int i = 0; i < maxBatchSize; i++) {

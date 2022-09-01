@@ -10,4 +10,12 @@ public class Arrays {
         }
         return -1;
     }
+
+    public static int[] fill(int startVal, int length) {
+        int[] array = new int[length];
+        for (int i = 0; i < length; i++) {
+            array[i] = i + startVal;
+        }
+        return array;
+    }
 }

@@ -1,5 +1,6 @@
 package com.github.wnebyte.util;
 
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.lang.reflect.Constructor;
 
@@ -12,6 +13,19 @@ public class Reflections {
             enumValues[i++] = ordinal.name();
         }
         return enumValues;
+    }
+
+    public static boolean isInstantiable(Class<?> cls) {
+        if (cls == null) return false;
+        boolean isAccessible = Arrays.stream(cls.getDeclaredConstructors())
+                .anyMatch(cons -> cons.getParameterCount() == 0 && Modifier.isPublic(cons.getModifiers()));
+        boolean isAbstract = Modifier.isAbstract(cls.getModifiers());
+        return (isAccessible && !isAbstract);
+    }
+
+    public static boolean isAbstract(Class<?> cls) {
+        if (cls == null) return false;
+        return Modifier.isAbstract(cls.getModifiers());
     }
 
     public static boolean hasDefaultConstructor(Class<?> cls) {

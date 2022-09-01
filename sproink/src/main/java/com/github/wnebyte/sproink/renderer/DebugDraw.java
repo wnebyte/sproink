@@ -29,7 +29,7 @@ public class DebugDraw {
 
     private static boolean started = false;
 
-    public static void start() {
+    private static void start() {
         // Generate the VAO
         vaoID = glGenVertexArrays();
         glBindVertexArray(vaoID);

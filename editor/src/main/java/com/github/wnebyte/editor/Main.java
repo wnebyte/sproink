@@ -26,7 +26,7 @@ public class Main extends Application {
         conf.setAssetsDir("../assets");
         conf.setEnableDocking(true);
         conf.setIniFileName("../imgui.ini");
-        conf.setScene("non-serial-scene.json");
+        conf.setScene(null);
         conf.setSceneInitializer(new LevelEditorSceneInitializer());
         conf.setLogger(new Logger("../logs"));
     }

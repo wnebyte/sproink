@@ -14,7 +14,7 @@ import com.github.wnebyte.sproink.core.Prefab;
 import com.github.wnebyte.sproink.components.Sprite;
 import com.github.wnebyte.sproink.core.GameObject;
 import com.github.wnebyte.sproink.util.Assets;
-import com.github.wnebyte.sproink.core.SpritePrefab;
+import com.github.wnebyte.sproink.core.SpriteGenerator;
 import com.github.wnebyte.sproink.core.Sound;
 import com.github.wnebyte.util.Objects;
 
@@ -81,7 +81,7 @@ public class AssetsWindow extends ImGuiWindow {
                                     GameObject levelEditorStuff = Window.getScene().getGameObject(MouseControls.class);
                                     if (levelEditorStuff != null) {
                                         Prefab prefab = context.newPrefab(
-                                                Objects.requireNonNullElseGet(asset.getPrefab(), SpritePrefab.class::getCanonicalName));
+                                                Objects.requireNonNullElseGet(asset.getPrefab(), SpriteGenerator.class::getCanonicalName));
                                         if (prefab != null) {
                                             GameObject go = prefab.generate(sprite);
                                             levelEditorStuff.getComponent(MouseControls.class).drag(go);

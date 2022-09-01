@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -21,6 +22,7 @@ import com.github.wnebyte.sproink.core.Prefab;
 import com.github.wnebyte.sproink.core.Component;
 import com.github.wnebyte.sproink.core.SceneInitializer;
 import com.github.wnebyte.sproink.scenes.LevelSceneInitializer;
+import static com.github.wnebyte.util.Reflections.isInstantiable;
 
 public class Context {
 
@@ -29,9 +31,7 @@ public class Context {
         assert (parent.exists() && parent.isDirectory()) :
                 String.format("Error (Context): Path: '%s' does not exist/is not a directory", parent.getAbsolutePath());
         File root = new File(path + File.separator + name);
-        ProjectInitializer init = new ProjectInitializer(root);
-        init.mkdirs();
-        init.copyTemplates();
+        ProjectInitializer init = new ProjectInitializer(root, name);
         File projectFile = new File(root.getAbsolutePath() + File.separator + "project.xml");
         Context context = new Context(projectFile);
         context.getProject().setName(name);
@@ -96,7 +96,7 @@ public class Context {
 
     private final ExecutorService executor;
 
-    private final GradleCompiler compiler;
+    private final GradleBridge compiler;
 
     private volatile Set<Class<? extends Prefab>> prefabs;
 
@@ -122,19 +122,21 @@ public class Context {
         this.components = new HashSet<>();
         this.sceneInitializers = new HashSet<>();
         this.executor = Executors.newSingleThreadExecutor();
-        this.compiler = new GradleCompiler(project.getProjectDir());
+        this.compiler = new GradleBridge(project.getProjectDir());
         this.classLoader = ClassLoaderFactory.newInstance(project.getOutDir());
         loadClasses();
     }
 
     private void loadClasses() {
         ConfigurationBuilder conf = new ConfigurationBuilder();
-        conf.setClassLoaders(new ClassLoader[]{classLoader});
+        conf.addClassLoader(classLoader);
         conf.setUrls(ClasspathHelper.forClassLoader(classLoader));
         conf.setScanners(new SubTypesScanner());
         reflections = new Reflections(conf);
         prefabs = getSubTypesOf(Prefab.class);
-        components = getSubTypesOf(Component.class);
+        components = getSubTypesOf(Component.class).stream()
+                .filter(cls -> isInstantiable(cls))
+                .collect(Collectors.toSet());
         sceneInitializers = getSubTypesOf(SceneInitializer.class);
         setEditorSceneInitializer(LevelEditorSceneInitializer.class);
         setSceneInitializer(LevelSceneInitializer.class);
@@ -143,11 +145,9 @@ public class Context {
     public void compile() {
         executor.submit(() -> {
             compiler.compile();
-            Log.i(TAG, "compilation complete");
             classLoader = ClassLoaderFactory.newInstance(project.getOutDir());
-            Log.i(TAG, "classloader has been loaded");
             loadClasses();
-            Log.i(TAG, "classes have been loaded");
+            Log.i(TAG, "compilation complete");
         });
     }
 

@@ -25,7 +25,7 @@ public class ImGuiLayer {
 
     private final WindowRegistry windowRegistry;
 
-    private WindowArgs args;
+    private final WindowArgs args;
 
     public ImGuiLayer(long glfwWindow, WindowArgs args) {
         this.glfwWindow = glfwWindow;
@@ -93,7 +93,7 @@ public class ImGuiLayer {
                 ImGui.setWindowFocus(null);
             }
 
-            if (!io.getWantCaptureMouse() || getWindow(GameViewWindow.class).getWantCaptureMouse()) {
+            if (!io.getWantCaptureMouse() || getWantCaptureMouse()) {
                 MouseListener.mouseButtonCallback(w, button, action, mods);
             }
         });
@@ -101,7 +101,7 @@ public class ImGuiLayer {
         glfwSetScrollCallback(glfwWindow, (w, xOffset, yOffset) -> {
             io.setMouseWheelH(io.getMouseWheelH() + (float) xOffset);
             io.setMouseWheel(io.getMouseWheel() + (float) yOffset);
-            if (!io.getWantCaptureMouse() || getWindow(GameViewWindow.class).getWantCaptureMouse()) {
+            if (!io.getWantCaptureMouse() || getWantCaptureMouse()) {
                 MouseListener.mouseScrollCallback(w, xOffset, yOffset);
             } else {
                 MouseListener.clear();
@@ -229,7 +229,12 @@ public class ImGuiLayer {
         return windowRegistry.getAllWindows();
     }
 
-    public void addWindow(ImGuiWindow window) {
-        windowRegistry.addWindow(window);
+    public boolean getWantCaptureMouse() {
+        GameViewWindow gvw = getWindow(GameViewWindow.class);
+        if (gvw != null) {
+            return gvw.getWantCaptureMouse();
+        } else {
+            return true;
+        }
     }
 }

@@ -47,6 +47,9 @@ public class MenuBar extends ImGuiWindow {
             if (ImGui.menuItem("Save Scene", "CTRL+ALT+S")) {
                 EventSystem.notify(null, new SaveSceneEvent());
             }
+            if (ImGui.menuItem("Save Scene As")) {
+
+            }
             ImGui.separator();
             Context context = Context.get();
             if (context != null) {
@@ -88,24 +91,36 @@ public class MenuBar extends ImGuiWindow {
         ImString imString = new ImString();
         if (ImGui.inputText("##txt", imString, ImGuiInputTextFlags.EnterReturnsTrue)) {
             String val = imString.get().toLowerCase();
+            ImGuiWindow window;
+
             switch (val) {
-                case "scene hierarchy window":
-                    Window.getImGuiLayer().getWindow(SceneHierarchyWindow.class).show();
+                case "scene hierarchy":
+                    window = Window.getImGuiLayer().getWindow(SceneHierarchyWindow.class);
                     break;
-                case "game view window":
-                    Window.getImGuiLayer().getWindow(GameViewWindow.class).show();
+                case "game view":
+                    window = Window.getImGuiLayer().getWindow(GameViewWindow.class);
                     break;
-                case "properties window":
-                    Window.getImGuiLayer().getWindow(PropertiesWindow.class).show();
+                case "properties":
+                    window = Window.getImGuiLayer().getWindow(PropertiesWindow.class);
                     break;
-                case "console window":
-                    Window.getImGuiLayer().getWindow(ConsoleWindow.class).show();
+                case "console":
+                    window = Window.getImGuiLayer().getWindow(ConsoleWindow.class);
                     break;
-                case "new project window":
-                    Window.getImGuiLayer().getWindow(NewProjectWindow.class).show();
+                case "scene view":
+                    window = Window.getImGuiLayer().getWindow(SceneViewWindow.class);
                     break;
+                case "directory view":
+                    window = Window.getImGuiLayer().getWindow(DirectoryViewWindow.class);
+                    break;
+                case "log":
+                    window = Window.getImGuiLayer().getWindow(LogWindow.class);
+                    break;
+                default:
+                    return false;
             }
-            return true;
+
+            window.unlock();
+            window.show();
         }
 
         return false;

@@ -103,7 +103,7 @@ public class Window {
         System.out.println("Hello LWJGL " + Version.getVersion());
         init();
         EventSystem.notify(null, new WindowInitEvent());
-        Window.setScene(args.scene, args.sceneInitializer);
+        Window.setScene(args.getScene(), args.getSceneInitializer());
         EventSystem.notify(null, new WindowBeginLoopEvent());
         loop();
         destroy();
