@@ -8,6 +8,7 @@ import org.joml.Matrix4f;
 import com.github.wnebyte.sproink.core.Window;
 import com.github.wnebyte.sproink.core.GameObject;
 import com.github.wnebyte.sproink.components.SpriteRenderer;
+import com.github.wnebyte.sproink.components.Anchor;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
@@ -31,6 +32,8 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
     private static final int ENTITY_ID_SIZE = 1;
 
+    private static final int STATIC_FLAG_SIZE = 1;
+
     private static final int POS_OFFSET = 0;
 
     private static final int COLOR_OFFSET = POS_OFFSET + (POS_SIZE * Float.BYTES);
@@ -41,7 +44,9 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
     private static final int ENTITY_ID_OFFSET = TEX_ID_OFFSET + (TEX_ID_SIZE * Float.BYTES);
 
-    private static final int VERTEX_SIZE = POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE + ENTITY_ID_SIZE;
+    private static final int STATIC_FLAG_OFFSET = ENTITY_ID_OFFSET + (ENTITY_ID_SIZE * Float.BYTES);
+
+    private static final int VERTEX_SIZE = POS_SIZE + COLOR_SIZE + TEX_COORDS_SIZE + TEX_ID_SIZE + ENTITY_ID_SIZE + STATIC_FLAG_SIZE;
 
     private static final int VERTEX_SIZE_BYTES = VERTEX_SIZE * Float.BYTES;
 
@@ -110,6 +115,9 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
         glVertexAttribPointer(4, ENTITY_ID_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, ENTITY_ID_OFFSET);
         glEnableVertexAttribArray(4);
+
+        glVertexAttribPointer(5, STATIC_FLAG_SIZE, GL_FLOAT, false, VERTEX_SIZE_BYTES, STATIC_FLAG_OFFSET);
+        glEnableVertexAttribArray(5);
     }
 
     public void addSprite(SpriteRenderer spr) {
@@ -212,7 +220,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
         boolean isRotated = (spr.gameObject.transform.rotation != 0.0f);
         Matrix4f transformMatrix = null;
         if (isRotated) {
-            transformMatrix = spr.gameObject.transform.transform();
+            transformMatrix = spr.gameObject.transform.getTransformMatrix();
         }
 
         // Add vertex with the appropriate properties
@@ -258,6 +266,9 @@ public class RenderBatch implements Comparable<RenderBatch> {
             // Load entity id
             vertices[offset + 9] = spr.gameObject.getId() + 1;
 
+            // Load static flag
+            vertices[offset + 10] = (spr.gameObject.getComponent(Anchor.class) != null) ? 1.0f : 0.0f;
+
             offset += VERTEX_SIZE;
         }
     }
@@ -277,7 +288,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
         // 3, 2, 0, 0, 2, 1     7, 6, 4, 4, 6, 5
         // Triangle 1
-        elements[offsetArrayIndex] = offset + 3;
+        elements[offsetArrayIndex]     = offset + 3;
         elements[offsetArrayIndex + 1] = offset + 2;
         elements[offsetArrayIndex + 2] = offset + 0;
 

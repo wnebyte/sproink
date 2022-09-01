@@ -1,10 +1,10 @@
 package com.github.wnebyte.sproink.renderer;
 
+import java.util.Objects;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Objects;
 import org.joml.*;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
@@ -18,6 +18,10 @@ public class Shader {
     public static final String U_VIEW = "uView";
 
     public static final String U_TEXTURES = "uTextures";
+
+    public static final String U_INVERSE_PROJECTION = "uInverseProjection";
+
+    public static final String U_INVERSE_VIEW = "uInverseView";
 
     private int id;
 
@@ -137,6 +141,10 @@ public class Shader {
     public void detach() {
         glUseProgram(0);
         inUse = false;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public void uploadMatrix4f(String varName, Matrix4f mat4f) {

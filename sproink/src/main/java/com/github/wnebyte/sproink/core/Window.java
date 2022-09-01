@@ -212,6 +212,7 @@ public class Window {
         Shader defaultShader = Assets.getShader(assets + "/shaders/default.glsl");
         Shader pickingShader = Assets.getShader(assets + "/shaders/picking.glsl");
         Shader debugShader   = Assets.getShader(assets + "/shaders/debugLine2D.glsl");
+        System.out.println(defaultShader.getPath());
 
         while (!glfwWindowShouldClose(glfwWindow)) {
             // Poll events

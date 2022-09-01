@@ -109,7 +109,7 @@ public class Transform extends Component {
         transform.zIndex = this.zIndex;
     }
 
-    public Matrix4f transform() {
+    public Matrix4f getTransformMatrix() {
         Matrix4f transformMatrix = new Matrix4f().identity();
         transformMatrix.translate(position.x, position.y, 0);
         transformMatrix.rotate((float)Math.toRadians(rotation), 0, 0, 1);

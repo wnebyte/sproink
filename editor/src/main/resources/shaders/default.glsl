@@ -4,6 +4,8 @@ layout (location=0) in vec3 aPos;
 layout (location=1) in vec4 aColor;
 layout (location=2) in vec2 aTexCoords;
 layout (location=3) in float aTexId;
+layout (location=4) in float aEntityId;
+layout (location=5) in float aStatic;
 
 uniform mat4 uProjection;
 uniform mat4 uView;
@@ -16,7 +18,11 @@ void main(){
     fColor = aColor;
     fTexCoords = aTexCoords;
     fTexId = aTexId;
-    gl_Position = uProjection * uView * vec4(aPos, 1.0);
+    if (aStatic == 1.0) {
+        gl_Position = uProjection * vec4(aPos, 1.0);
+    } else {
+        gl_Position = uProjection * uView * vec4(aPos, 1.0);
+    }
 }
 
 #type fragment
@@ -35,8 +41,6 @@ void main() {
     if (id > 0) {
         color = fColor * texture(uTextures[id], fTexCoords);
     } else {
-        // always taken
         color = fColor;
-       // color = vec4(fTexCoords, 0, 1);
     }
 }
