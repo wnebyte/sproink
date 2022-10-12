@@ -8,6 +8,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import com.github.wnebyte.sproink.fonts.SFont;
 import org.joml.Vector2f;
 import com.github.wnebyte.sproink.renderer.Shader;
 import com.github.wnebyte.sproink.renderer.Renderer;
@@ -80,6 +82,7 @@ public class Scene {
     }
 
     public void start() {
+        renderer.start();
         for (int i = 0; i < gameObjects.size(); i++) {
             GameObject go = gameObjects.get(i);
             go.start();
@@ -87,32 +90,6 @@ public class Scene {
             physics2d.add(go);
         }
         isRunning = true;
-    }
-
-    public void editorUpdate(float dt) {
-        camera.adjustProjection();
-
-        for (int i = 0; i < gameObjects.size(); i++) {
-            GameObject go = gameObjects.get(i);
-            go.editorUpdate(dt);
-
-            if (go.isDead()) {
-                gameObjects.remove(i);
-                renderer.destroyGameObject(go);
-                physics2d.destroyGameObject(go);
-                i--;
-            }
-        }
-
-        for (int i = 0; i < pendingGameObjects.size(); i++) {
-            GameObject go = pendingGameObjects.get(i);
-            gameObjects.add(go);
-            go.start();
-            renderer.add(go);
-            physics2d.add(go);
-        }
-
-        pendingGameObjects.clear();
     }
 
     public void update(float dt) {
@@ -141,6 +118,32 @@ public class Scene {
         pendingGameObjects.clear();
     }
 
+    public void editorUpdate(float dt) {
+        camera.adjustProjection();
+
+        for (int i = 0; i < gameObjects.size(); i++) {
+            GameObject go = gameObjects.get(i);
+            go.editorUpdate(dt);
+
+            if (go.isDead()) {
+                gameObjects.remove(i);
+                renderer.destroyGameObject(go);
+                physics2d.destroyGameObject(go);
+                i--;
+            }
+        }
+
+        for (int i = 0; i < pendingGameObjects.size(); i++) {
+            GameObject go = pendingGameObjects.get(i);
+            gameObjects.add(go);
+            go.start();
+            renderer.add(go);
+            physics2d.add(go);
+        }
+
+        pendingGameObjects.clear();
+    }
+
     public void imGui() {
 
     }
@@ -151,7 +154,7 @@ public class Scene {
 
     public void render(Shader shader) {
         renderer.setShader(shader);
-        renderer.render();
+        render();
     }
 
     public void destroy() {
@@ -209,6 +212,22 @@ public class Scene {
         return renderer.getShader();
     }
 
+    public void setFontShader(Shader shader) {
+        renderer.setFontShader(shader);
+    }
+
+    public Shader getFontShader() {
+        return renderer.getFontShader();
+    }
+
+    public void setFont(SFont font) {
+        renderer.setFont(font);
+    }
+
+    public SFont getFont() {
+        return renderer.getFont();
+    }
+
     public String getName() {
         return name;
     }
@@ -219,7 +238,7 @@ public class Scene {
 
     public void save() {
         if (path == null || !new File(path).exists()) {
-            Log.w(TAG, "Scene: '%s' can't be saved", name);
+           // Log.w(TAG, "Scene: '%s' can't be saved", name);
             return;
         }
 
@@ -240,7 +259,7 @@ public class Scene {
 
     public void load() {
         if (path == null || !new File(path).exists()) {
-            Log.w(TAG, "Scene: '%s' can't be loaded", name);
+           // Log.w(TAG, "Scene: '%s' can't be loaded", name);
             return;
         }
 

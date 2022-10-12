@@ -81,7 +81,9 @@ public class AssetsWindow extends ImGuiWindow {
                                     GameObject levelEditorStuff = Window.getScene().getGameObject(MouseControls.class);
                                     if (levelEditorStuff != null) {
                                         Prefab prefab = context.newPrefab(
-                                                Objects.requireNonNullElseGet(asset.getPrefab(), SpriteGenerator.class::getCanonicalName));
+                                                Objects.requireNonNullElseGet(
+                                                        asset.getPrefab(),
+                                                        SpriteGenerator.class::getCanonicalName));
                                         if (prefab != null) {
                                             GameObject go = prefab.generate(sprite);
                                             levelEditorStuff.getComponent(MouseControls.class).drag(go);

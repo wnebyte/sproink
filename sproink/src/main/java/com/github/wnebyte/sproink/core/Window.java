@@ -103,6 +103,7 @@ public class Window {
         System.out.println("Hello LWJGL " + Version.getVersion());
         init();
         EventSystem.notify(null, new WindowInitEvent());
+        Assets.getFont("C:/Users/ralle/dev/java/Engine/editor/build/install/editor/assets/fonts/super-mario.ttf");
         Window.setScene(args.getScene(), args.getSceneInitializer());
         EventSystem.notify(null, new WindowBeginLoopEvent());
         loop();
@@ -120,8 +121,7 @@ public class Window {
 
         // Terminate GLFW and free the error callback
         glfwTerminate();
-        GLFWErrorCallback callback = glfwSetErrorCallback(null);
-        if (callback != null) {
+        try (GLFWErrorCallback callback = glfwSetErrorCallback(null)) {
             callback.free();
         }
     }
@@ -212,7 +212,6 @@ public class Window {
         Shader defaultShader = Assets.getShader(assets + "/shaders/default.glsl");
         Shader pickingShader = Assets.getShader(assets + "/shaders/picking.glsl");
         Shader debugShader   = Assets.getShader(assets + "/shaders/debugLine2D.glsl");
-        System.out.println(defaultShader.getPath());
 
         while (!glfwWindowShouldClose(glfwWindow)) {
             // Poll events
@@ -224,12 +223,11 @@ public class Window {
             glViewport(0, 0, width, height);
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
             scene.render(pickingShader);
             pickingTexture.unbind();
-            glEnable(GL_BLEND);
 
             // Render pass 2: Render actual game.
+            glEnable(GL_BLEND);
             DebugDraw.beginFrame();
             frameBuffer.bind();
             Vector4f color = scene.getCamera().getClearColor();
@@ -245,6 +243,7 @@ public class Window {
                 scene.render(defaultShader);
                 DebugDraw.draw(debugShader);
             }
+
             frameBuffer.unbind();
             imGuiLayer.update(dt, scene);
             MouseListener.endFrame();

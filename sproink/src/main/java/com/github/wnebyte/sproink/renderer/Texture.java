@@ -1,13 +1,18 @@
 package com.github.wnebyte.sproink.renderer;
 
 import java.util.Objects;
-import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.nio.ByteBuffer;
+import java.awt.image.BufferedImage;
+
+import com.github.wnebyte.sproink.util.Log;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.stb.STBImage.*;
 
 public class Texture {
+
+    private static final String TAG = "Texture";
 
     private transient int id;
 
@@ -16,6 +21,10 @@ public class Texture {
     private int width;
 
     private int height;
+
+    public void log() {
+       Log.i(TAG, "path: %s, id: %d", path, id);
+    }
 
     public Texture() {
         this.id = -1;
@@ -29,12 +38,42 @@ public class Texture {
         this.path = "Generated";
         this.id = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, id);
-
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this.width, this.height,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
                 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+        log();
+    }
+
+    public Texture(BufferedImage image) {
+        this.width = image.getWidth();
+        this.height = image.getHeight();
+        this.path = "BufferedImage";
+        int[] pixels = new int[height * width];
+        image.getRGB(0, 0, width, height, pixels, 0, width);
+
+        ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * 4);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int pixel = pixels[y * width + x];
+                byte alpha = (byte)((pixel >> 24) & 0xFF);
+                for (int i = 0; i < 4; i++) {
+                    buffer.put(alpha);
+                }
+            }
+        }
+        buffer.flip();
+
+        this.id = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, id);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height,
+                0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+        buffer.clear();
+        log();
     }
 
     public void init(String path) {
@@ -77,6 +116,7 @@ public class Texture {
         }
 
         stbi_image_free(image);
+        log();
     }
 
     public void bind() {

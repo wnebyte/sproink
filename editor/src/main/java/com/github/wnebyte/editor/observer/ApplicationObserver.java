@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import com.github.wnebyte.editor.project.Context;
 import com.github.wnebyte.editor.observer.event.*;
+import com.github.wnebyte.sproink.util.Assets;
 import com.github.wnebyte.sproink.util.Settings;
 import com.github.wnebyte.util.Files;
 import com.github.wnebyte.sproink.core.Window;
@@ -57,6 +58,7 @@ public class ApplicationObserver implements Observer {
             handleNewSceneEvent(e);
         } else if (event instanceof WindowInitEvent) {
             Settings.GSON = com.github.wnebyte.editor.util.Settings.GSON;
+           // Assets.getFont("C:/Users/ralle/dev/java/Engine/editor/build/install/editor/assets/fonts/super-mario.ttf");
         } else if (event instanceof WindowBeginLoopEvent) {
             handleWindowBeginLoopEvent();
         } else if (event instanceof CompileEvent) {
@@ -102,7 +104,7 @@ public class ApplicationObserver implements Observer {
                 window.hide();
             }
         }
-        Log.i(TAG, "Start Play");
+       // Log.i(TAG, "Start Play");
     }
 
     private void handleGameEngineStopPlayEvent(GameEngineStopPlayEvent ignoredEvent) {
@@ -120,7 +122,7 @@ public class ApplicationObserver implements Observer {
             }
         }
 
-        Log.i(TAG, "Stop Play");
+       // Log.i(TAG, "Stop Play");
     }
 
     /**

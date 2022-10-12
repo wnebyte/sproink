@@ -114,7 +114,7 @@ public class MouseListener {
         float currentX = getX() - get().gameViewportPos.x;
         currentX = (currentX / get().gameViewportSize.x) * 2.0f - 1.0f;
         float currentY = getY() - get().gameViewportPos.y;
-        currentY = -((currentY / get().gameViewportSize.y) * 2.0f - 1.0f);;
+        currentY = -((currentY / get().gameViewportSize.y) * 2.0f - 1.0f);
         Vector4f tmp = new Vector4f(currentX, currentY, 0, 1);
         Camera camera = Window.getScene().getCamera();
         Matrix4f inverseView = new Matrix4f(camera.getInverseView());

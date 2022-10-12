@@ -19,6 +19,8 @@ public class Shader {
 
     public static final String U_TEXTURES = "uTextures";
 
+    public static final String U_FONT_TEXTURE = "uFontTexture";
+
     public static final String U_INVERSE_PROJECTION = "uInverseProjection";
 
     public static final String U_INVERSE_VIEW = "uInverseView";
@@ -132,7 +134,6 @@ public class Shader {
 
     public void use() {
         if (!inUse) {
-            // Bind shader program
             glUseProgram(id);
             inUse = true;
         }
@@ -145,6 +146,14 @@ public class Shader {
 
     public String getPath() {
         return path;
+    }
+
+    public String getVertexSource() {
+        return vertexSource;
+    }
+
+    public String getFragmentSource() {
+        return fragmentSource;
     }
 
     public void uploadMatrix4f(String varName, Matrix4f mat4f) {

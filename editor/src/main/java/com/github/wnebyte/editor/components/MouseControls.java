@@ -103,7 +103,7 @@ public class MouseControls extends Component {
             GameObject go = scene.getGameObject(id);
             if (go != null && go.getComponent(NonPickable.class) == null) {
                 props.setActiveGameObject(go);
-                Log.i(TAG, "ID: '%d'", id);
+               // Log.i(TAG, "ID: '%d'", id);
             } else if (go == null && !isDragging()) {
                 props.clearSelected();
             }

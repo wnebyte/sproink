@@ -25,7 +25,7 @@ public class SpriteRenderer extends Component {
     }
 
     @Override
-    public void editorUpdate(float dt) {
+    public void update(float dt) {
         if (!transform.equals(gameObject.transform)) {
             gameObject.transform.copy(transform);
             dirty = true;
@@ -33,7 +33,7 @@ public class SpriteRenderer extends Component {
     }
 
     @Override
-    public void update(float dt) {
+    public void editorUpdate(float dt) {
         if (!transform.equals(gameObject.transform)) {
             gameObject.transform.copy(transform);
             dirty = true;
@@ -47,6 +47,7 @@ public class SpriteRenderer extends Component {
         }
     }
 
+    @Override
     public void refresh() {
         Texture texture = sprite.getTexture();
         if (texture != null) {

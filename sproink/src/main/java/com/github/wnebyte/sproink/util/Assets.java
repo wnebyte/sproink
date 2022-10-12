@@ -1,11 +1,13 @@
 package com.github.wnebyte.sproink.util;
 
 import java.io.File;
+import java.util.Locale;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collection;
 import java.util.function.Supplier;
 import com.github.wnebyte.sproink.core.Sound;
+import com.github.wnebyte.sproink.fonts.SFont;
 import com.github.wnebyte.sproink.renderer.Shader;
 import com.github.wnebyte.sproink.renderer.Texture;
 import com.github.wnebyte.sproink.components.Spritesheet;
@@ -20,14 +22,31 @@ public final class Assets {
 
     private static final Map<String, Sound> sounds = new HashMap<>();
 
+    private static final Map<String, SFont> fonts = new HashMap<>();
+
+    public static SFont getFont(String path) {
+        File file = new File(path.toLowerCase(Locale.ROOT));
+        assert file.exists() :
+                String.format("Error: (Assets) Font: '%s' does not exist", file.getAbsolutePath());
+
+        if (fonts.containsKey(file.getAbsolutePath())) {
+            return fonts.get(file.getAbsolutePath());
+        } else {
+            SFont font = new SFont(file.getAbsolutePath(), 48);
+            font.generateBitmap();
+            fonts.put(file.getAbsolutePath(), font);
+            return font;
+        }
+    }
+
     /**
      * Lazily initializes (if necessary) and returns the <code>Shader</code> located at
      * the specified <code>path</code>.
      */
     public static Shader getShader(String path) {
-        File file = new File(path);
-        assert file.exists() : String.format("Error: (Assets) Shader: '%s' does not exist",
-                file.getAbsolutePath());
+        File file = new File(path.toLowerCase(Locale.ROOT));
+        assert file.exists() :
+                String.format("Error: (Assets) Shader: '%s' does not exist", file.getAbsolutePath());
 
         if (shaders.containsKey(file.getAbsolutePath())) {
             return shaders.get(file.getAbsolutePath());
@@ -44,9 +63,9 @@ public final class Assets {
      * the specified <code>path</code>.
      */
     public static Texture getTexture(String path) {
-        File file = new File(path);
-        assert file.exists() : String.format("Error: (Assets) Texture: '%s' does not exist",
-                file.getAbsolutePath());
+        File file = new File(path.toLowerCase(Locale.ROOT));
+        assert file.exists() :
+                String.format("Error: (Assets) Texture: '%s' does not exist", file.getAbsolutePath());
 
         if (textures.containsKey(file.getAbsolutePath())) {
             return textures.get(file.getAbsolutePath());
@@ -59,24 +78,24 @@ public final class Assets {
     }
 
     public static Spritesheet getSpritesheet(String path) {
-        File file = new File(path);
-        assert file.exists() : String.format("Error: (Assets) Spritesheet: '%s' does not exist",
-                file.getAbsolutePath());
+        File file = new File(path.toLowerCase(Locale.ROOT));
+        assert file.exists() :
+                String.format("Error: (Assets) Spritesheet: '%s' does not exist", file.getAbsolutePath());
 
         if (spritesheets.containsKey(file.getAbsolutePath())) {
             return spritesheets.get(file.getAbsolutePath());
         } else {
-            assert false: String.format("Error: (Assets) " +
-                    "Spritesheet: '%s' has not yet been added to pool.",
-                    file.getAbsolutePath());
+            assert false:
+                    String.format("Error: (Assets) " +
+                    "Spritesheet: '%s' has not yet been added to pool.", file.getAbsolutePath());
             return null;
         }
     }
 
     public static void addSpritesheet(String path, Supplier<Spritesheet> supplier) {
-        File file = new File(path);
-        assert file.exists() : String.format("Error: (Assets) Spritesheet: '%s' does not exist",
-                file.getAbsolutePath());
+        File file = new File(path.toLowerCase(Locale.ROOT));
+        assert file.exists() :
+                String.format("Error: (Assets) Spritesheet: '%s' does not exist", file.getAbsolutePath());
 
         if (!spritesheets.containsKey(file.getAbsolutePath())) {
             spritesheets.put(file.getAbsolutePath(), supplier.get());
@@ -84,28 +103,29 @@ public final class Assets {
     }
 
     public static boolean hasSpritesheet(String path) {
-        File file = new File(path);
+        File file = new File(path.toLowerCase(Locale.ROOT));
         return spritesheets.containsKey(file.getAbsolutePath());
     }
 
     public static Sound getSound(String path) {
-        File file = new File(path);
-        assert file.exists() : String.format("Error: (Assets) Sound: '%s' does not exist",
-                file.getAbsolutePath());
+        File file = new File(path.toLowerCase(Locale.ROOT));
+        assert file.exists() :
+                String.format("Error: (Assets) Sound: '%s' does not exist", file.getAbsolutePath());
 
         if (sounds.containsKey(file.getAbsolutePath())) {
             return sounds.get(file.getAbsolutePath());
         } else {
-            assert false : String.format("Error (Assets): Sound has not yet been added to pool: '%s'",
-                    file.getAbsolutePath());
+            assert false :
+                    String.format("Error (Assets): Sound has not yet been added to pool: '%s'",
+                            file.getAbsolutePath());
             return null;
         }
     }
 
     public static Sound addSound(String path, boolean loops) {
-        File file = new File(path);
-        assert file.exists() : String.format("Error: (Assets) Sound: '%s' does not exist",
-                file.getAbsolutePath());
+        File file = new File(path.toLowerCase(Locale.ROOT));
+        assert file.exists() :
+                String.format("Error: (Assets) Sound: '%s' does not exist", file.getAbsolutePath());
 
         if (sounds.containsKey(file.getAbsolutePath())) {
             return sounds.get(file.getAbsolutePath());
