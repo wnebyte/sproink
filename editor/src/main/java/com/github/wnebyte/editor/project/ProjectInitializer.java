@@ -1,189 +1,79 @@
 package com.github.wnebyte.editor.project;
 
 import java.io.File;
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.*;
 import java.util.ArrayList;
-import com.github.wnebyte.util.UriBuilder;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class ProjectInitializer {
 
-    private final List<File> dirs;
+    private final File root;
 
-    private final List<Template> templates;
+    private final List<String> dirs;
 
-    private final List<Replacement> replacements;
+    private final Map<String, String> files;
 
-    private final List<String> copies;
-
-    public ProjectInitializer(File root, String name) {
-        this.dirs = new ArrayList<File>() {
-            {
-                add(root);
-                add(new UriBuilder(root.getAbsolutePath())
-                        .appendPath("src")
-                        .toFile());
-                add(new UriBuilder(root.getAbsolutePath())
-                        .appendPath("src")
-                        .appendPath("main")
-                        .toFile());
-                add(new UriBuilder(root.getAbsolutePath())
-                        .appendPath("src")
-                        .appendPath("main")
-                        .appendPath("java")
-                        .toFile());
-                add(new UriBuilder(root.getAbsolutePath())
-                        .appendPath("src")
-                        .appendPath("main")
-                        .appendPath("resources")
-                        .toFile());
-                add(new UriBuilder(root.getAbsolutePath())
-                        .appendPath("src")
-                        .appendPath("test")
-                        .toFile());
-                add(new UriBuilder(root.getAbsolutePath())
-                        .appendPath("src")
-                        .appendPath("test")
-                        .appendPath("java")
-                        .toFile());
-                add(new UriBuilder(root.getAbsolutePath())
-                        .appendPath("src")
-                        .appendPath("test")
-                        .appendPath("resources")
-                        .toFile());
-                add(new UriBuilder(root.getAbsolutePath())
-                        .appendPath("logs")
-                        .toFile());
-            }
-        };
-        this.templates = new ArrayList<Template>() {
-            {
-                add(new Template.Builder()
-                        .setName("Main.java")
-                        .setSrc(new UriBuilder(".." + File.separator + "assets")
-                                .appendPath("templates")
-                                .appendPath("Main.java")
-                                .toPath())
-                        .setDest(new UriBuilder(root.getAbsolutePath())
-                                .appendPath("src")
-                                .appendPath("main")
-                                .appendPath("java")
-                                .appendPath("Main.java")
-                                .toPath())
-                        .build());
-                add(new Template.Builder()
-                        .setName("project.xml")
-                        .setSrc(new UriBuilder(".." + File.separator + "assets")
-                                .appendPath("templates")
-                                .appendPath("project.xml")
-                                .toPath())
-                        .setDest(new UriBuilder(root.getAbsolutePath())
-                                .appendPath("project.xml")
-                                .toPath())
-                        .build());
-                add(new Template.Builder()
-                        .setName("build.gradle")
-                        .setSrc(new UriBuilder(".." + File.separator + "assets")
-                                .appendPath("templates")
-                                .appendPath("build.gradle")
-                                .toPath())
-                        .setDest(new UriBuilder(root.getAbsolutePath())
-                                .appendPath("build.gradle")
-                                .toPath())
-                        .build());
-                add(new Template.Builder()
-                        .setName("settings.gradle")
-                        .setSrc(new UriBuilder(".." + File.separator + "assets")
-                                .appendPath("templates")
-                                .appendPath("settings.gradle")
-                                .toPath())
-                        .setDest(new UriBuilder(root.getAbsolutePath())
-                                .appendPath("settings.gradle")
-                                .toPath())
-                        .build());
-                add(new Template.Builder()
-                        .setName("assets")
-                        .setSrc(new UriBuilder(".." + File.separator + "assets")
-                                .appendPath("templates")
-                                .appendPath("assets")
-                                .toPath())
-                        .setDest(new UriBuilder(root.getAbsolutePath())
-                                .appendPath("assets")
-                                .toPath())
-                        .build());
-                add(new Template.Builder()
-                        .setName("lib")
-                        .setSrc(new UriBuilder(".." + File.separator + "assets")
-                                .appendPath("templates")
-                                .appendPath("lib")
-                                .toPath())
-                        .setDest(new UriBuilder(root.getAbsolutePath())
-                                .appendPath("lib")
-                                .toPath())
-                        .build());
-            }
-        };
-        this.replacements = new ArrayList<Replacement>() {
-            {
-                add(new Replacement.Builder()
-                        .setNames("Main.java", "settings.gradle", "build.gradle")
-                        .setRegex("[$]name")
-                        .setValue(name)
-                        .build());
-            }
-        };
-        this.copies = new ArrayList<String>() {
-            { add("lib");}
+    public ProjectInitializer(File root) {
+        this.root = root;
+        this.dirs = new ArrayList<String>() {
+            { add("src"); }
+            { add("src/main"); }
+            { add("src/main/java"); }
+            { add("src/main/resources"); }
+            { add("src/test"); }
+            { add("src/test/java"); }
+            { add("src/test/resources"); }
             { add("assets"); }
+            { add("assets/fonts"); }
+            { add("assets/images"); }
+            { add("assets/images/spritesheets"); }
+            { add("assets/scenes"); }
+            { add("assets/shaders"); }
+            { add("assets/sounds"); }
+            { add("lib"); }
         };
+        this.files = new HashMap<String, String>() {
+            { put("/templates/Main.java", "src/main/java/Main.java"); }
+            { put("/templates/project.xml", "project.xml"); }
+            { put("/templates/build.gradle", "build.gradle"); }
+            { put("/templates/settings.gradle", "settings.gradle"); }
+            { put("/templates/sproink-1.0.jar", "lib/sproink-1.0.jar"); }
+            { put("/templates/jbox2d-library.jar", "lib/jbox2d-library.jar"); }
+        };
+    }
+
+    private void mkdirs() {
+        assert root.mkdir() : String.format("(Error): Failed to mkdir: %s%n", root.getAbsolutePath());
+        for (String path : dirs) {
+            path = (root.getAbsolutePath() + "/" + path)
+                    .replace("/", File.separator);
+            File value = new File(path);
+            assert value.mkdir() : String.format("(Error): Failed to mkdir: %s%n", value.getAbsolutePath());
+        }
+    }
+
+    private void copyTemplates() {
+        try {
+            for (Map.Entry<String, String> entry : files.entrySet()) {
+                Path src = Paths.get(this.getClass().getResource(entry.getKey()).toURI());
+                Path dest = Paths.get((root.getAbsolutePath() + "/" + entry.getValue())
+                        .replace("/", File.separator));
+                try {
+                    Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void init() {
         mkdirs();
-        replaceLines();
-        copy();
-        cleanup();
-    }
-
-    private Template getTemplate(String name) {
-        return templates.stream()
-                .filter(template -> template.getName().equals(name))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private void mkdirs() {
-        for (File dir : dirs) {
-            assert dir.mkdir() : String.format("Error: (ProjectInitializer) Could not mkdir: %s", dir.getAbsolutePath());
-        }
-        dirs.clear();
-    }
-
-    private void replaceLines() {
-        for (Replacement r : replacements) {
-            for (String name : r.getNames()) {
-                Template t = getTemplate(name);
-                if (t != null) {
-                    t.read();
-                    t.replaceAllLines(r.getRegex(), r.getValue());
-                    t.write();
-                }
-            }
-        }
-    }
-
-    private void copy() {
-        for (String copy : copies) {
-            Template t = getTemplate(copy);
-            if (t != null) {
-                t.copy();
-            }
-        }
-    }
-
-    private void cleanup() {
-        dirs.clear();
-        templates.clear();
-        replacements.clear();
-        copies.clear();
+        copyTemplates();
     }
 }

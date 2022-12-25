@@ -31,7 +31,8 @@ public class Context {
         assert (parent.exists() && parent.isDirectory()) :
                 String.format("Error (Context): Path: '%s' does not exist/is not a directory", parent.getAbsolutePath());
         File root = new File(path + File.separator + name);
-        ProjectInitializer init = new ProjectInitializer(root, name);
+        ProjectInitializer init = new ProjectInitializer(root);
+        init.init();
         File projectFile = new File(root.getAbsolutePath() + File.separator + "project.xml");
         Context context = new Context(projectFile);
         context.getProject().setName(name);

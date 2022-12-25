@@ -1,48 +1,69 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<project name="EngineTest" path="C:/Users/Ralle/dev/java/EngineTest" out-dir="$PATH/build/classes/java/main/" assets-dir="$PATH/assets">
+<project name="Mario" projectDir="C:/Users/Ralle/dev/java/mario" outDir="$PROJECTDIR/build/classes/java/main/"
+         assetsDir="$PROJECTDIR/assets">
     <editor>
         <assets>
-            <tab name="Blocks">
+            <tab name="Solid Blocks">
                 <spritesheet src="$ASSETSDIR/images/spritesheets/decorationsAndBlocks.png"
-                             width="16" height="16" size="81" spacing="0" from="0" to="33" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             width="16" height="16" size="81" spacing="0" from="0" to="33" scaleX="2.0" scaleY="2.0"
+                             prefab="com.github.wnebyte.mario.prefabs.BlockGenerator" />
                 <spritesheet src="$ASSETSDIR/images/spritesheets/decorationsAndBlocks.png"
-                             width="16" height="16" size="81" spacing="0" from="35" to="37" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             width="16" height="16" size="81" spacing="0" from="35" to="37" scaleX="2.0" scaleY="2.0"
+                             prefab="com.github.wnebyte.mario.prefabs.BlockGenerator" />
                 <spritesheet src="$ASSETSDIR/images/spritesheets/decorationsAndBlocks.png"
-                             width="16" height="16" size="81" spacing="0" from="61" to="81" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             width="16" height="16" size="81" spacing="0" from="61" to="81" scaleX="2.0" scaleY="2.0"
+                             prefab="com.github.wnebyte.mario.prefabs.BlockGenerator" />
             </tab>
             <tab name="Decoration Blocks">
                 <spritesheet src="$ASSETSDIR/images/spritesheets/decorationsAndBlocks.png"
-                             width="16" height="16" size="81" spacing="0" from="38" to="41" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             width="16" height="16" size="81" spacing="0" from="38" to="41" scaleX="2.0" scaleY="2.0"
+                             prefab="com.github.wnebyte.sproink.core.SpriteGenerator" />
                 <spritesheet src="$ASSETSDIR/images/spritesheets/decorationsAndBlocks.png"
-                             width="16" height="16" size="81" spacing="0" from="45" to="61" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             width="16" height="16" size="81" spacing="0" from="45" to="61" scaleX="2.0" scaleY="2.0"
+                             prefab="com.github.wnebyte.sproink.core.SpriteGenerator" />
             </tab>
             <tab name="Prefabs">
+                <!-- mario -->
                 <spritesheet src="$ASSETSDIR/images/spritesheets/spritesheet.png"
-                             width="16" height="16" size="26" spacing="0" from="0" to="1" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             width="16" height="16" size="26" spacing="0" from="0" to="1" scaleX="2.0" scaleY="2.0"
+                             prefab="com.github.wnebyte.mario.prefabs.MarioGenerator" />
+                <!-- question block -->
                 <spritesheet src="$ASSETSDIR/images/spritesheets/items.png"
-                             width="16" height="16" size="43" spacing="0" from="0" to="1" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             width="16" height="16" size="43" spacing="0" from="0" to="1" scaleX="2.0" scaleY="2.0"
+                             prefab="com.github.wnebyte.mario.prefabs.QuestionBlockGenerator" />
+                <!-- coin -->
+                <spritesheet src="$ASSETSDIR/images/spritesheets/items.png"
+                             width="16" height="16" size="43" spacing="0" from="7" to="8"
+                             prefab="com.github.wnebyte.mario.prefabs.CoinGenerator" scaleX="2.0" scaleY="2.0" />
+                <!-- goomba -->
                 <spritesheet src="$ASSETSDIR/images/spritesheets/spritesheet.png"
-                             width="16" height="16" size="26" spacing="0" from="14" to="15" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             width="16" height="16" size="26" spacing="0" from="14" to="15" scaleX="2.0" scaleY="2.0"
+                             prefab="com.github.wnebyte.mario.prefabs.GoombaGenerator" />
+                <!-- turtle -->
                 <spritesheet src="$ASSETSDIR/images/spritesheets/turtle.png"
-                             width="16" height="24" size="4" spacing="0" from="0" to="1" scale-x="2.0" scale-y="1.33"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             width="16" height="24" size="4" spacing="0" from="0" to="1" scaleX="2.0" scaleY="1.33"
+                             prefab="com.github.wnebyte.mario.prefabs.TurtleGenerator" />
+                <!-- flagtop -->
                 <spritesheet src="$ASSETSDIR/images/spritesheets/items.png"
-                             width="16" height="16" size="43" spacing="0" from="6" to="7" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             width="16" height="16" size="43" spacing="0" from="6" to="7" scaleX="2.0" scaleY="2.0"
+                             prefab="com.github.wnebyte.mario.prefabs.FlagtopGenerator" />
+                <!-- flag pole -->
                 <spritesheet src="$ASSETSDIR/images/spritesheets/items.png"
-                             width="16" height="16" size="43" spacing="0" from="33" to="34" scale-x="2.0" scale-y="2.0"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             width="16" height="16" size="43" spacing="0" from="33" to="34" scaleX="2.0" scaleY="2.0"
+                             prefab="com.github.wnebyte.mario.prefabs.FlagpoleGenerator" />
+                <!-- pipes -->
                 <spritesheet src="$ASSETSDIR/images/spritesheets/pipes.png"
-                             width="32" height="32" size="4" spacing="0" from="0" to="4"
-                             prefab="com.github.wnebyte.sproink.core.DefaultPrefab" />
+                             width="32" height="32" size="4" spacing="0" from="0" to="1"
+                             prefab="com.github.wnebyte.mario.prefabs.PipeDownGenerator" />
+                <spritesheet src="$ASSETSDIR/images/spritesheets/pipes.png"
+                             width="32" height="32" size="4" spacing="0" from="1" to="2"
+                             prefab="com.github.wnebyte.mario.prefabs.PipeUpGenerator" />
+                <spritesheet src="$ASSETSDIR/images/spritesheets/pipes.png"
+                             width="32" height="32" size="4" spacing="0" from="2" to="3"
+                             prefab="com.github.wnebyte.mario.prefabs.PipeRightGenerator" />
+                <spritesheet src="$ASSETSDIR/images/spritesheets/pipes.png"
+                             width="32" height="32" size="4" spacing="0" from="3" to="4"
+                             prefab="com.github.wnebyte.mario.prefabs.PipeLeftGenerator" />
             </tab>
             <tab name="Sounds">
                 <sound src="$ASSETSDIR/sounds/main-theme-overworld.ogg" loops="true" />

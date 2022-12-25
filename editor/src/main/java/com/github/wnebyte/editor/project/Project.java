@@ -1,50 +1,12 @@
 package com.github.wnebyte.editor.project;
 
 import java.io.File;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.*;
 
 @XmlRootElement
 @XmlType(propOrder = { "editor" })
 @XmlAccessorType(XmlAccessType.FIELD)
 public final class Project {
-
-    private static final Unmarshaller UNMARSHALLER;
-
-    private static final Marshaller MARSHALLER;
-
-    public static Project unmarshall(File file) {
-        try {
-            return (Project) UNMARSHALLER.unmarshal(file);
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void marshall(Project project, File file) {
-        try {
-            MARSHALLER.marshal(project, file);
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static Project copy(Project project) {
-        return null;
-    }
-
-    static {
-        try {
-            JAXBContext context = JAXBContext.newInstance(Project.class);
-            UNMARSHALLER = context.createUnmarshaller();
-            MARSHALLER = context.createMarshaller();
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @XmlAttribute
     private String name;
